@@ -1,0 +1,149 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Vert PharmaSur */
+  --color-green-950: #062a1d;
+  --color-green-900: #0b3d2c;
+  --color-green-800: #0d5a40;
+  --color-green-700: #10714f;
+  --color-green-600: #12855d;
+  --color-green-500: #16a06f;
+  --color-green-400: #2fbc86;
+  --color-green-200: #b9e8d3;
+  --color-green-100: #d9f2e7;
+  --color-green-50: #f1fbf6;
+
+  /* Encres et surfaces */
+  --color-ink: #0e1b16;
+  --color-ink-soft: #2a3d35;
+  --color-body: #4a5b54;
+  --color-body-soft: #7b8b84;
+  --color-line: #e2ece7;
+  --color-line-soft: #eef5f1;
+  --color-paper: #ffffff;
+
+  --shadow-sm: 0 4px 16px rgb(11 61 44 / 0.06);
+  --shadow-md: 0 18px 40px rgb(11 61 44 / 0.1);
+  --shadow-lg: 0 30px 70px rgb(11 61 44 / 0.16);
+  --shadow-glow: 0 12px 30px rgb(18 133 93 / 0.28);
+
+  --ease-cine: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-green-600);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-green-500);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@utility rail {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (min-width: 1024px) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Dégradé de titre, hérité de la version d'origine mais adouci */
+@utility grad {
+  background-image: linear-gradient(100deg, var(--color-green-600), var(--color-green-400));
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes float-soft {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-2px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(58px);
+    opacity: 0;
+  }
+}
