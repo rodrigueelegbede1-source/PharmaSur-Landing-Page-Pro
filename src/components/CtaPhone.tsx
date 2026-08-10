@@ -5,18 +5,57 @@ import { ArrowRight, Reveal } from './primitives'
 
 const phoneRegex = /^(\+225)?[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}$/
 
+/**
+ * Endpoint de collecte, défini dans `.env` (voir `.env.example`).
+ * Absent — développement, préversion — le formulaire répond sans rien envoyer.
+ */
+const endpoint = import.meta.env.VITE_LEAD_ENDPOINT
+
+const messages = {
+  invalid: 'Entrez un numéro ivoirien valide, ex. +225 07 00 00 00 00.',
+  ok: "Merci ! Nous vous préviendrons dès l'ouverture de PharmaSur.",
+  failed: 'Envoi impossible pour le moment. Réessayez dans un instant.',
+}
+
 export function CtaPhone() {
   const [phone, setPhone] = useState('')
+  const [pending, setPending] = useState(false)
   const [status, setStatus] = useState<{ ok: boolean; msg: string } | null>(null)
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!phoneRegex.test(phone.trim())) {
-      setStatus({ ok: false, msg: 'Entrez un numéro ivoirien valide, ex. +225 07 00 00 00 00.' })
+    if (pending) return
+
+    const value = phone.trim()
+    if (!phoneRegex.test(value)) {
+      setStatus({ ok: false, msg: messages.invalid })
       return
     }
-    setStatus({ ok: true, msg: 'Merci ! Le lien de téléchargement vous a été envoyé par SMS.' })
-    setPhone('')
+
+    if (!endpoint) {
+      setStatus({ ok: true, msg: messages.ok })
+      setPhone('')
+      return
+    }
+
+    setPending(true)
+    setStatus(null)
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ phone: value, source: 'landing-cta' }),
+        signal: AbortSignal.timeout(10_000),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setStatus({ ok: true, msg: messages.ok })
+      setPhone('')
+    } catch {
+      setStatus({ ok: false, msg: messages.failed })
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -44,7 +83,7 @@ export function CtaPhone() {
                 </p>
               </div>
 
-              <form onSubmit={submit} noValidate className="w-full">
+              <form onSubmit={submit} noValidate aria-busy={pending} className="w-full">
                 <label className="sr-only" htmlFor="phone">
                   Numéro de téléphone
                 </label>
@@ -60,10 +99,11 @@ export function CtaPhone() {
                   />
                   <button
                     type="submit"
-                    className="group inline-flex h-13 items-center justify-center gap-2 rounded-full bg-green-400 px-6 font-bold whitespace-nowrap text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
+                    disabled={pending}
+                    className="group inline-flex h-13 items-center justify-center gap-2 rounded-full bg-green-400 px-6 font-bold whitespace-nowrap text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white disabled:pointer-events-none disabled:opacity-60"
                   >
-                    Recevoir le lien
-                    <ArrowRight />
+                    {pending ? 'Envoi…' : 'Être prévenu'}
+                    {!pending && <ArrowRight />}
                   </button>
                 </div>
 

@@ -24,6 +24,27 @@ npm run preview  # sert le build
 npm run lint     # oxlint
 ```
 
+## Configuration
+
+Le formulaire de bas de page envoie le numéro saisi à l'endpoint défini par
+`VITE_LEAD_ENDPOINT`. Copiez le modèle puis renseignez-le :
+
+```bash
+cp .env.example .env
+```
+
+| `VITE_LEAD_ENDPOINT` | Comportement du formulaire |
+| --- | --- |
+| vide ou absent | valide le numéro et affiche la confirmation, sans rien envoyer |
+| une URL | `POST` JSON `{ "phone": "…", "source": "landing-cta" }`, abandon au bout de 10 s |
+
+En cas d'échec réseau ou de réponse non-2xx, un message d'erreur s'affiche et le
+numéro reste dans le champ. Le type de la variable est déclaré dans `src/vite-env.d.ts`.
+
+Toute variable préfixée `VITE_` est intégrée au bundle JavaScript public : n'y placez
+jamais de clé secrète. L'endpoint doit donc être une adresse publique, protégée côté
+serveur (anti-spam, limitation de débit).
+
 ## Structure
 
 ```
@@ -63,5 +84,6 @@ est préchargé dans `index.html` (`rel="preload"` avec `media`).
 - Un seul easing pour tout le site : `cubic-bezier(0.16, 1, 0.3, 1)` (`--ease-cine`).
 - Les révélations sont `once: true` : aucune animation ne rejoue au retour du scroll.
 - `prefers-reduced-motion` est respecté partout (`useReducedMotion`, `motion-safe:`/`motion-reduce:`).
-- Le formulaire du CTA est local (aucun backend) : brancher `submit` dans `CtaPhone.tsx`.
+- Le formulaire du CTA poste vers `VITE_LEAD_ENDPOINT` (voir Configuration) ; sans variable
+  définie, il reste local.
 - Les tarifs, chiffres et témoignages sont ceux de la version d'origine, à valider avant mise en ligne.
