@@ -41,6 +41,12 @@ cp .env.example .env
 En cas d'échec réseau ou de réponse non-2xx, un message d'erreur s'affiche et le
 numéro reste dans le champ. Le type de la variable est déclaré dans `src/vite-env.d.ts`.
 
+`VITE_SITE_URL` fixe le domaine public : `vite.config.ts` l'injecte dans `index.html`
+à la place de `%SITE_URL%` pour les URL absolues des métadonnées de partage
+(`og:image`, `canonical`). Sans valeur, `https://pharmasur.ci` s'applique. Un chemin
+relatif ne suffirait pas — WhatsApp et Facebook exigent une URL absolue. À renseigner
+donc si le site est déployé ailleurs, sinon aucun aperçu ne s'affichera au partage.
+
 Toute variable préfixée `VITE_` est intégrée au bundle JavaScript public : n'y placez
 jamais de clé secrète. L'endpoint doit donc être une adresse publique, protégée côté
 serveur (anti-spam, limitation de débit).
@@ -78,6 +84,19 @@ avant `#how` (utilitaires `hero-photo` / `hero-veil` dans `src/index.css`).
 La source (1024 × 679) a été remontée en 2048 px de large (Lanczos3 + masque de netteté léger)
 puis réencodée. La sélection du format se fait en CSS via `image-set()`, et le WebP correspondant
 est préchargé dans `index.html` (`rel="preload"` avec `media`).
+
+## Partage et icônes
+
+| Fichier | Définition | Poids | Usage |
+| --- | --- | --- | --- |
+| `public/og.jpg` | 1200 × 630 | 75 ko | aperçu des liens : WhatsApp, Facebook, X, LinkedIn |
+| `public/apple-touch-icon.png` | 180 × 180 | 4 ko | écran d'accueil iOS, qui ne lit pas le SVG |
+| `public/favicon.svg` | vectoriel | 1 ko | onglet du navigateur |
+
+`og.jpg` superpose à la photo d'officine un voile vert, le logo et le titre du site,
+composés dans la police et les couleurs de la charte. Il reste sous les 300 ko au-delà
+desquels WhatsApp cesse d'afficher l'aperçu. À régénérer si le titre ou l'identité
+changent — sinon les liens partagés continueront d'annoncer l'ancienne version.
 
 ## Conventions
 
