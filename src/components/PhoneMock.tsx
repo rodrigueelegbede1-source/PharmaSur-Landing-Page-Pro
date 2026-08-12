@@ -2,10 +2,21 @@ import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { cx } from '../lib/cx'
 
-/* Deux lignes déjà saisies, la troisième se tape sous les yeux du visiteur. */
-const added = ['Paracétamol 500 mg', 'Vitamine C 500 mg']
-const QUERY = 'Amoxicilline 1 g'
+/*
+ * Deux lignes déjà saisies, la troisième se tape sous les yeux du visiteur.
+ * À VALIDER avant mise en ligne : prix indicatifs, à reprendre sur la base
+ * homologuée. Un tarif faux affiché à un patient se paie en crédibilité.
+ */
+const added = [
+  { name: 'Paracétamol 500 mg', price: 900 },
+  { name: 'Vitamine C 500 mg', price: 1200 },
+]
+const typing = { name: 'Amoxicilline 1 g', price: 2750 }
 const TOTAL = added.length + 1
+
+const partial = added.reduce((t, i) => t + i.price, 0)
+const full = partial + typing.price
+const fcfa = (n: number) => n.toLocaleString('fr-FR')
 
 /* Classées par complétude, pas par distance : c'est tout le propos. */
 const results = [
@@ -37,11 +48,32 @@ function useTypewriter(active: boolean, text: string, speed = 55) {
   return typed
 }
 
+/** Ligne de la liste : produit à gauche, prix homologué à droite. */
+function Line({ name, price, fresh }: { name: string; price: number; fresh?: boolean }) {
+  return (
+    <div
+      className={cx(
+        'flex items-center justify-between gap-2 rounded-lg border px-2 py-1.5',
+        fresh ? 'border-green-400 bg-green-100' : 'border-green-200 bg-green-50',
+      )}
+    >
+      <span className="flex items-center gap-1.5 text-[0.68rem] font-bold text-green-700">
+        <svg viewBox="0 0 12 12" fill="none" className="size-2 shrink-0" aria-hidden>
+          <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        {name}
+      </span>
+      <span className="text-[0.68rem] font-bold tabular-nums text-green-800">{fcfa(price)} F</span>
+    </div>
+  )
+}
+
 export function PhoneMock() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-15% 0px' })
-  const typed = useTypewriter(inView, QUERY)
-  const done = typed.length === QUERY.length
+  const typed = useTypewriter(inView, typing.name)
+  const done = typed.length === typing.name.length
+  const total = done ? full : partial
 
   return (
     <div ref={ref} className="relative grid place-items-center">
@@ -70,32 +102,34 @@ export function PhoneMock() {
             </span>
           </div>
 
-          {/* Produits déjà ajoutés, puis celui en cours de frappe */}
-          <div className="flex flex-wrap gap-1.5">
+          {/* Produits ajoutés et leur prix, puis celui en cours de frappe */}
+          <div className="flex flex-col gap-1">
             {added.map((item) => (
-              <span
-                key={item}
-                className="inline-flex items-center gap-1 rounded-lg border border-green-200 bg-green-50 px-1.5 py-1 text-[0.63rem] font-bold text-green-700"
-              >
-                <svg viewBox="0 0 12 12" fill="none" className="size-2" aria-hidden>
-                  <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                {item}
-              </span>
+              <Line key={item.name} name={item.name} price={item.price} />
             ))}
             {done && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="inline-flex items-center gap-1 rounded-lg border border-green-400 bg-green-100 px-1.5 py-1 text-[0.63rem] font-bold text-green-700"
               >
-                <svg viewBox="0 0 12 12" fill="none" className="size-2" aria-hidden>
-                  <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                {QUERY}
-              </motion.span>
+                <Line name={typing.name} price={typing.price} fresh />
+              </motion.div>
             )}
+          </div>
+
+          {/* Coût de l'ordonnance : il grimpe à mesure que la liste se remplit */}
+          <div className="flex items-baseline justify-between border-t border-line px-0.5 pt-2">
+            <span className="text-[0.7rem] font-bold text-ink">Total ordonnance</span>
+            <motion.span
+              key={total}
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[0.92rem] font-extrabold tabular-nums text-green-700"
+            >
+              {fcfa(total)} F
+            </motion.span>
           </div>
 
           {/* Champ d'ajout : frappe en direct */}
