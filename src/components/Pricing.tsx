@@ -30,6 +30,7 @@ const plans = [
     tag: 'Le plus choisi',
     features: [
       'Recherche de médicaments illimitée',
+      "Prix des médicaments et coût total de l'ordonnance",
       'Géolocalisation des pharmacies de garde',
       "Scans d'authentification illimités",
       'Carnet de traitement numérique pour 5 membres',
