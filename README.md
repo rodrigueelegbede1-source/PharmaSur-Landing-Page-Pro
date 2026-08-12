@@ -21,10 +21,15 @@ saisie manuelle réellement prévue.
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm run build    # typecheck (tsc -b) + build de production
+npm run build    # typecheck, build client, build SSR, puis pré-rendu
 npm run preview  # sert le build
 npm run lint     # oxlint
 ```
+
+`build` enchaîne quatre étapes : `tsc -b`, le build client, un build SSR de
+`src/entry-server.tsx`, puis `scripts/prerender.mjs` qui injecte le HTML rendu dans
+`dist/index.html` et supprime le dossier SSR intermédiaire. Le site reste **entièrement
+statique** : aucun serveur Node n'est nécessaire à l'exécution.
 
 ## Configuration
 
@@ -61,8 +66,11 @@ mentions-legales/index.html   page légale, sans React
 confidentialite/index.html    page légale, sans React
 design/officine.jpg           source de og.jpg, hors public/ : jamais déployée
 
+scripts/prerender.mjs         injecte le HTML rendu au build dans dist/index.html
+
 src/
   index.css              tokens verts, typographie, utilitaires (rail, eyebrow, grad), keyframes
+  entry-server.tsx       rendu du site en HTML au build, pour le pré-rendu
   legal.ts               entrée des pages légales : charge la feuille de style, rien d'autre
   lib/cx.ts              concaténation de classes
   components/
@@ -129,6 +137,13 @@ en noir des coins transparents.
 
 ## Conventions
 
+- **Entrée en CSS, interaction en JavaScript.** Les animations d'entrée du héros sont des
+  keyframes CSS (`ps-line`, `ps-rise`, `ps-fade`) : le HTML étant pré-rendu, le texte doit
+  pouvoir apparaître avant que `motion` ne soit chargé. Confiées à `motion`, elles
+  inscriraient un `opacity: 0` en style en ligne dans le HTML livré, et le visiteur
+  attendrait 115 ko de JavaScript devant un héros vide. `motion` reste pour ce qui dépend
+  réellement de l'exécution : parallaxe au scroll, frappe de la maquette, révélations en
+  descendant la page.
 - Un seul easing pour tout le site : `cubic-bezier(0.16, 1, 0.3, 1)` (`--ease-cine`).
 - Les révélations sont `once: true` : aucune animation ne rejoue au retour du scroll.
 - `prefers-reduced-motion` est respecté partout (`useReducedMotion`, `motion-safe:`/`motion-reduce:`).

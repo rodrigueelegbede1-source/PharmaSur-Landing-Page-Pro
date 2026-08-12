@@ -123,6 +123,34 @@
   color: transparent;
 }
 
+/*
+ * Animations d'entrée du héros. Elles sont en CSS et non en JavaScript pour une
+ * raison précise : le HTML étant pré-rendu, le texte doit pouvoir apparaître
+ * avant que le moteur d'animation ne soit chargé. Confiées à `motion`, elles
+ * inscriraient un `opacity: 0` en style en ligne dans le HTML livré, et le
+ * visiteur attendrait 115 ko de JavaScript devant un héros vide.
+ *
+ * Règle qui en découle : entrée en CSS, interaction et scroll en JavaScript.
+ */
+@keyframes ps-line {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes ps-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise, 14px));
+  }
+}
+
+@keyframes ps-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes float-soft {
   50% {
     transform: translateY(-12px);

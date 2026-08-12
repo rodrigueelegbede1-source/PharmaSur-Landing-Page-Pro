@@ -1,5 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
+import { cx } from '../lib/cx'
 import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Button, Counter } from './primitives'
@@ -29,43 +30,40 @@ export function Hero() {
       <motion.div style={reduced ? undefined : { y, opacity: fade }} className="rail">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           <div>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }}>
+            <div className="animate-[ps-fade_0.7s_var(--ease-cine)_both] motion-reduce:animate-none">
               <Badge>Disponible en Côte d'Ivoire</Badge>
-            </motion.div>
+            </div>
 
             <h1 className="mt-6 text-[2.35rem] sm:text-[3.2rem] lg:text-[3.6rem]">
               {['Trouvez vos médicaments.', 'Vérifiez leur authenticité', 'instantanément.'].map(
                 (line, i) => (
                   <span key={line} className="block overflow-hidden pb-[0.08em]">
-                    <motion.span
-                      className={i === 0 ? 'block' : 'grad block'}
-                      initial={reduced ? undefined : { y: '105%' }}
-                      animate={reduced ? undefined : { y: '0%' }}
-                      transition={{ duration: 1.05, delay: 0.08 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    <span
+                      className={cx(
+                        'block animate-[ps-line_1.05s_var(--ease-cine)_both] motion-reduce:animate-none',
+                        i > 0 && 'grad',
+                      )}
+                      style={{ animationDelay: `${0.08 + i * 0.1}s` }}
                     >
                       {line}
-                    </motion.span>
+                    </span>
                   </span>
                 ),
               )}
             </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.42, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-6 max-w-[34rem] text-[1.05rem] sm:text-[1.12rem]"
+            <p
+              className="mt-6 max-w-[34rem] animate-[ps-rise_0.9s_var(--ease-cine)_both] text-[1.05rem] motion-reduce:animate-none sm:text-[1.12rem]"
+              style={{ animationDelay: '0.42s' }}
             >
               Ajoutez les produits de votre ordonnance : vous en connaissez le coût avant même de
               sortir de chez vous, et PharmaSur classe les pharmacies proches selon le nombre de
               médicaments réellement disponibles. Chaque boîte s'authentifie ensuite en un scan.
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.54, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-8 flex flex-wrap gap-3"
+            <div
+              className="mt-8 flex flex-wrap gap-3 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none"
+              style={{ animationDelay: '0.54s' }}
             >
               <Button href="#pricing" size="lg">
                 Télécharger l'application
@@ -74,13 +72,11 @@ export function Hero() {
               <Button href="#how" variant="ghost" size="lg">
                 Voir comment ça marche
               </Button>
-            </motion.div>
+            </div>
 
-            <motion.ul
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.75 }}
-              className="mt-11 flex flex-wrap gap-x-10 gap-y-6"
+            <ul
+              className="mt-11 flex flex-wrap gap-x-10 gap-y-6 animate-[ps-fade_0.9s_linear_both] motion-reduce:animate-none"
+              style={{ animationDelay: '0.75s' }}
             >
               {stats.map((s) => (
                 <li key={s.label} className="relative pl-4">
@@ -91,16 +87,15 @@ export function Hero() {
                   <span className="mt-1 block text-[0.85rem]">{s.label}</span>
                 </li>
               ))}
-            </motion.ul>
+            </ul>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.15, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          <div
+            className="animate-[ps-rise_1.15s_var(--ease-cine)_both] [--rise:28px] motion-reduce:animate-none"
+            style={{ animationDelay: '0.3s' }}
           >
             <PhoneMock />
-          </motion.div>
+          </div>
         </div>
       </motion.div>
     </section>

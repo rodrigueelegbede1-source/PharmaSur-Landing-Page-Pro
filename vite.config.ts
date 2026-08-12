@@ -29,9 +29,9 @@ export default defineConfig(({ mode }) => {
       // indexable et partageable, comme l'exige un document opposable.
       rollupOptions: {
         input: {
-          index: resolve(__dirname, 'index.html'),
-          mentions: resolve(__dirname, 'mentions-legales/index.html'),
-          confidentialite: resolve(__dirname, 'confidentialite/index.html'),
+          index: resolve(import.meta.dirname,'index.html'),
+          mentions: resolve(import.meta.dirname,'mentions-legales/index.html'),
+          confidentialite: resolve(import.meta.dirname,'confidentialite/index.html'),
         },
       },
     },
