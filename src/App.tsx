@@ -5,6 +5,7 @@ import { Hero } from './components/Hero'
 import { HowItWorks } from './components/HowItWorks'
 import { Nav } from './components/Nav'
 import { Pricing } from './components/Pricing'
+import { Reliability } from './components/Reliability'
 import { Testimonials } from './components/Testimonials'
 
 function ScrollProgress() {
@@ -28,6 +29,7 @@ export default function App() {
       <main>
         <Hero />
         <HowItWorks />
+        <Reliability />
         <Pricing />
         <Testimonials />
         <CtaPhone />
