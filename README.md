@@ -3,9 +3,11 @@
 Version modernisée de la landing page PharmaSur : géolocalisation des médicaments disponibles dans
 les pharmacies de Côte d'Ivoire et authentification anti-contrefaçon par scan.
 
-Le contenu, la structure et l'identité verte reprennent la version statique
-(`../Pharmasur-landing-page`). Ce qui change : exécution en composants, animations pilotées par le
-scroll et un système de design centralisé.
+L'identité verte et la trame générale viennent de la version statique (`../Pharmasur-landing-page`),
+mais le produit décrit a depuis divergé : la recherche porte sur une **liste de produits** classée
+par complétude, affiche le **coût de l'ordonnance** et propose un **équivalent générique** en cas de
+rupture. La promesse de scan d'ordonnance, présente à l'origine, a été retirée au profit d'une
+saisie manuelle réellement prévue.
 
 ## Stack
 
@@ -54,20 +56,42 @@ serveur (anti-spam, limitation de débit).
 ## Structure
 
 ```
+index.html                    page principale
+mentions-legales/index.html   page légale, sans React
+confidentialite/index.html    page légale, sans React
+design/officine.jpg           source de og.jpg, hors public/ : jamais déployée
+
 src/
   index.css              tokens verts, typographie, utilitaires (rail, eyebrow, grad), keyframes
+  legal.ts               entrée des pages légales : charge la feuille de style, rien d'autre
   lib/cx.ts              concaténation de classes
   components/
     primitives.tsx       Reveal, Eyebrow, Badge, Button, Counter, SectionHead
     Nav.tsx              header fixe translucide, logo, menu mobile
     Hero.tsx             titre révélé ligne par ligne, parallaxe, compteurs
-    PhoneMock.tsx        maquette app : frappe de la recherche, résultats en cascade, scan
+    HeroBackdrop.tsx     fond dessiné en SVG : plan urbain, cercles de recherche, repères
+    PhoneMock.tsx        maquette : liste multi-produits, prix, équivalent générique, scan
     HowItWorks.tsx       3 étapes, fil conducteur tracé au scroll
+    Reliability.tsx      les trois voies qui tiennent le stock à jour
     Pricing.tsx          3 offres en FCFA, carte « Le plus choisi » surélevée
     Testimonials.tsx     3 témoignages
-    CtaPhone.tsx         capture de numéro + validation ivoirienne
+    CtaPhone.tsx         capture de numéro, envoi à l'endpoint, mention d'usage
     Footer.tsx
 ```
+
+## Pages légales
+
+`/mentions-legales/` et `/confidentialite/` sont de véritables entrées du build, déclarées dans
+`vite.config.ts` (`rollupOptions.input`) : une URL propre, indexable et citable, comme l'exige un
+document opposable. Une ancre sur la page d'accueil n'aurait pas suffi.
+
+Elles n'embarquent ni React ni moteur d'animation — `src/legal.ts` ne fait qu'importer la feuille
+de style, soit 0,02 ko de script. Une politique de confidentialité doit rester lisible même si le
+JavaScript échoue.
+
+Leur contenu est un **canevas** : bandeau rouge en tête, `noindex` dans l'en-tête, et seize mentions
+surlignées à compléter. Retirez le bandeau et le `noindex` une fois le texte complété et relu par
+un juriste.
 
 ## Ressources
 
@@ -110,4 +134,29 @@ en noir des coins transparents.
 - `prefers-reduced-motion` est respecté partout (`useReducedMotion`, `motion-safe:`/`motion-reduce:`).
 - Le formulaire du CTA poste vers `VITE_LEAD_ENDPOINT` (voir Configuration) ; sans variable
   définie, il reste local.
-- Les tarifs, chiffres et témoignages sont ceux de la version d'origine, à valider avant mise en ligne.
+- La charte est verte, sans exception près : `--color-alert` est la seule couleur étrangère,
+  réservée aux mentions que le patient ne doit pas survoler. L'étendre à d'autres usages lui
+  ferait perdre son pouvoir d'alerte.
+- L'écran du téléphone dans `PhoneMock.tsx` est **à saturation** : 8 px de marge. Tout ajout
+  suppose d'en retirer autre chose, faute de quoi le conteneur flex comprime silencieusement la
+  carte de scan sans provoquer de débordement visible.
+- PharmaSur localise et informe, mais n'interprète jamais : l'équivalence proposée porte sur le
+  principe actif seul, jamais sur une autre molécule, et reste soumise au pharmacien.
+
+## Avant la mise en ligne
+
+Le code porte des marqueurs là où une décision reste à prendre. Cette liste les récapitule.
+
+| À traiter | Où | Pourquoi c'est bloquant |
+| --- | --- | --- |
+| `VITE_LEAD_ENDPOINT` | `.env` | sans lui, le formulaire ne collecte rien |
+| `VITE_SITE_URL` | `.env` | sans lui, aucun aperçu au partage si le domaine diffère |
+| Statistiques 98 % et 45 s | `Hero.tsx` — `À ACTUALISER` | chiffres de maquette affichés comme des faits |
+| Prix des médicaments | `PhoneMock.tsx` — `À VALIDER` | un tarif faux coûte plus cher qu'un tarif absent |
+| Dispositif de fiabilité | `Reliability.tsx` — `À CONSTRUIRE` | la section décrit un existant qui n'existe pas |
+| 16 mentions légales | `mentions-legales/`, `confidentialite/` | raison sociale, RCCM, hébergeur, ARTCI |
+| Relecture juridique | les deux pages légales | conformité à la loi n°2013-450, à faire valider |
+
+Deux formulations restent également à trancher : le `+` de « 1 400+ », qui annonce davantage qu'un
+chiffre exact, et le libellé « Pharmacies partenaires », inexact si 1 400 désigne le total des
+officines du pays plutôt que vos signataires.
