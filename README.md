@@ -71,19 +71,19 @@ src/
 
 ## Ressources
 
-Photo d'officine fournie par le client, posée en fond du héros uniquement : elle se fond au blanc
-avant `#how` (utilitaires `hero-photo` / `hero-veil` dans `src/index.css`).
+Le fond du héros est **entièrement dessiné** : trame de plan urbain, artères, cercles de recherche
+et repères d'officine, en SVG dans `HeroBackdrop.tsx`. Aucune photographie n'est chargée par la
+page — le seul fichier image servi au visiteur est l'aperçu de partage.
 
-| Fichier | Définition | Poids | Usage |
-| --- | --- | --- | --- |
-| `public/officine.webp` | 2048 × 1358 | 186 ko | écrans > 1024 px |
-| `public/officine.jpg` | 2048 × 1358 | 362 ko | repli JPEG |
-| `public/officine-1200.webp` | 1200 × 796 | 119 ko | écrans ≤ 1024 px |
-| `public/officine-1200.jpg` | 1200 × 796 | 194 ko | repli JPEG |
+`design/officine.jpg` (2048 × 1358) est la photo d'officine fournie par le client. Elle est hors de
+`public/`, donc **jamais déployée** : elle n'est conservée que comme source pour régénérer
+`og.jpg`. La version d'origine (1024 × 679) a été remontée en 2048 px de large (Lanczos3 + masque
+de netteté léger) avant d'être réencodée.
 
-La source (1024 × 679) a été remontée en 2048 px de large (Lanczos3 + masque de netteté léger)
-puis réencodée. La sélection du format se fait en CSS via `image-set()`, et le WebP correspondant
-est préchargé dans `index.html` (`rel="preload"` avec `media`).
+> Cette photo a longtemps servi de fond au héros, préchargée dans `index.html`. Le fond SVG l'a
+> remplacée, mais le préchargement était resté : chaque visiteur téléchargeait 122 à 190 ko d'image
+> jamais affichée, en priorité haute. Si vous réintroduisez une image, vérifiez qu'elle est bien
+> rendue avant de la précharger.
 
 ## Partage et icônes
 
@@ -93,10 +93,15 @@ est préchargé dans `index.html` (`rel="preload"` avec `media`).
 | `public/apple-touch-icon.png` | 180 × 180 | 4 ko | écran d'accueil iOS, qui ne lit pas le SVG |
 | `public/favicon.svg` | vectoriel | 1 ko | onglet du navigateur |
 
-`og.jpg` superpose à la photo d'officine un voile vert, le logo et le titre du site,
-composés dans la police et les couleurs de la charte. Il reste sous les 300 ko au-delà
-desquels WhatsApp cesse d'afficher l'aperçu. À régénérer si le titre ou l'identité
-changent — sinon les liens partagés continueront d'annoncer l'ancienne version.
+`og.jpg` superpose à `design/officine.jpg` un voile vert, le logo et le titre du site, composés
+dans Plus Jakarta Sans et les couleurs de la charte. Il reste sous les 300 ko au-delà desquels
+WhatsApp cesse d'afficher l'aperçu. À régénérer si le titre ou l'identité changent — sinon les
+liens partagés continueront d'annoncer l'ancienne version.
+
+La composition a été rendue hors du projet (`sharp` + `@resvg/resvg-js`, la police chargée depuis
+son fichier variable), pour ne pas imposer ces dépendances au site. `apple-touch-icon.png` reprend
+`favicon.svg` en 180 px sur fond plein : iOS applique son propre masque arrondi et ferait ressortir
+en noir des coins transparents.
 
 ## Conventions
 
