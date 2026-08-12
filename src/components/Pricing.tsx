@@ -49,7 +49,7 @@ const plans = [
       'Badge « Officine Certifiée Anti-Contrefaçon »',
       'Mise en avant pendant les gardes',
       'Tableau de bord analytique de visibilité locale',
-      'Canal direct de contact pour ordonnances',
+      'Canal direct de contact avec les patients',
       'Synchronisation des stocks en temps réel',
       "Scans d'authentification illimités",
       'Tableau de bord des demandes locales',

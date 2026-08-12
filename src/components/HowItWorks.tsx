@@ -5,8 +5,8 @@ import { Reveal, SectionHead } from './primitives'
 const steps = [
   {
     num: '01',
-    title: 'Recherchez votre médicament',
-    body: "Tapez le nom du produit ou scannez l'ordonnance. PharmaSur interroge instantanément les stocks des pharmacies partenaires.",
+    title: 'Composez votre liste',
+    body: "Ajoutez les produits de votre ordonnance un à un. PharmaSur interroge les stocks des pharmacies partenaires pour la liste entière, pas seulement pour un médicament.",
     icon: (
       <>
         <circle cx="11" cy="11" r="7" />
@@ -16,8 +16,8 @@ const steps = [
   },
   {
     num: '02',
-    title: 'Géolocalisez la pharmacie',
-    body: 'Visualisez les pharmacies les plus proches qui l\u2019ont en stock, avec distance, horaires, gardes de nuit et itinéraire GPS.',
+    title: 'Repérez la plus complète',
+    body: 'Les officines sont classées par nombre de produits disponibles, et pas seulement par distance : celles qui couvrent toute votre liste apparaissent en premier, avec horaires, gardes de nuit et itinéraire GPS.',
     icon: (
       <>
         <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />

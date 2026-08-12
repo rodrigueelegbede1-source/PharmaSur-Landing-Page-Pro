@@ -2,12 +2,16 @@ import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { cx } from '../lib/cx'
 
-const QUERY = 'Paracétamol 500 mg'
+/* Deux lignes déjà saisies, la troisième se tape sous les yeux du visiteur. */
+const added = ['Paracétamol 500 mg', 'Vitamine C 500 mg']
+const QUERY = 'Amoxicilline 1 g'
+const TOTAL = added.length + 1
 
+/* Classées par complétude, pas par distance : c'est tout le propos. */
 const results = [
-  { name: 'Pharmacie de la Riviera', meta: '1,2 km • Ouvert 24h/24', stock: 'En stock', best: true },
-  { name: 'Pharmacie Saint-Jean', meta: '2,4 km • Ferme à 22h', stock: 'En stock' },
-  { name: 'Pharmacie du Plateau', meta: '4,8 km • Ouvert', stock: 'Rupture' },
+  { name: 'Pharmacie de la Riviera', meta: '1,2 km • Ouvert 24h/24', have: 3, best: true },
+  { name: 'Pharmacie Saint-Jean', meta: '2,4 km • Ferme à 22h', have: 2 },
+  { name: 'Pharmacie du Plateau', meta: '4,8 km • Ouvert', have: 1 },
 ]
 
 /** Frappe du nom du médicament, jouée une fois à l'entrée dans le viewport. */
@@ -57,7 +61,7 @@ export function PhoneMock() {
         <div className="flex aspect-[320/640] flex-col gap-2.5 overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,var(--color-green-50),#fff_40%)] px-3.5 pt-9 pb-3.5">
           {/* Barre d'app */}
           <div className="flex items-baseline justify-between px-0.5">
-            <span className="font-extrabold text-ink">Rechercher</span>
+            <span className="font-extrabold text-ink">Ma liste</span>
             <span className="inline-flex items-center gap-1 text-[0.68rem] font-semibold text-green-700">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="size-3" aria-hidden>
                 <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />
@@ -66,7 +70,35 @@ export function PhoneMock() {
             </span>
           </div>
 
-          {/* Champ de recherche : frappe en direct */}
+          {/* Produits déjà ajoutés, puis celui en cours de frappe */}
+          <div className="flex flex-wrap gap-1.5">
+            {added.map((item) => (
+              <span
+                key={item}
+                className="inline-flex items-center gap-1 rounded-lg border border-green-200 bg-green-50 px-1.5 py-1 text-[0.63rem] font-bold text-green-700"
+              >
+                <svg viewBox="0 0 12 12" fill="none" className="size-2" aria-hidden>
+                  <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {item}
+              </span>
+            ))}
+            {done && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="inline-flex items-center gap-1 rounded-lg border border-green-400 bg-green-100 px-1.5 py-1 text-[0.63rem] font-bold text-green-700"
+              >
+                <svg viewBox="0 0 12 12" fill="none" className="size-2" aria-hidden>
+                  <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {QUERY}
+              </motion.span>
+            )}
+          </div>
+
+          {/* Champ d'ajout : frappe en direct */}
           <div className="flex items-center gap-2 rounded-xl border border-line bg-white px-2.5 py-2 shadow-sm">
             <svg
               viewBox="0 0 24 24"
@@ -77,16 +109,21 @@ export function PhoneMock() {
               className="size-4 shrink-0 text-green-600"
               aria-hidden
             >
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-3.2-3.2" />
+              <path d="M12 5v14M5 12h14" />
             </svg>
             <span className="text-[0.8rem] font-medium text-ink">
-              {typed || <span className="text-body-soft">Nom du médicament…</span>}
-              {!done && <span className="ml-px inline-block h-3.5 w-px bg-green-600 align-middle" />}
+              {done ? (
+                <span className="text-body-soft">Ajouter un produit…</span>
+              ) : (
+                <>
+                  {typed || <span className="text-body-soft">Ajouter un produit…</span>}
+                  <span className="ml-px inline-block h-3.5 w-px bg-green-600 align-middle" />
+                </>
+              )}
             </span>
           </div>
 
-          {/* Résultats */}
+          {/* Officines classées par nombre de produits trouvés */}
           <div className="flex flex-col gap-2">
             {results.map((r, i) => (
               <motion.div
@@ -106,12 +143,12 @@ export function PhoneMock() {
                 <span
                   className={cx(
                     'rounded-full px-2 py-0.5 text-[0.62rem] font-bold whitespace-nowrap',
-                    r.stock === 'En stock'
+                    r.have === TOTAL
                       ? 'bg-green-100 text-green-700'
                       : 'bg-[#eef1f0] text-body-soft',
                   )}
                 >
-                  {r.stock}
+                  {r.have}/{TOTAL}
                 </span>
               </motion.div>
             ))}
