@@ -1,5 +1,23 @@
 @import 'tailwindcss';
 
+/*
+ * Police auto-hébergée : un seul fichier variable couvre les cinq graisses
+ * utilisées. Évite deux connexions externes (fonts.googleapis.com,
+ * fonts.gstatic.com) et une feuille de style bloquant l'affichage — coût
+ * invisible en fibre, sensible sur une connexion mobile ivoirienne.
+ *
+ * `swap` : le texte s'affiche immédiatement dans la police de repli, puis
+ * bascule. Mieux vaut un texte lisible tout de suite qu'un texte parfait plus
+ * tard. Licence OFL dans public/fonts/OFL.txt.
+ */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/plus-jakarta-sans.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
