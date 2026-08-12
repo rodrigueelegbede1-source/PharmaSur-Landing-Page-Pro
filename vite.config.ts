@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -23,5 +24,16 @@ export default defineConfig(({ mode }) => {
         transformIndexHtml: (html) => html.replaceAll('%SITE_URL%', siteUrl),
       },
     ],
+    build: {
+      // Les pages légales sont des entrées à part entière : une URL propre,
+      // indexable et partageable, comme l'exige un document opposable.
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, 'index.html'),
+          mentions: resolve(__dirname, 'mentions-legales/index.html'),
+          confidentialite: resolve(__dirname, 'confidentialite/index.html'),
+        },
+      },
+    },
   }
 })

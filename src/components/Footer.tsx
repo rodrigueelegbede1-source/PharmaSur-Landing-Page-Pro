@@ -15,8 +15,8 @@ const columns = [
     links: [
       { label: 'Espace pharmaciens', href: '#pricing' },
       { label: "Centre d'aide", href: '#contact' },
-      { label: 'Mentions légales', href: '#contact' },
-      { label: 'Confidentialité', href: '#contact' },
+      { label: 'Mentions légales', href: '/mentions-legales/' },
+      { label: 'Confidentialité', href: '/confidentialite/' },
     ],
   },
 ]

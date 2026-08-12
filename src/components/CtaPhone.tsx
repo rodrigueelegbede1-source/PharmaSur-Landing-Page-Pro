@@ -107,7 +107,22 @@ export function CtaPhone() {
                   </button>
                 </div>
 
-                <div className="mt-3 min-h-6" aria-live="polite" role="status">
+                {/*
+                  Mention d'usage au point de collecte : le visiteur doit savoir
+                  à quoi sert son numéro avant de le donner, pas après.
+                */}
+                <p className="mt-3 text-[0.78rem] leading-snug text-green-100/70">
+                  Votre numéro sert uniquement à vous prévenir de l'ouverture du service. Il n'est
+                  ni revendu, ni cédé.{' '}
+                  <a
+                    href="/confidentialite/"
+                    className="font-semibold text-green-200 underline underline-offset-2 hover:text-white"
+                  >
+                    Politique de confidentialité
+                  </a>
+                </p>
+
+                <div className="mt-2 min-h-6" aria-live="polite" role="status">
                   <AnimatePresence mode="wait">
                     {status && (
                       <motion.p
