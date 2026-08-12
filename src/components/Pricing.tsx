@@ -15,6 +15,7 @@ const plans = [
       'Carte interactive des pharmacies de garde',
       "Itinéraire GPS et horaires d'ouverture",
       'Recherche de médicaments illimitée',
+      "Prix des médicaments et coût total de l'ordonnance",
       'Alertes de retour en stock',
     ],
   },
