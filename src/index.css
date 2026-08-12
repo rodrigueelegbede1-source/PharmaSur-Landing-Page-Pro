@@ -24,6 +24,9 @@
   --color-line-soft: #eef5f1;
   --color-paper: #ffffff;
 
+  /* Seule couleur hors charte : réservée aux mentions que le patient ne doit pas survoler. */
+  --color-alert: #c1121f;
+
   --shadow-sm: 0 4px 16px rgb(11 61 44 / 0.06);
   --shadow-md: 0 18px 40px rgb(11 61 44 / 0.1);
   --shadow-lg: 0 30px 70px rgb(11 61 44 / 0.16);

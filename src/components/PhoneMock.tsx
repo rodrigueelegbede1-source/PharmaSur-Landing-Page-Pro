@@ -173,7 +173,7 @@ export function PhoneMock() {
                     {fcfa(equivalent.price)} F
                   </span>
                 </div>
-                <p className="ml-2.5 text-[0.58rem] leading-tight text-body-soft">
+                <p className="ml-2.5 text-[0.58rem] leading-tight font-semibold text-alert">
                   Même principe actif · à valider par votre pharmacien
                 </p>
               </motion.div>
