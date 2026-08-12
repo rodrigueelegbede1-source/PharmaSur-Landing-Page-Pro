@@ -27,11 +27,34 @@ const partial = added.reduce((t, i) => t + i.price, 0)
 const full = partial + equivalent.price
 const fcfa = (n: number) => n.toLocaleString('fr-FR')
 
-/* Classées par complétude, pas par distance : c'est tout le propos. */
-const results = [
-  { name: 'Pharmacie de la Riviera', meta: '1,2 km • Ouvert 24h/24', have: 3, best: true },
+/*
+ * Classées par complétude, pas par distance : c'est tout le propos. La troisième
+ * officine a été retirée pour loger les bons d'assurance — l'écran est plein, et
+ * l'écart entre « complète » et « incomplète » se lit déjà sur deux lignes.
+ *
+ * À CONSTRUIRE : les bons acceptés sont déclarés par chaque officine à son
+ * inscription, et ne s'affichent que sur celle que l'utilisateur retient.
+ * Catégories volontairement génériques : nommer un assureur réel dans une
+ * maquette laisserait entendre un partenariat qui n'existe pas encore.
+ */
+type Officine = {
+  name: string
+  meta: string
+  have: number
+  /** L'officine retenue par l'utilisateur : seule à détailler ses bons. */
+  best?: boolean
+  bons?: string[]
+}
+
+const results: Officine[] = [
+  {
+    name: 'Pharmacie de la Riviera',
+    meta: '1,2 km • Ouvert 24h/24',
+    have: 3,
+    best: true,
+    bons: ['CMU', 'Mutuelles', 'Assurances'],
+  },
   { name: 'Pharmacie Saint-Jean', meta: '2,4 km • Ferme à 22h', have: 2 },
-  { name: 'Pharmacie du Plateau', meta: '4,8 km • Ouvert', have: 1 },
 ]
 
 /** Frappe du nom du médicament, jouée une fois à l'entrée dans le viewport. */
@@ -228,24 +251,43 @@ export function PhoneMock() {
                 animate={done ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.55, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 className={cx(
-                  'flex items-center justify-between gap-2 rounded-xl border bg-white px-2.5 py-1.5',
+                  'flex flex-col rounded-xl border bg-white px-2.5 py-1.5',
                   r.best ? 'border-green-400 shadow-[0_8px_20px_rgb(18_133_93/0.14)]' : 'border-line',
                 )}
               >
-                <div>
-                  <p className="text-[0.78rem] font-bold text-ink">{r.name}</p>
-                  <p className="text-[0.68rem] text-body">{r.meta}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-[0.78rem] font-bold text-ink">{r.name}</p>
+                    <p className="text-[0.68rem] text-body">{r.meta}</p>
+                  </div>
+                  <span
+                    className={cx(
+                      'rounded-full px-2 py-0.5 text-[0.62rem] font-bold whitespace-nowrap',
+                      r.have === TOTAL
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-[#eef1f0] text-body-soft',
+                    )}
+                  >
+                    {r.have}/{TOTAL}
+                  </span>
                 </div>
-                <span
-                  className={cx(
-                    'rounded-full px-2 py-0.5 text-[0.62rem] font-bold whitespace-nowrap',
-                    r.have === TOTAL
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-[#eef1f0] text-body-soft',
-                  )}
-                >
-                  {r.have}/{TOTAL}
-                </span>
+
+                {/* Déclarés par l'officine à son inscription, affichés à la sélection. */}
+                {r.bons && (
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1 border-t border-line-soft pt-1.5">
+                    <span className="mr-0.5 text-[0.56rem] font-bold tracking-wide text-body-soft uppercase">
+                      Bons acceptés
+                    </span>
+                    {r.bons.map((b) => (
+                      <span
+                        key={b}
+                        className="rounded bg-green-50 px-1.5 py-px text-[0.58rem] font-bold text-green-700"
+                      >
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>

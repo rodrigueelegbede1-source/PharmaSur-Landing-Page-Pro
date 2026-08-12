@@ -17,6 +17,7 @@ const plans = [
       'Recherche de médicaments illimitée',
       "Prix des médicaments et coût total de l'ordonnance",
       'Équivalent générique signalé en cas de rupture',
+      "Bons d'assurance acceptés, affichés par officine",
       'Alertes de retour en stock',
     ],
   },
@@ -33,6 +34,7 @@ const plans = [
       'Recherche de médicaments illimitée',
       "Prix des médicaments et coût total de l'ordonnance",
       'Équivalent générique signalé en cas de rupture',
+      "Bons d'assurance acceptés, affichés par officine",
       'Géolocalisation des pharmacies de garde',
       "Scans d'authentification illimités",
       'Carnet de traitement numérique pour 5 membres',
@@ -51,6 +53,7 @@ const plans = [
     features: [
       "Géolocalisation de l'officine",
       'Badge « Officine Certifiée Anti-Contrefaçon »',
+      "Déclaration des bons d'assurance acceptés en caisse",
       'Mise en avant pendant les gardes',
       'Tableau de bord analytique de visibilité locale',
       'Canal direct de contact avec les patients',
