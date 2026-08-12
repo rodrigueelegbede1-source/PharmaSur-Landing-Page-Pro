@@ -17,7 +17,7 @@ const steps = [
   {
     num: '02',
     title: 'Repérez la plus complète',
-    body: 'Les officines sont classées par nombre de produits disponibles, et pas seulement par distance : celles qui couvrent toute votre liste apparaissent en premier, avec horaires, gardes de nuit et itinéraire GPS.',
+    body: "Les officines sont classées par nombre de produits disponibles, et pas seulement par distance : horaires, gardes de nuit et itinéraire GPS compris. Si un médicament manque partout, son équivalent générique est signalé, à confirmer avec votre pharmacien.",
     icon: (
       <>
         <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />

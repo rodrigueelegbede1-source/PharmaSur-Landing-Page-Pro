@@ -16,6 +16,7 @@ const plans = [
       "Itinéraire GPS et horaires d'ouverture",
       'Recherche de médicaments illimitée',
       "Prix des médicaments et coût total de l'ordonnance",
+      'Équivalent générique signalé en cas de rupture',
       'Alertes de retour en stock',
     ],
   },
@@ -31,6 +32,7 @@ const plans = [
     features: [
       'Recherche de médicaments illimitée',
       "Prix des médicaments et coût total de l'ordonnance",
+      'Équivalent générique signalé en cas de rupture',
       'Géolocalisation des pharmacies de garde',
       "Scans d'authentification illimités",
       'Carnet de traitement numérique pour 5 membres',

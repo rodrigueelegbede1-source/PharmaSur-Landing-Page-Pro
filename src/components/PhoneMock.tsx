@@ -14,8 +14,17 @@ const added = [
 const typing = { name: 'Amoxicilline 1 g', price: 2750 }
 const TOTAL = added.length + 1
 
+/*
+ * Équivalence par principe actif uniquement : même molécule, même dosage, même
+ * forme, sous un autre nom. Jamais une autre substance — proposer un produit
+ * différent de celui prescrit est un acte médical, réservé au pharmacien, qui
+ * seul connaît les allergies et les interactions. D'où la mention de validation
+ * affichée sous la proposition : elle n'est pas décorative.
+ */
+const equivalent = { name: 'Amoxicilline Denk 1 g', price: 2400 }
+
 const partial = added.reduce((t, i) => t + i.price, 0)
-const full = partial + typing.price
+const full = partial + equivalent.price
 const fcfa = (n: number) => n.toLocaleString('fr-FR')
 
 /* Classées par complétude, pas par distance : c'est tout le propos. */
@@ -49,21 +58,51 @@ function useTypewriter(active: boolean, text: string, speed = 55) {
 }
 
 /** Ligne de la liste : produit à gauche, prix homologué à droite. */
-function Line({ name, price, fresh }: { name: string; price: number; fresh?: boolean }) {
+function Line({
+  name,
+  price,
+  fresh,
+  rupture,
+}: {
+  name: string
+  price: number
+  fresh?: boolean
+  rupture?: boolean
+}) {
   return (
     <div
       className={cx(
         'flex items-center justify-between gap-2 rounded-lg border px-2 py-1.5',
-        fresh ? 'border-green-400 bg-green-100' : 'border-green-200 bg-green-50',
+        rupture
+          ? 'border-line bg-[#f6f8f7]'
+          : fresh
+            ? 'border-green-400 bg-green-100'
+            : 'border-green-200 bg-green-50',
       )}
     >
-      <span className="flex items-center gap-1.5 text-[0.68rem] font-bold text-green-700">
+      <span
+        className={cx(
+          'flex items-center gap-1.5 text-[0.68rem] font-bold',
+          rupture ? 'text-body-soft' : 'text-green-700',
+        )}
+      >
         <svg viewBox="0 0 12 12" fill="none" className="size-2 shrink-0" aria-hidden>
-          <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          {rupture ? (
+            <path d="M3 3 9 9M9 3 3 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          ) : (
+            <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          )}
         </svg>
         {name}
       </span>
-      <span className="text-[0.68rem] font-bold tabular-nums text-green-800">{fcfa(price)} F</span>
+      <span
+        className={cx(
+          'text-[0.68rem] font-bold tabular-nums',
+          rupture ? 'text-body-soft line-through' : 'text-green-800',
+        )}
+      >
+        {fcfa(price)} F
+      </span>
     </div>
   )
 }
@@ -90,7 +129,7 @@ export function PhoneMock() {
       <div className="relative z-10 w-[min(320px,82vw)] rounded-[2.6rem] bg-ink p-3 shadow-lg motion-safe:animate-[float-soft_7s_ease-in-out_infinite]">
         <div className="absolute top-3 left-1/2 h-5 w-28 -translate-x-1/2 rounded-b-2xl bg-ink" />
 
-        <div className="flex aspect-[320/640] flex-col gap-2.5 overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,var(--color-green-50),#fff_40%)] px-3.5 pt-9 pb-3.5">
+        <div className="flex aspect-[320/640] flex-col gap-2 overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,var(--color-green-50),#fff_40%)] px-3.5 pt-9 pb-3.5">
           {/* Barre d'app */}
           <div className="flex items-baseline justify-between px-0.5">
             <span className="font-extrabold text-ink">Ma liste</span>
@@ -112,14 +151,37 @@ export function PhoneMock() {
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col gap-1"
               >
-                <Line name={typing.name} price={typing.price} fresh />
+                <Line name={typing.name} price={typing.price} rupture />
+
+                {/* L'équivalence est proposée, jamais imposée : le pharmacien tranche. */}
+                <div className="ml-2.5 flex items-center justify-between gap-2 rounded-lg border border-green-400 bg-green-100 px-2 py-1.5">
+                  <span className="flex items-center gap-1.5 text-[0.68rem] font-bold text-green-700">
+                    <svg viewBox="0 0 12 12" fill="none" className="size-2.5 shrink-0" aria-hidden>
+                      <path
+                        d="M3 2v3.5A1.5 1.5 0 0 0 4.5 7H9m-2-2 2 2-2 2"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    {equivalent.name}
+                  </span>
+                  <span className="text-[0.68rem] font-bold tabular-nums text-green-800">
+                    {fcfa(equivalent.price)} F
+                  </span>
+                </div>
+                <p className="ml-2.5 text-[0.58rem] leading-tight text-body-soft">
+                  Même principe actif · à valider par votre pharmacien
+                </p>
               </motion.div>
             )}
           </div>
 
           {/* Coût de l'ordonnance : il grimpe à mesure que la liste se remplit */}
-          <div className="flex items-baseline justify-between border-t border-line px-0.5 pt-2">
+          <div className="flex items-baseline justify-between border-t border-line px-0.5 pt-1.5">
             <span className="text-[0.7rem] font-bold text-ink">Total ordonnance</span>
             <motion.span
               key={total}
@@ -133,7 +195,7 @@ export function PhoneMock() {
           </div>
 
           {/* Champ d'ajout : frappe en direct */}
-          <div className="flex items-center gap-2 rounded-xl border border-line bg-white px-2.5 py-2 shadow-sm">
+          <div className="flex items-center gap-2 rounded-xl border border-line bg-white px-2.5 py-1.5 shadow-sm">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -158,7 +220,7 @@ export function PhoneMock() {
           </div>
 
           {/* Officines classées par nombre de produits trouvés */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             {results.map((r, i) => (
               <motion.div
                 key={r.name}
@@ -166,7 +228,7 @@ export function PhoneMock() {
                 animate={done ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.55, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 className={cx(
-                  'flex items-center justify-between gap-2 rounded-xl border bg-white px-2.5 py-2',
+                  'flex items-center justify-between gap-2 rounded-xl border bg-white px-2.5 py-1.5',
                   r.best ? 'border-green-400 shadow-[0_8px_20px_rgb(18_133_93/0.14)]' : 'border-line',
                 )}
               >
@@ -193,7 +255,7 @@ export function PhoneMock() {
             initial={{ opacity: 0, y: 14 }}
             animate={done ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="relative mt-auto flex items-center gap-2.5 overflow-hidden rounded-2xl bg-green-900 px-3 py-2.5 text-white"
+            className="relative mt-auto flex shrink-0 items-center gap-2.5 overflow-hidden rounded-2xl bg-green-900 px-3 py-2.5 text-white"
           >
             <span
               aria-hidden
