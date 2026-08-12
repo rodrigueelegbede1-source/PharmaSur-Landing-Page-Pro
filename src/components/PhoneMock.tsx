@@ -32,8 +32,15 @@ const fcfa = (n: number) => n.toLocaleString('fr-FR')
  * officine a été retirée pour loger les bons d'assurance — l'écran est plein, et
  * l'écart entre « complète » et « incomplète » se lit déjà sur deux lignes.
  *
- * À CONSTRUIRE : les bons acceptés sont déclarés par chaque officine à son
- * inscription, et ne s'affichent que sur celle que l'utilisateur retient.
+ * À CONSTRUIRE — règle de gestion des bons :
+ *   1. Chaque officine déclare à son inscription les bons qu'elle accepte en
+ *      caisse. L'ajout d'une maison d'assurance partenaire est manuel.
+ *   2. Elle doit pouvoir en retirer un à tout moment, dès qu'elle cesse de
+ *      l'accepter. Sans ce retrait, une liste périmée renvoie le patient au
+ *      problème même que le service résout : arriver et ne pas être couvert.
+ *   3. Ils ne s'affichent que sur l'officine que l'utilisateur retient, jamais
+ *      sur toute la liste : c'est un critère de décision, pas de tri.
+ *
  * Catégories volontairement génériques : nommer un assureur réel dans une
  * maquette laisserait entendre un partenariat qui n'existe pas encore.
  */

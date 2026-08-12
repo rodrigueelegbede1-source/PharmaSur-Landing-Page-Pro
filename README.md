@@ -154,6 +154,7 @@ Le code porte des marqueurs là où une décision reste à prendre. Cette liste 
 | Statistiques 98 % et 45 s | `Hero.tsx` — `À ACTUALISER` | chiffres de maquette affichés comme des faits |
 | Prix des médicaments | `PhoneMock.tsx` — `À VALIDER` | un tarif faux coûte plus cher qu'un tarif absent |
 | Dispositif de fiabilité | `Reliability.tsx` — `À CONSTRUIRE` | la section décrit un existant qui n'existe pas |
+| Gestion des bons d'assurance | `PhoneMock.tsx` — `À CONSTRUIRE` | ajout manuel à l'inscription, retrait possible à tout moment |
 | 16 mentions légales | `mentions-legales/`, `confidentialite/` | raison sociale, RCCM, hébergeur, ARTCI |
 | Relecture juridique | les deux pages légales | conformité à la loi n°2013-450, à faire valider |
 

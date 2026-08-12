@@ -53,7 +53,7 @@ const plans = [
     features: [
       "Géolocalisation de l'officine",
       'Badge « Officine Certifiée Anti-Contrefaçon »',
-      "Déclaration des bons d'assurance acceptés en caisse",
+      "Bons d'assurance acceptés : ajout et retrait à tout moment",
       'Mise en avant pendant les gardes',
       'Tableau de bord analytique de visibilité locale',
       'Canal direct de contact avec les patients',
