@@ -6,7 +6,7 @@ const steps = [
   {
     num: '01',
     title: 'Composez votre liste',
-    body: "Ajoutez les produits de votre ordonnance un à un. PharmaSur interroge les stocks des pharmacies partenaires pour la liste entière, pas seulement pour un médicament.",
+    body: "Ajoutez les produits de votre ordonnance un à un : le coût total se calcule au fur et à mesure. PharmaSur interroge ensuite les stocks pour la liste entière, pas seulement pour un médicament.",
     icon: (
       <>
         <circle cx="11" cy="11" r="7" />

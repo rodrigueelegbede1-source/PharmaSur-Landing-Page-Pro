@@ -56,9 +56,9 @@ export function Hero() {
               transition={{ duration: 0.9, delay: 0.42, ease: [0.16, 1, 0.3, 1] }}
               className="mt-6 max-w-[34rem] text-[1.05rem] sm:text-[1.12rem]"
             >
-              Ajoutez les produits de votre ordonnance : PharmaSur classe les pharmacies proches
-              selon le nombre de médicaments réellement disponibles, et authentifie chaque boîte en
-              un scan pour vous protéger de la contrefaçon.
+              Ajoutez les produits de votre ordonnance : vous en connaissez le coût avant même de
+              sortir de chez vous, et PharmaSur classe les pharmacies proches selon le nombre de
+              médicaments réellement disponibles. Chaque boîte s'authentifie ensuite en un scan.
             </motion.p>
 
             <motion.div
