@@ -4,9 +4,9 @@ import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Button, Counter } from './primitives'
 
-/* À ACTUALISER avant mise en ligne : chiffres provisoires repris de la maquette. */
 const stats = [
-  { to: 1250, suffix: '+', label: 'Pharmacies partenaires' },
+  { to: 1400, suffix: '+', label: 'Pharmacies partenaires' },
+  /* À ACTUALISER avant mise en ligne : chiffres encore provisoires, repris de la maquette. */
   { to: 98, suffix: '%', label: 'Scans authentifiés' },
   { to: 45, suffix: 's', label: 'Recherche moyenne' },
 ]
