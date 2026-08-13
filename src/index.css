@@ -117,6 +117,67 @@
 }
 
 /* Dégradé de titre, hérité de la version d'origine mais adouci */
+/*
+ * Photo d'officine en fond du héros. `image-set` laisse le navigateur choisir
+ * le format, la requête média la définition : 51 ko sur mobile, 90 ko au-delà.
+ */
+@utility hero-photo {
+  background-image: image-set(
+    url('/hero-officine-900.webp') type('image/webp'),
+    url('/hero-officine-900.jpg') type('image/jpeg')
+  );
+  background-size: cover;
+  background-position: 62% 42%;
+
+  @media (min-width: 1025px) {
+    background-image: image-set(
+      url('/hero-officine.webp') type('image/webp'),
+      url('/hero-officine.jpg') type('image/jpeg')
+    );
+  }
+}
+
+/*
+ * Voile qui ramène la photo dans la charte : dense à gauche pour que le titre
+ * en encre foncée reste lisible, transparent à droite où la scène doit rester
+ * visible derrière la maquette, et fondu au blanc en bas pour que le héros
+ * meure avant « Comment ça marche » plutôt que de se couper net.
+ */
+@utility hero-veil {
+  /*
+   * Deux couches translucides, la première peinte au-dessus : le fondu vertical
+   * au blanc, puis le voile latéral. Les valeurs sont des alphas, non des
+   * mélanges de couleurs — mêler du blanc à du vert donnerait un vert plein qui
+   * masquerait la photo au lieu de l'adoucir.
+   */
+  /*
+   * Sous 1025 px le texte occupe toute la largeur : le dégradé latéral, pensé
+   * pour la mise en page à deux colonnes, laisserait le chapô sur la partie
+   * claire de la photo (contraste mesuré à 2,2:1). Le voile y devient donc
+   * presque uniforme — sur petit écran, la lisibilité prime sur l'image.
+   */
+  background-image:
+    linear-gradient(to bottom, transparent 34%, rgb(255 255 255 / 0.78) 78%, #fff 100%),
+    linear-gradient(
+      165deg,
+      rgb(241 251 246 / 0.95) 0%,
+      rgb(241 251 246 / 0.93) 55%,
+      rgb(217 242 231 / 0.88) 100%
+    );
+
+  @media (min-width: 1025px) {
+    background-image:
+      linear-gradient(to bottom, transparent 52%, rgb(255 255 255 / 0.72) 86%, #fff 100%),
+      linear-gradient(
+        100deg,
+        rgb(241 251 246 / 0.95) 0%,
+        rgb(241 251 246 / 0.88) 30%,
+        rgb(241 251 246 / 0.58) 56%,
+        rgb(217 242 231 / 0.32) 100%
+      );
+  }
+}
+
 @utility grad {
   background-image: linear-gradient(100deg, var(--color-green-600), var(--color-green-400));
   background-clip: text;

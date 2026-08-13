@@ -103,19 +103,32 @@ un juriste.
 
 ## Ressources
 
-Le fond du héros est **entièrement dessiné** : trame de plan urbain, artères, cercles de recherche
-et repères d'officine, en SVG dans `HeroBackdrop.tsx`. Aucune photographie n'est chargée par la
-page — le seul fichier image servi au visiteur est l'aperçu de partage.
+Le fond du héros est la photo d'officine fournie par le client, ramenée dans la charte par un
+voile vert. `HeroBackdrop.tsx` assemble les deux et n'y laisse, du plan urbain qui occupait
+cette place, que les cercles de recherche : superposé à une photographie déjà dense, le dessin
+faisait du bruit.
 
-`design/officine.jpg` (2048 × 1358) est la photo d'officine fournie par le client. Elle est hors de
-`public/`, donc **jamais déployée** : elle n'est conservée que comme source pour régénérer
-`og.jpg`. La version d'origine (1024 × 679) a été remontée en 2048 px de large (Lanczos3 + masque
-de netteté léger) avant d'être réencodée.
+| Fichier | Définition | Poids | Usage |
+| --- | --- | --- | --- |
+| `public/hero-officine.webp` | 1500 × 995 | 90 ko | écrans > 1024 px |
+| `public/hero-officine.jpg` | 1500 × 995 | 128 ko | repli JPEG |
+| `public/hero-officine-900.webp` | 900 × 597 | 51 ko | écrans ≤ 1024 px |
+| `public/hero-officine-900.jpg` | 900 × 597 | 63 ko | repli JPEG |
+| `design/officine.jpg` | 2048 × 1358 | 362 ko | **source, hors `public/`, jamais déployée** |
 
-> Cette photo a longtemps servi de fond au héros, préchargée dans `index.html`. Le fond SVG l'a
-> remplacée, mais le préchargement était resté : chaque visiteur téléchargeait 122 à 190 ko d'image
-> jamais affichée, en priorité haute. Si vous réintroduisez une image, vérifiez qu'elle est bien
-> rendue avant de la précharger.
+La sélection du format et de la définition se fait en CSS via `image-set()` et une requête média
+(utilitaire `hero-photo`), et le WebP correspondant est préchargé dans `index.html`. Les dérivées
+sont légèrement désaturées : la photo est très colorée et jurerait sous un voile vert.
+
+**Le voile (`hero-veil`) diffère selon la largeur, et ce n'est pas cosmétique.** En deux colonnes
+il est dégradé, dense à gauche sous le titre et transparent à droite où la scène doit rester
+visible. Sous 1025 px, le texte occupant toute la largeur, ce même dégradé le laissait sur la
+partie claire de la photo — contraste mesuré à 2,2:1. Le voile y est donc presque uniforme :
+sur petit écran, la lisibilité prime sur l'image.
+
+> Cette photo avait déjà servi de fond au héros, puis avait été remplacée par un dessin SVG sans
+> que le préchargement ne soit retiré : chaque visiteur téléchargeait 122 à 190 ko d'image jamais
+> affichée. Si le fond change à nouveau, vérifiez que le préchargement suit.
 
 ## Partage et icônes
 

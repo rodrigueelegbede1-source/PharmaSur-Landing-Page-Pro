@@ -46,6 +46,23 @@
       href="/fonts/plus-jakarta-sans.woff2"
       crossorigin
     />
+    <!-- Fond du héros : visible d'emblée, donc préchargé selon la largeur d'écran. -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/hero-officine.webp"
+      media="(min-width: 1025px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/hero-officine-900.webp"
+      media="(max-width: 1024px)"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root"></div>
