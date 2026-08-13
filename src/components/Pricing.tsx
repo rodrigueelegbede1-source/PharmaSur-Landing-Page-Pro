@@ -55,7 +55,7 @@ const plans = [
       'Mise en avant pendant les gardes',
       'Tableau de bord analytique de visibilité locale',
       'Canal direct de contact avec les patients',
-      'Synchronisation des stocks en temps réel pour les pharmacies qui le souhaitent',
+      'Synchronisation des stocks en temps réel, facultative',
       "Scans d'authentification illimités",
       'Tableau de bord des demandes locales',
       'Support prioritaire 7j/7',
