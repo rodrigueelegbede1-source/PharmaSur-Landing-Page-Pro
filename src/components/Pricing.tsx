@@ -48,7 +48,6 @@ const plans = [
     price: '10 000',
     unit: 'FCFA / mois',
     cta: 'Inscrire mon officine',
-    href: '#officine',
     variant: 'primary' as const,
     features: [
       "Géolocalisation de l'officine",
@@ -149,14 +148,14 @@ export function Pricing() {
                 <div className="mt-8">
                   {p.featured ? (
                     <a
-                      href={p.href ?? '#contact'}
+                      href="#contact"
                       className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-400 px-6 py-3.5 font-bold text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
                     >
                       {p.cta}
                       <ArrowRight />
                     </a>
                   ) : (
-                    <Button href={p.href ?? '#contact'} variant={p.variant} size="lg" block>
+                    <Button href="#contact" variant={p.variant} size="lg" block>
                       {p.cta}
                       <ArrowRight />
                     </Button>

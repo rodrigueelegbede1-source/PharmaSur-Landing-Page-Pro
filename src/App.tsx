@@ -4,7 +4,6 @@ import { Footer } from './components/Footer'
 import { Hero } from './components/Hero'
 import { HowItWorks } from './components/HowItWorks'
 import { Nav } from './components/Nav'
-import { OfficineSignup } from './components/OfficineSignup'
 import { Pricing } from './components/Pricing'
 import { Reliability } from './components/Reliability'
 import { Testimonials } from './components/Testimonials'
@@ -32,7 +31,6 @@ export default function App() {
         <HowItWorks />
         <Reliability />
         <Pricing />
-        <OfficineSignup />
         <Testimonials />
         <CtaPhone />
       </main>
