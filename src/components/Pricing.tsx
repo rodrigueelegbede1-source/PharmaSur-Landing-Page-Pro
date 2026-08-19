@@ -14,6 +14,7 @@ const plans = [
       "10 scans d'authentification / mois",
       'Carte interactive des pharmacies de garde',
       "Itinéraire GPS et horaires d'ouverture",
+      'Contacter la pharmacie',
       'Recherche de médicaments illimitée',
       "Prix des médicaments et coût total de l'ordonnance",
       "Bons d'assurance acceptés, affichés par officine",
