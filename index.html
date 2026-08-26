@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b3d2c" />
+  <title>PharmaSur — Trouvez vos médicaments, vérifiez leur authenticité</title>
+  <meta name="description" content="PharmaSur géolocalise en temps réel la disponibilité des médicaments dans les pharmacies de Côte d'Ivoire et authentifie vos boîtes grâce à un scanner intelligent anti-contrefaçon." />
+  <meta property="og:title" content="PharmaSur — Trouvez vos médicaments, vérifiez leur authenticité" />
+  <meta property="og:description" content="Géolocalisation des pharmacies qui ont votre médicament en stock et authentification anti-contrefaçon en un scan." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_CI" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" type="image/webp" href="assets/officine.webp" media="(min-width: 1025px)" fetchpriority="high" />
+  <link rel="preload" as="image" type="image/webp" href="assets/officine-1200.webp" media="(max-width: 1024px)" fetchpriority="high" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a class="logo" href="#hero" aria-label="Accueil PharmaSur">
+        <span class="logo__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />
+            <path d="M12 8v6M9 11h6" />
+          </svg>
+        </span>
+        <span class="logo__text">Pharma<span>Sur</span></span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="#how">Comment ça marche</a>
+        <a href="#pricing">Tarifs</a>
+        <a href="#testimonials">Témoignages</a>
+        <a href="#contact">Contact</a>
+        <a class="btn btn--primary btn--sm nav__cta" href="#pricing">
+          Télécharger
+          <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        </a>
+      </nav>
+
+      <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <!-- Fond d'officine : photo Unsplash (David Trinks), voilée puis fondue au blanc
+           avant la section « Comment ça marche ». -->
+      <div class="hero__photo" aria-hidden="true"></div>
+      <div class="hero__veil" aria-hidden="true"></div>
+
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <span class="badge reveal"><span class="dot"></span> Disponible en Côte d'Ivoire</span>
+
+          <h1 class="hero__title">
+            <span class="line"><span style="--d: .05s">Trouvez vos médicaments.</span></span>
+            <span class="line"><span class="grad" style="--d: .15s">Vérifiez leur authenticité</span></span>
+            <span class="line"><span class="grad" style="--d: .25s">instantanément.</span></span>
+          </h1>
+
+          <p class="hero__sub reveal" style="--d: .1s">
+            PharmaSur géolocalise en temps réel les pharmacies qui ont votre médicament en stock
+            et authentifie chaque boîte en un scan pour vous protéger de la contrefaçon.
+          </p>
+
+          <div class="hero__actions reveal" style="--d: .18s">
+            <a class="btn btn--primary btn--lg" href="#pricing">
+              Télécharger l'application
+              <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            </a>
+            <a class="btn btn--ghost btn--lg" href="#how">Voir comment ça marche</a>
+          </div>
+
+          <ul class="hero__stats reveal" style="--d: .26s">
+            <li><strong data-count="1250" data-suffix="+">0</strong><span>Pharmacies partenaires</span></li>
+            <li><strong data-count="98" data-suffix="%">0</strong><span>Scans authentifiés</span></li>
+            <li><strong data-count="45" data-suffix="s">0</strong><span>Recherche moyenne</span></li>
+          </ul>
+        </div>
+
+        <div class="hero__visual reveal" style="--d: .2s">
+          <div class="phone" id="phone">
+            <div class="phone__notch"></div>
+            <div class="phone__screen">
+              <div class="app-bar">
+                <span class="app-bar__title">Rechercher</span>
+                <span class="app-bar__pin">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"/></svg>
+                  Abidjan, Cocody
+                </span>
+              </div>
+
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+                <span class="search-box__text" id="typed" data-text="Paracétamol 500 mg"></span>
+                <span class="caret" id="caret"></span>
+              </div>
+
+              <div class="results" id="results">
+                <div class="result result--ok">
+                  <div>
+                    <p class="result__name">Pharmacie de la Riviera</p>
+                    <p class="result__meta">1,2 km • Ouvert 24h/24</p>
+                  </div>
+                  <span class="pill pill--green">En stock</span>
+                </div>
+                <div class="result">
+                  <div>
+                    <p class="result__name">Pharmacie Saint-Jean</p>
+                    <p class="result__meta">2,4 km • Ferme à 22h</p>
+                  </div>
+                  <span class="pill pill--green">En stock</span>
+                </div>
+                <div class="result">
+                  <div>
+                    <p class="result__name">Pharmacie du Plateau</p>
+                    <p class="result__meta">4,8 km • Ouvert</p>
+                  </div>
+                  <span class="pill pill--grey">Rupture</span>
+                </div>
+              </div>
+
+              <div class="scan-card">
+                <div class="scan-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+                <div>
+                  <p class="scan-card__title">Boîte authentifiée</p>
+                  <p class="scan-card__meta">Lot #CI-4471 • Vérifié</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sync-chip">
+            <span class="dot"></span>
+            <span><strong>Stocks synchronisés</strong> il y a 30 s</span>
+          </div>
+
+          <div class="blob blob--1" aria-hidden="true"></div>
+          <div class="blob blob--2" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMENT ÇA MARCHE -->
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow reveal">Comment ça marche</span>
+          <h2 class="reveal" style="--d: .06s">Trois étapes, moins d'une minute</h2>
+          <p class="reveal" style="--d: .12s">De la recherche du médicament à la vérification de la boîte, PharmaSur vous accompagne à chaque étape.</p>
+        </div>
+
+        <div class="steps" id="steps">
+          <span class="steps__thread" aria-hidden="true"><i></i></span>
+
+          <article class="step reveal">
+            <div class="step__top">
+              <div class="step__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.4-3.4"/></svg>
+              </div>
+              <span class="step__num">01</span>
+            </div>
+            <h3>Recherchez votre médicament</h3>
+            <p>Tapez le nom du produit ou scannez l'ordonnance. PharmaSur interroge instantanément les stocks des pharmacies partenaires.</p>
+          </article>
+
+          <article class="step reveal" style="--d: .1s">
+            <div class="step__top">
+              <div class="step__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"/><circle cx="12" cy="11" r="2.5"/></svg>
+              </div>
+              <span class="step__num">02</span>
+            </div>
+            <h3>Géolocalisez la pharmacie</h3>
+            <p>Visualisez les pharmacies les plus proches qui l'ont en stock, avec distance, horaires, gardes de nuit et itinéraire GPS.</p>
+          </article>
+
+          <article class="step reveal" style="--d: .2s">
+            <div class="step__top">
+              <div class="step__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>
+              </div>
+              <span class="step__num">03</span>
+            </div>
+            <h3>Scannez et authentifiez</h3>
+            <p>Sur place, scannez le code de la boîte : PharmaSur confirme en une seconde si le médicament est authentique ou contrefait.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- TARIFS -->
+    <section class="section section--soft" id="pricing">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow reveal">Tarifs</span>
+          <h2 class="reveal" style="--d: .06s">Une offre pour chacun</h2>
+          <p class="reveal" style="--d: .12s">Gratuit pour les citoyens, complet pour les familles, puissant pour les officines.</p>
+        </div>
+
+        <div class="plans">
+          <article class="plan reveal">
+            <h3 class="plan__name">Offre Citoyen</h3>
+            <p class="plan__desc">Pour tous les patients de Côte d'Ivoire.</p>
+            <p class="plan__price">Gratuit</p>
+            <ul class="plan__list">
+              <li>Géolocalisation des pharmacies ouvertes</li>
+              <li>10 scans d'authentification / mois</li>
+              <li>Carte interactive des pharmacies de garde</li>
+              <li>Itinéraire GPS et horaires d'ouverture</li>
+              <li>Recherche de médicaments illimitée</li>
+              <li>Alertes de retour en stock</li>
+            </ul>
+            <a class="btn btn--ghost btn--block" href="#contact">Télécharger gratuitement</a>
+          </article>
+
+          <article class="plan plan--featured reveal" style="--d: .1s">
+            <span class="plan__tag">Le plus choisi</span>
+            <h3 class="plan__name">Offre Santé Famille</h3>
+            <p class="plan__desc">Pour protéger toute la famille au quotidien.</p>
+            <p class="plan__price">2 500 <span>FCFA / mois</span></p>
+            <ul class="plan__list">
+              <li>Recherche de médicaments illimitée</li>
+              <li>Géolocalisation des pharmacies de garde</li>
+              <li>Scans d'authentification illimités</li>
+              <li>Carnet de traitement numérique pour 5 membres</li>
+              <li>Rappels intelligents de prise &amp; notices vocales</li>
+              <li>Support client prioritaire 24/7</li>
+              <li>Alertes de retour en stock</li>
+            </ul>
+            <a class="btn btn--primary btn--block" href="#contact">Souscrire</a>
+          </article>
+
+          <article class="plan reveal" style="--d: .2s">
+            <h3 class="plan__name">Offre Pharmacie Pro</h3>
+            <p class="plan__desc">Pour les officines qui veulent être visibles.</p>
+            <p class="plan__price">15 000 <span>FCFA / mois</span></p>
+            <ul class="plan__list">
+              <li>Géolocalisation de l'officine</li>
+              <li>Badge « Officine Certifiée Anti-Contrefaçon »</li>
+              <li>Mise en avant pendant les gardes</li>
+              <li>Tableau de bord analytique de visibilité locale</li>
+              <li>Canal direct de contact pour ordonnances</li>
+              <li>Synchronisation des stocks en temps réel</li>
+              <li>Scans d'authentification illimités</li>
+              <li>Tableau de bord des demandes locales</li>
+              <li>Support prioritaire 7j/7</li>
+            </ul>
+            <a class="btn btn--primary btn--block" href="#contact">Inscrire mon officine</a>
+          </article>
+        </div>
+
+        <p class="plans__note reveal" style="--d: .28s">
+          Sans engagement · Paiement Mobile Money accepté · Résiliable à tout moment
+        </p>
+      </div>
+    </section>
+
+    <!-- TÉMOIGNAGES -->
+    <section class="section" id="testimonials">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow reveal">Témoignages</span>
+          <h2 class="reveal" style="--d: .06s">Ils utilisent PharmaSur au quotidien</h2>
+          <p class="reveal" style="--d: .12s">Patients, pharmaciens et soignants témoignent de leur expérience.</p>
+        </div>
+
+        <div class="quotes">
+          <figure class="quote reveal">
+            <div class="stars" aria-label="5 sur 5">★★★★★</div>
+            <blockquote>« Mon fils avait besoin d'un antibiotique à 23h. En deux minutes j'ai trouvé une pharmacie de garde à Yopougon qui l'avait vraiment en stock. »</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">AK</span>
+              <span><strong>Aminata Koné</strong><small>Mère de famille, Abidjan</small></span>
+            </figcaption>
+          </figure>
+
+          <figure class="quote reveal" style="--d: .1s">
+            <div class="stars" aria-label="5 sur 5">★★★★★</div>
+            <blockquote>« Depuis que notre officine est sur PharmaSur, nous recevons chaque jour de nouveaux patients qui savent déjà que le produit est disponible chez nous. »</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">DY</span>
+              <span><strong>Dr Yao Kouassi</strong><small>Pharmacien titulaire, Bouaké</small></span>
+            </figcaption>
+          </figure>
+
+          <figure class="quote reveal" style="--d: .2s">
+            <div class="stars" aria-label="5 sur 5">★★★★★</div>
+            <blockquote>« Le scanner a détecté un lot contrefait acheté hors circuit. C'est un outil de santé publique dont nous avions réellement besoin. »</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">FT</span>
+              <span><strong>Fatou Traoré</strong><small>Infirmière, Korhogo</small></span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta__inner reveal">
+          <div class="cta__grid" aria-hidden="true"></div>
+          <div class="cta__text">
+            <h2>Prêt à ne plus courir de pharmacie en pharmacie ?</h2>
+            <p>Téléchargez PharmaSur et vérifiez vos médicaments en toute confiance.</p>
+          </div>
+          <form class="cta__form" id="ctaForm" novalidate>
+            <label class="sr-only" for="phone">Numéro de téléphone</label>
+            <input id="phone" name="phone" type="tel" placeholder="+225 07 00 00 00 00" required />
+            <button class="btn btn--accent" type="submit">
+              Recevoir le lien
+              <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            </button>
+            <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="contact">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <a class="logo logo--light" href="#hero">
+          <span class="logo__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />
+              <path d="M12 8v6M9 11h6" />
+            </svg>
+          </span>
+          <span class="logo__text">Pharma<span>Sur</span></span>
+        </a>
+        <p>L'application d'utilité publique qui rend le médicament disponible, traçable et sûr en Côte d'Ivoire.</p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.25-1.5 1.55-1.5H16.7V4.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V14h2.7v8h3.5Z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.5H4V20h2.9V8.5ZM5.45 4a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20 13.6c0-3.1-1.7-4.6-3.9-4.6-1.8 0-2.6 1-3 1.7V8.5H10.2c.04.9 0 11.5 0 11.5h2.9v-6.4c0-.3 0-.6.1-.8.3-.6.8-1.3 1.8-1.3 1.3 0 1.9.99 1.9 2.5V20H20v-6.4Z"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3h3l-6.6 7.6L21.8 21h-5.9l-4.3-5.6L6.5 21H3.4l7-8.1L2.6 3h6l3.9 5.2L17.5 3Zm-1 16.2h1.6L7.6 4.7H5.9l10.6 14.5Z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h4>Produit</h4>
+        <ul>
+          <li><a href="#how">Comment ça marche</a></li>
+          <li><a href="#pricing">Tarifs</a></li>
+          <li><a href="#testimonials">Témoignages</a></li>
+          <li><a href="#how">Scanner anti-contrefaçon</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="#pricing">Espace pharmaciens</a></li>
+          <li><a href="#contact">Centre d'aide</a></li>
+          <li><a href="#contact">Mentions légales</a></li>
+          <li><a href="#contact">Confidentialité</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <ul class="footer__contact">
+          <li><a href="tel:+2252722000000">+225 27 22 00 00 00</a></li>
+          <li><a href="mailto:contact@pharmasur.ci">contact@pharmasur.ci</a></li>
+          <li>Abidjan, Côte d'Ivoire</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer__bottom">
+      <p>© <span id="year">2026</span> PharmaSur. Tous droits réservés.</p>
+      <p>Application d'utilité publique · Côte d'Ivoire</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

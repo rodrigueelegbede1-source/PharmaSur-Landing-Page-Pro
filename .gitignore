@@ -1,0 +1,13 @@
+# Système
+.DS_Store
+Thumbs.db
+
+# Éditeurs
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.sw?
+
+# Divers
+*.log
+*.local
