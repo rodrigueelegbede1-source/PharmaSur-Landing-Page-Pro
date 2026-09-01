@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Lien vers le projet Vercel, propre à chaque machine
+.vercel
+
 # Variables d'environnement (seul .env.example est versionné)
 .env
 .env.*
