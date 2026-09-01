@@ -4,25 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0b3d2c" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
   <title>PharmaSur — Trouvez vos médicaments, vérifiez leur authenticité</title>
   <meta name="description" content="PharmaSur géolocalise en temps réel la disponibilité des médicaments dans les pharmacies de Côte d'Ivoire et authentifie vos boîtes grâce à un scanner intelligent anti-contrefaçon." />
+
+  <!-- URL absolues obligatoires : WhatsApp et Facebook refusent un chemin
+       relatif et n'afficheraient aucun aperçu. À reprendre si le site est
+       déployé ailleurs que sur pharmasur.ci. -->
+  <link rel="canonical" href="https://pharmasur.ci/" />
   <meta property="og:title" content="PharmaSur — Trouvez vos médicaments, vérifiez leur authenticité" />
   <meta property="og:description" content="Géolocalisation des pharmacies qui ont votre médicament en stock et authentification anti-contrefaçon en un scan." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_CI" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" type="image/webp" href="assets/officine.webp" media="(min-width: 1025px)" fetchpriority="high" />
-  <link rel="preload" as="image" type="image/webp" href="assets/officine-1200.webp" media="(max-width: 1024px)" fetchpriority="high" />
+  <meta property="og:site_name" content="PharmaSur" />
+  <meta property="og:url" content="https://pharmasur.ci/" />
+  <meta property="og:image" content="https://pharmasur.ci/assets/og.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Comptoir d'une pharmacie ivoirienne, surmonté du titre « Trouvez vos médicaments, vérifiez leur authenticité »." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PharmaSur — Trouvez vos médicaments, vérifiez leur authenticité" />
+  <meta name="twitter:description" content="Géolocalisation des pharmacies qui ont votre médicament en stock et authentification anti-contrefaçon en un scan." />
+  <meta name="twitter:image" content="https://pharmasur.ci/assets/og.jpg" />
+
+  <!-- Police auto-hébergée : un seul fichier variable couvre les cinq graisses,
+       et évite deux connexions externes plus une feuille bloquante. -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/plus-jakarta-sans.woff2" crossorigin />
+
+  <!-- Fond du héros : visible d'emblée, donc préchargé selon la largeur d'écran. -->
+  <link rel="preload" as="image" type="image/webp" href="assets/hero-officine.webp" media="(min-width: 1025px)" fetchpriority="high" />
+  <link rel="preload" as="image" type="image/webp" href="assets/hero-officine-900.webp" media="(max-width: 1024px)" fetchpriority="high" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="progress" id="progress" aria-hidden="true"></div>
 
+  <!-- Bandeau vert foncé, comme la carte de partage : le site s'ouvre comme le
+       lien s'annonce sur WhatsApp, sans rupture entre l'aperçu et la page. -->
   <header class="header" id="header">
     <div class="container header__inner">
-      <a class="logo" href="#hero" aria-label="Accueil PharmaSur">
+      <a class="logo logo--light" href="#hero" aria-label="Accueil PharmaSur">
         <span class="logo__mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />
@@ -37,7 +62,7 @@
         <a href="#pricing">Tarifs</a>
         <a href="#testimonials">Témoignages</a>
         <a href="#contact">Contact</a>
-        <a class="btn btn--primary btn--sm nav__cta" href="#pricing">
+        <a class="btn btn--accent btn--sm nav__cta" href="#pricing">
           Télécharger
           <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
         </a>
@@ -52,10 +77,21 @@
   <main>
     <!-- HERO -->
     <section class="hero" id="hero">
-      <!-- Fond d'officine : photo Unsplash (David Trinks), voilée puis fondue au blanc
-           avant la section « Comment ça marche ». -->
-      <div class="hero__photo" aria-hidden="true"></div>
-      <div class="hero__veil" aria-hidden="true"></div>
+      <!-- Photo d'officine ramenée dans la charte par un voile vert, fondue au
+           blanc avant « Comment ça marche » plutôt que coupée net. -->
+      <div class="hero__backdrop" aria-hidden="true">
+        <div class="hero__photo"></div>
+        <div class="hero__veil"></div>
+        <!-- Cercles de recherche, du côté droit où le voile est le plus clair :
+             ils disent la géolocalisation sans encombrer la scène. -->
+        <svg class="hero__radar" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+          <g fill="none" stroke="#fff" stroke-dasharray="3 9" stroke-width="1.5" opacity="0.45">
+            <circle cx="1088" cy="404" r="142" />
+            <circle cx="1088" cy="404" r="252" />
+            <circle cx="1088" cy="404" r="368" />
+          </g>
+        </svg>
+      </div>
 
       <div class="container hero__inner">
         <div class="hero__content">
@@ -68,8 +104,9 @@
           </h1>
 
           <p class="hero__sub reveal" style="--d: .1s">
-            PharmaSur géolocalise en temps réel les pharmacies qui ont votre médicament en stock
-            et authentifie chaque boîte en un scan pour vous protéger de la contrefaçon.
+            Ajoutez les produits de votre ordonnance : vous en connaissez le coût avant même de
+            sortir de chez vous, et PharmaSur classe les pharmacies proches selon le nombre de
+            médicaments réellement disponibles. Chaque boîte s'authentifie ensuite en un scan.
           </p>
 
           <div class="hero__actions reveal" style="--d: .18s">
@@ -80,56 +117,126 @@
             <a class="btn btn--ghost btn--lg" href="#how">Voir comment ça marche</a>
           </div>
 
+          <!-- À ACTUALISER avant mise en ligne : chiffres encore provisoires,
+               repris de la maquette et affichés comme des faits. Le « + » de
+               1 400 annonce davantage qu'un chiffre exact, et « Pharmacies
+               partenaires » est inexact si 1 400 désigne le total des officines
+               du pays plutôt que les signataires. -->
           <ul class="hero__stats reveal" style="--d: .26s">
-            <li><strong data-count="1250" data-suffix="+">0</strong><span>Pharmacies partenaires</span></li>
+            <li><strong data-count="1400" data-suffix="+">0</strong><span>Pharmacies partenaires</span></li>
             <li><strong data-count="98" data-suffix="%">0</strong><span>Scans authentifiés</span></li>
             <li><strong data-count="45" data-suffix="s">0</strong><span>Recherche moyenne</span></li>
           </ul>
         </div>
 
         <div class="hero__visual reveal" style="--d: .2s">
-          <div class="phone" id="phone">
+          <!-- L'écran est à saturation : 14 px de marge. Tout ajout suppose d'en
+               retirer autre chose, faute de quoi le conteneur flex comprime
+               silencieusement la carte de scan sans débordement visible. -->
+          <div class="phone" id="phoneMock">
             <div class="phone__notch"></div>
             <div class="phone__screen">
               <div class="app-bar">
-                <span class="app-bar__title">Rechercher</span>
+                <span class="app-bar__title">Ma liste</span>
                 <span class="app-bar__pin">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"/></svg>
                   Abidjan, Cocody
                 </span>
               </div>
 
-              <div class="search-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-                <span class="search-box__text" id="typed" data-text="Paracétamol 500 mg"></span>
+              <!-- À VALIDER avant mise en ligne : prix indicatifs, à reprendre
+                   sur la base homologuée. Un tarif faux affiché à un patient se
+                   paie en crédibilité. -->
+              <div class="lines">
+                <div class="line-item">
+                  <span class="line-item__name">
+                    <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Paracétamol 500 mg
+                  </span>
+                  <span class="line-item__price">900 F</span>
+                </div>
+                <div class="line-item">
+                  <span class="line-item__name">
+                    <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Vitamine C 500 mg
+                  </span>
+                  <span class="line-item__price">1 200 F</span>
+                </div>
+
+                <div class="line-group" id="lineGroup">
+                  <div class="line-item line-item--out">
+                    <span class="line-item__name">
+                      <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 3 9 9M9 3 3 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                      Amoxicilline 1 g
+                    </span>
+                    <span class="line-item__price">2 750 F</span>
+                  </div>
+
+                  <!-- L'équivalence porte sur le principe actif seul, jamais sur
+                       une autre molécule : proposer un produit différent de celui
+                       prescrit est un acte médical, réservé au pharmacien, seul à
+                       connaître les allergies et les interactions. La mention de
+                       validation n'est donc pas décorative. -->
+                  <div class="line-item line-item--equiv">
+                    <span class="line-item__name">
+                      <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 2v3.5A1.5 1.5 0 0 0 4.5 7H9m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      Amoxicilline Denk 1 g
+                    </span>
+                    <span class="line-item__price">2 400 F</span>
+                  </div>
+                  <p class="equiv-note">Même principe actif · à valider par votre pharmacien</p>
+                </div>
+              </div>
+
+              <!-- Coût de l'ordonnance : il grimpe à mesure que la liste se remplit -->
+              <div class="total">
+                <span class="total__label">Total ordonnance</span>
+                <span class="total__value" id="total" data-partial="2 100 F" data-full="4 500 F">2 100 F</span>
+              </div>
+
+              <div class="add-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                <span class="add-box__text is-placeholder" id="typed" data-text="Amoxicilline 1 g">Ajouter un produit…</span>
                 <span class="caret" id="caret"></span>
               </div>
 
+              <!-- Officines classées par complétude, pas par distance : c'est tout
+                   le propos. La troisième a été retirée pour loger les bons. -->
               <div class="results" id="results">
-                <div class="result result--ok">
-                  <div>
-                    <p class="result__name">Pharmacie de la Riviera</p>
-                    <p class="result__meta">1,2 km • Ouvert 24h/24</p>
+                <div class="result result--best">
+                  <div class="result__row">
+                    <div>
+                      <p class="result__name">Pharmacie de la Riviera</p>
+                      <p class="result__meta">1,2 km • Ouvert 24h/24</p>
+                    </div>
+                    <span class="pill pill--green">3/3</span>
                   </div>
-                  <span class="pill pill--green">En stock</span>
+                  <!-- À CONSTRUIRE : chaque officine déclare ses bons à
+                       l'inscription et doit pouvoir en retirer un à tout moment.
+                       Sans ce retrait, une liste périmée renvoie le patient au
+                       problème même que le service résout. Catégories
+                       volontairement génériques : nommer un assureur réel
+                       laisserait entendre un partenariat qui n'existe pas. -->
+                  <div class="bons">
+                    <span class="bons__label">Bons acceptés</span>
+                    <span class="bon">CMU</span>
+                    <span class="bon">Mutuelles</span>
+                    <span class="bon">Assurances</span>
+                  </div>
                 </div>
+
                 <div class="result">
-                  <div>
-                    <p class="result__name">Pharmacie Saint-Jean</p>
-                    <p class="result__meta">2,4 km • Ferme à 22h</p>
+                  <div class="result__row">
+                    <div>
+                      <p class="result__name">Pharmacie Saint-Jean</p>
+                      <p class="result__meta">2,4 km • Ferme à 22h</p>
+                    </div>
+                    <span class="pill pill--grey">2/3</span>
                   </div>
-                  <span class="pill pill--green">En stock</span>
-                </div>
-                <div class="result">
-                  <div>
-                    <p class="result__name">Pharmacie du Plateau</p>
-                    <p class="result__meta">4,8 km • Ouvert</p>
-                  </div>
-                  <span class="pill pill--grey">Rupture</span>
                 </div>
               </div>
 
-              <div class="scan-card">
+              <div class="scan-card" id="scanCard">
                 <div class="scan-card__icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
                 </div>
@@ -145,9 +252,6 @@
             <span class="dot"></span>
             <span><strong>Stocks synchronisés</strong> il y a 30 s</span>
           </div>
-
-          <div class="blob blob--1" aria-hidden="true"></div>
-          <div class="blob blob--2" aria-hidden="true"></div>
         </div>
       </div>
     </section>
@@ -171,8 +275,8 @@
               </div>
               <span class="step__num">01</span>
             </div>
-            <h3>Recherchez votre médicament</h3>
-            <p>Tapez le nom du produit ou scannez l'ordonnance. PharmaSur interroge instantanément les stocks des pharmacies partenaires.</p>
+            <h3>Composez votre liste</h3>
+            <p>Ajoutez les produits de votre ordonnance un à un : le coût total se calcule au fur et à mesure. PharmaSur interroge ensuite les stocks pour la liste entière, pas seulement pour un médicament.</p>
           </article>
 
           <article class="step reveal" style="--d: .1s">
@@ -182,8 +286,8 @@
               </div>
               <span class="step__num">02</span>
             </div>
-            <h3>Géolocalisez la pharmacie</h3>
-            <p>Visualisez les pharmacies les plus proches qui l'ont en stock, avec distance, horaires, gardes de nuit et itinéraire GPS.</p>
+            <h3>Repérez la plus complète</h3>
+            <p>Les officines sont classées par nombre de produits disponibles, et pas seulement par distance. En retenant la vôtre, vous voyez ses horaires, son itinéraire et les bons d'assurance qu'elle accepte en caisse — et, si un produit manque partout, son équivalent générique.</p>
           </article>
 
           <article class="step reveal" style="--d: .2s">
@@ -197,6 +301,53 @@
             <p>Sur place, scannez le code de la boîte : PharmaSur confirme en une seconde si le médicament est authentique ou contrefait.</p>
           </article>
         </div>
+      </div>
+    </section>
+
+    <!-- FIABILITÉ
+         À CONSTRUIRE : cette section décrit le dispositif de fiabilité du stock,
+         pas un existant. Elle répond à l'objection centrale du visiteur — « comment
+         savez-vous que la pharmacie l'a vraiment ? » — et ne doit rester en ligne
+         que si les trois mécanismes sont effectivement mis en œuvre. -->
+    <section class="section section--rule" id="fiabilite">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow reveal">Fiabilité</span>
+          <h2 class="reveal" style="--d: .06s">Comment nous savons que le stock est juste</h2>
+          <p class="reveal" style="--d: .12s">Un stock faux fait faire trois kilomètres pour rien. La donnée est donc vérifiée par trois voies qui se corrigent entre elles.</p>
+        </div>
+
+        <div class="trust">
+          <div class="trust__col reveal">
+            <span class="trust__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.9-3.9M4 13a8 8 0 0 0 14.9 3.9"/><path d="M4 4v4h4M20 20v-4h-4"/></svg>
+            </span>
+            <h3>Les officines équipées</h3>
+            <p>Les pharmacies dotées d'un logiciel de gestion transmettent leur stock en continu. Rien à saisir, rien à oublier.</p>
+          </div>
+
+          <div class="trust__col reveal" style="--d: .1s">
+            <span class="trust__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="m9.5 12 2 2 3.5-3.5"/></svg>
+            </span>
+            <h3>Les autres, en un geste</h3>
+            <p>Celles qui n'en ont pas confirment depuis leur téléphone, sans installer de logiciel ni acheter de matériel.</p>
+          </div>
+
+          <div class="trust__col reveal" style="--d: .2s">
+            <span class="trust__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"/><path d="m9.4 10.8 2 2 3.2-3.2"/></svg>
+            </span>
+            <h3>Vous, en repartant</h3>
+            <p>Sur place, vous indiquez en un geste si le produit était bien là. Chaque passage corrige la carte pour le suivant.</p>
+          </div>
+        </div>
+
+        <p class="trust__note reveal" style="--d: .3s">
+          Et quand la donnée vieillit, nous le disons :
+          <strong>chaque officine affiche la date de sa dernière vérification</strong>
+          plutôt que de laisser croire à une certitude.
+        </p>
       </div>
     </section>
 
@@ -219,45 +370,61 @@
               <li>10 scans d'authentification / mois</li>
               <li>Carte interactive des pharmacies de garde</li>
               <li>Itinéraire GPS et horaires d'ouverture</li>
+              <li>Contacter la pharmacie</li>
               <li>Recherche de médicaments illimitée</li>
-              <li>Alertes de retour en stock</li>
+              <li>Prix des médicaments et coût total de l'ordonnance</li>
+              <li>Équivalent générique signalé en cas de rupture</li>
+              <li>Bons d'assurance acceptés, affichés par officine</li>
             </ul>
-            <a class="btn btn--ghost btn--block" href="#contact">Télécharger gratuitement</a>
+            <a class="btn btn--ghost btn--block" href="#contact">
+              Télécharger gratuitement
+              <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            </a>
           </article>
 
           <article class="plan plan--featured reveal" style="--d: .1s">
             <span class="plan__tag">Le plus choisi</span>
             <h3 class="plan__name">Offre Santé Famille</h3>
             <p class="plan__desc">Pour protéger toute la famille au quotidien.</p>
-            <p class="plan__price">2 500 <span>FCFA / mois</span></p>
+            <p class="plan__price">2 500 <span>FCFA / an</span></p>
             <ul class="plan__list">
               <li>Recherche de médicaments illimitée</li>
+              <li>Prix des médicaments et coût total de l'ordonnance</li>
+              <li>Équivalent générique signalé en cas de rupture</li>
+              <li>Bons d'assurance acceptés, affichés par officine</li>
               <li>Géolocalisation des pharmacies de garde</li>
+              <li>Contacter la pharmacie</li>
               <li>Scans d'authentification illimités</li>
               <li>Carnet de traitement numérique pour 5 membres</li>
               <li>Rappels intelligents de prise &amp; notices vocales</li>
               <li>Support client prioritaire 24/7</li>
               <li>Alertes de retour en stock</li>
             </ul>
-            <a class="btn btn--primary btn--block" href="#contact">Souscrire</a>
+            <a class="btn btn--accent btn--block" href="#contact">
+              Souscrire
+              <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            </a>
           </article>
 
           <article class="plan reveal" style="--d: .2s">
             <h3 class="plan__name">Offre Pharmacie Pro</h3>
             <p class="plan__desc">Pour les officines qui veulent être visibles.</p>
-            <p class="plan__price">15 000 <span>FCFA / mois</span></p>
+            <p class="plan__price">10 000 <span>FCFA / mois</span></p>
             <ul class="plan__list">
               <li>Géolocalisation de l'officine</li>
-              <li>Badge « Officine Certifiée Anti-Contrefaçon »</li>
+              <li>Bons d'assurance acceptés : ajout et retrait à tout moment</li>
               <li>Mise en avant pendant les gardes</li>
               <li>Tableau de bord analytique de visibilité locale</li>
-              <li>Canal direct de contact pour ordonnances</li>
-              <li>Synchronisation des stocks en temps réel</li>
+              <li>Canal direct de contact avec les patients</li>
+              <li>Synchronisation des stocks en temps réel, facultative</li>
               <li>Scans d'authentification illimités</li>
               <li>Tableau de bord des demandes locales</li>
               <li>Support prioritaire 7j/7</li>
             </ul>
-            <a class="btn btn--primary btn--block" href="#contact">Inscrire mon officine</a>
+            <a class="btn btn--primary btn--block" href="#contact">
+              Inscrire mon officine
+              <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            </a>
           </article>
         </div>
 
@@ -267,7 +434,9 @@
       </div>
     </section>
 
-    <!-- TÉMOIGNAGES -->
+    <!-- TÉMOIGNAGES
+         À ACTUALISER : témoignages de maquette. Publier de faux avis sur une
+         application de santé engage la crédibilité du service. -->
     <section class="section" id="testimonials">
       <div class="container">
         <div class="section__head">
@@ -278,7 +447,13 @@
 
         <div class="quotes">
           <figure class="quote reveal">
-            <div class="stars" aria-label="5 sur 5">★★★★★</div>
+            <div class="stars" aria-label="5 sur 5">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+            </div>
             <blockquote>« Mon fils avait besoin d'un antibiotique à 23h. En deux minutes j'ai trouvé une pharmacie de garde à Yopougon qui l'avait vraiment en stock. »</blockquote>
             <figcaption>
               <span class="avatar" aria-hidden="true">AK</span>
@@ -287,7 +462,13 @@
           </figure>
 
           <figure class="quote reveal" style="--d: .1s">
-            <div class="stars" aria-label="5 sur 5">★★★★★</div>
+            <div class="stars" aria-label="5 sur 5">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+            </div>
             <blockquote>« Depuis que notre officine est sur PharmaSur, nous recevons chaque jour de nouveaux patients qui savent déjà que le produit est disponible chez nous. »</blockquote>
             <figcaption>
               <span class="avatar" aria-hidden="true">DY</span>
@@ -296,7 +477,13 @@
           </figure>
 
           <figure class="quote reveal" style="--d: .2s">
-            <div class="stars" aria-label="5 sur 5">★★★★★</div>
+            <div class="stars" aria-label="5 sur 5">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.6l2.5 5.2 5.7.8-4.1 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.6Z"/></svg>
+            </div>
             <blockquote>« Le scanner a détecté un lot contrefait acheté hors circuit. C'est un outil de santé publique dont nous avions réellement besoin. »</blockquote>
             <figcaption>
               <span class="avatar" aria-hidden="true">FT</span>
@@ -307,22 +494,36 @@
       </div>
     </section>
 
-    <!-- CTA -->
+    <!-- APPEL À L'ACTION -->
     <section class="cta">
       <div class="container">
         <div class="cta__inner reveal">
+          <div class="cta__halo" aria-hidden="true"></div>
           <div class="cta__grid" aria-hidden="true"></div>
+
           <div class="cta__text">
             <h2>Prêt à ne plus courir de pharmacie en pharmacie ?</h2>
             <p>Téléchargez PharmaSur et vérifiez vos médicaments en toute confiance.</p>
           </div>
+
           <form class="cta__form" id="ctaForm" novalidate>
             <label class="sr-only" for="phone">Numéro de téléphone</label>
-            <input id="phone" name="phone" type="tel" placeholder="+225 07 00 00 00 00" required />
-            <button class="btn btn--accent" type="submit">
-              Recevoir le lien
-              <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
-            </button>
+            <div class="cta__row">
+              <input id="phone" name="phone" type="tel" placeholder="+225 07 00 00 00 00" required />
+              <button class="btn btn--accent" type="submit" id="ctaSubmit">
+                <span id="ctaLabel">Être prévenu</span>
+                <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.6"/></svg>
+              </button>
+            </div>
+
+            <!-- Mention d'usage au point de collecte : le visiteur doit savoir à
+                 quoi sert son numéro avant de le donner, pas après. -->
+            <p class="cta__notice">
+              Votre numéro sert uniquement à vous prévenir de l'ouverture du service. Il n'est
+              ni revendu, ni cédé.
+              <a href="confidentialite/">Politique de confidentialité</a>
+            </p>
+
             <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
           </form>
         </div>
@@ -330,7 +531,7 @@
     </section>
   </main>
 
-  <!-- FOOTER -->
+  <!-- PIED DE PAGE -->
   <footer class="footer" id="contact">
     <div class="container footer__grid">
       <div class="footer__brand">
@@ -345,10 +546,9 @@
         </a>
         <p>L'application d'utilité publique qui rend le médicament disponible, traçable et sûr en Côte d'Ivoire.</p>
         <div class="socials">
-          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.25-1.5 1.55-1.5H16.7V4.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V14h2.7v8h3.5Z"/></svg></a>
-          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/></svg></a>
-          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.5H4V20h2.9V8.5ZM5.45 4a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20 13.6c0-3.1-1.7-4.6-3.9-4.6-1.8 0-2.6 1-3 1.7V8.5H10.2c.04.9 0 11.5 0 11.5h2.9v-6.4c0-.3 0-.6.1-.8.3-.6.8-1.3 1.8-1.3 1.3 0 1.9.99 1.9 2.5V20H20v-6.4Z"/></svg></a>
-          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3h3l-6.6 7.6L21.8 21h-5.9l-4.3-5.6L6.5 21H3.4l7-8.1L2.6 3h6l3.9 5.2L17.5 3Zm-1 16.2h1.6L7.6 4.7H5.9l10.6 14.5Z"/></svg></a>
+          <a href="#hero" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.25-1.5 1.55-1.5H16.7V4.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V14h2.7v8h3.5Z"/></svg></a>
+          <a href="#hero" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.5H4V20h2.9V8.5ZM5.45 4a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20 13.6c0-3.1-1.7-4.6-3.9-4.6-1.8 0-2.6 1-3 1.7V8.5H10.2c.04.9 0 11.5 0 11.5h2.9v-6.4c0-.3 0-.6.1-.8.3-.6.8-1.3 1.8-1.3 1.3 0 1.9.99 1.9 2.5V20H20v-6.4Z"/></svg></a>
+          <a href="#hero" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3h3l-6.6 7.6L21.8 21h-5.9l-4.3-5.6L6.5 21H3.4l7-8.1L2.6 3h6l3.9 5.2L17.5 3Zm-1 16.2h1.6L7.6 4.7H5.9l10.6 14.5Z"/></svg></a>
         </div>
       </div>
 
@@ -367,8 +567,8 @@
         <ul>
           <li><a href="#pricing">Espace pharmaciens</a></li>
           <li><a href="#contact">Centre d'aide</a></li>
-          <li><a href="#contact">Mentions légales</a></li>
-          <li><a href="#contact">Confidentialité</a></li>
+          <li><a href="mentions-legales/">Mentions légales</a></li>
+          <li><a href="confidentialite/">Confidentialité</a></li>
         </ul>
       </div>
 
