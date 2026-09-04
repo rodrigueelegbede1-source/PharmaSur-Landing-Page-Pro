@@ -41,7 +41,15 @@ export function Hero() {
             </div>
 
             <h1 className="mt-6 text-[2.35rem] sm:text-[3.2rem] lg:text-[3.6rem]">
-              {['Trouvez vos médicaments.', 'Vérifiez leur authenticité', 'instantanément.'].map(
+              {/*
+                Découpage choisi par mesure, pas à l'estime : la colonne du
+                titre plafonne à 552 px et le texte à 57,6 px. « et les
+                pharmacies proches » demandait 735 px et se cassait en
+                laissant « proches » seul sur sa ligne. Découpé ainsi,
+                chaque segment tient (491 px et 527 px) et aucun mot n'est
+                orphelin. Remesurer avant de retoucher ce libellé.
+              */}
+              {['Trouvez vos médicaments', 'et les pharmacies', 'proches en un clic.'].map(
                 (line, i) => (
                   <span key={line} className="block overflow-hidden pb-[0.08em]">
                     <span
