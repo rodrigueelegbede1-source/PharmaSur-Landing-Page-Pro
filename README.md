@@ -72,9 +72,13 @@ serveur (anti-spam, limitation de débit).
 
 ```
 index.html                    page principale
+app/index.html                application patient installable (PWA), servie à /app/
 mentions-legales/index.html   page légale, sans React
 confidentialite/index.html    page légale, sans React
 design/officine.jpg           source de og.jpg, hors public/ : jamais déployée
+
+public/app/                   manifeste, service worker et icônes de l'application
+public/console-pharmasur.html console pharmacie en un fichier, assemblée depuis les maquettes
 
 scripts/prerender.mjs         injecte le HTML rendu au build dans dist/index.html
 
@@ -83,19 +87,51 @@ src/
   entry-server.tsx       rendu du site en HTML au build, pour le pré-rendu
   legal.ts               entrée des pages légales : charge la feuille de style, rien d'autre
   lib/cx.ts              concaténation de classes
+  lib/destinations.ts    où mènent les appels à l'action : le seul endroit à changer
+  app/
+    main.tsx             point d'entrée de l'application, enregistre le service worker
+    App.tsx              les sept écrans et la navigation
+    donnees.ts           catalogue, officines et stocks — DE DÉMONSTRATION, tous fictifs
+    ui.tsx / icones.tsx  briques communes aux écrans
   components/
     primitives.tsx       Reveal, Eyebrow, Badge, Button, Counter, SectionHead
     Nav.tsx              header fixe translucide, logo, menu mobile
     Hero.tsx             titre révélé ligne par ligne, parallaxe, compteurs
     HeroBackdrop.tsx     fond dessiné en SVG : plan urbain, cercles de recherche, repères
     PhoneMock.tsx        maquette : liste multi-produits, prix, équivalent générique, itinéraire
-    HowItWorks.tsx       3 étapes, fil conducteur tracé au scroll
+    HowItWorks.tsx       2 étapes, fil conducteur tracé au scroll
     Reliability.tsx      les trois voies qui tiennent le stock à jour
     Pricing.tsx          2 offres : gratuite pour les patients, abonnement pour les officines
-    Testimonials.tsx     3 témoignages
+    Engagements.tsx      les trois règles que le service s'impose
     CtaPhone.tsx         capture de numéro, envoi à l'endpoint, mention d'usage
     Footer.tsx
 ```
+
+## Les deux livrables
+
+Les appels à l'action du site ne mènent plus à un formulaire mais à deux choses réelles, dont les
+destinations sont réunies dans `src/lib/destinations.ts`.
+
+**L'application patient**, à `/app/`. Une application web installable : sur Android, Chrome propose
+« Installer l'application » ; sur iOS, Safari propose « Sur l'écran d'accueil ». Une fois installée,
+elle s'ouvre sans réseau — un patient qui cherche une pharmacie a souvent un forfait épuisé au
+moment où il en a besoin.
+
+Ce n'est **pas** un fichier `.apk`, et il ne peut pas en être produit ici : cela demande la chaîne
+d'outils Android (JDK, SDK, Gradle) et une clé de signature. Le chemin le plus court, une fois cette
+application en ligne en HTTPS, est de l'emballer en TWA avec Bubblewrap : l'application reste
+celle-ci, l'APK n'en est que l'emballage pour le Play Store.
+
+**La console pharmacie**, en un fichier unique à télécharger. Une console en ligne suppose un
+serveur, des comptes et une base de données, dont aucun n'existe. Un fichier s'envoie par WhatsApp à
+un pharmacien, s'ouvre sans compte et fonctionne sans réseau. Il est assemblé depuis les maquettes
+par `design/generer-console.mjs` — une seule source, pour que la console livrée et le canevas de
+design ne divergent jamais.
+
+> Les deux fonctionnent sur des **données de démonstration** : ni catalogue de médicaments, ni
+> référentiel d'officines, ni stock réel. Chacun porte un bandeau qui le dit, et l'application est
+> en `noindex`. Ne retirez pas l'un sans l'autre : une démonstration qui ne s'annonce pas est un
+> mensonge, et sur un produit de santé un mensonge qui peut coûter cher.
 
 ## Pages légales
 

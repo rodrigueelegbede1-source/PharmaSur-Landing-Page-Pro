@@ -1,5 +1,6 @@
 import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import { type ReactNode, useRef } from 'react'
+import { APP_PATIENT } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 /*
@@ -104,7 +105,7 @@ export function HowItWorks() {
         */}
         <Reveal delay={0.35}>
           <div className="mt-14 flex flex-col items-center gap-4 lg:mt-16">
-            <Button href="#telecharger" size="lg">
+            <Button href={APP_PATIENT} size="lg">
               Télécharger l'application
               <ArrowRight />
             </Button>

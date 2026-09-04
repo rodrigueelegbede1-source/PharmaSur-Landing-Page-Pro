@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { useState } from 'react'
 import { cx } from '../lib/cx'
+import { APP_PATIENT } from '../lib/destinations'
 import { ArrowRight } from './primitives'
 
 const links = [
@@ -76,7 +77,7 @@ export function Nav() {
               </a>
             ))}
             <a
-              href="#telecharger"
+              href={APP_PATIENT}
               className="group inline-flex items-center gap-2 rounded-full bg-green-400 px-5 py-2.5 text-[0.88rem] font-bold whitespace-nowrap text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
             >
               Télécharger
@@ -138,7 +139,7 @@ export function Nav() {
                 </a>
               ))}
               <a
-                href="#telecharger"
+                href={APP_PATIENT}
                 onClick={() => setOpen(false)}
                 className="mt-4 mb-2 inline-flex items-center justify-center gap-2 rounded-full bg-green-400 px-5 py-3 font-bold text-green-950"
               >

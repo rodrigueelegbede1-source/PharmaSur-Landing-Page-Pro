@@ -1,4 +1,5 @@
 import { cx } from '../lib/cx'
+import { APP_PATIENT, CONSOLE_PHARMACIE } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 type Offre = {
@@ -12,6 +13,10 @@ type Offre = {
   href: string
   /** Ancre de la carte, quand un lien du site doit y mener directement. */
   id?: string
+  /** Nom du fichier à enregistrer, quand le bouton livre un fichier. */
+  telecharge?: string
+  /** Second lien, sous le bouton, pour l'action que le bouton ne fait pas. */
+  secondaire?: { label: string; href: string }
   featured?: boolean
   tag?: string
   features: string[]
@@ -58,7 +63,7 @@ const plans: Offre[] = [
     price: 'Gratuit',
     unit: '',
     cta: 'Télécharger gratuitement',
-    href: '#telecharger',
+    href: APP_PATIENT,
     variant: 'ghost' as const,
     features: [
       'Recherche de médicaments illimitée',
@@ -78,10 +83,14 @@ const plans: Offre[] = [
     desc: 'Pour les officines qui veulent être visibles.',
     price: 'Abonnement',
     unit: '',
-    cta: 'Inscrire mon officine',
-    /* Une officine ne peut pas s'inscrire seule : le courriel pré-rempli ouvre
-       un canal réel, là où une ancre ne ferait que défiler. */
-    href: INSCRIPTION_OFFICINE,
+    cta: 'Télécharger la console',
+    /* Le bouton livre la console : un fichier unique que le pharmacien ouvre
+       dans son navigateur, sans compte ni installation. Le courriel
+       d'inscription pré-rempli reste accessible sous la carte — la console est
+       une démonstration, s'inscrire suppose encore de nous écrire. */
+    href: CONSOLE_PHARMACIE,
+    telecharge: 'console-pharmasur.html',
+    secondaire: { label: 'Inscrire mon officine', href: INSCRIPTION_OFFICINE },
     /* Cible du lien « Espace pharmaciens » du pied de page. */
     id: 'pharmacie-pro',
     variant: 'primary' as const,
@@ -185,20 +194,33 @@ export function Pricing() {
                   ))}
                 </ul>
 
-                <div className="mt-8">
+                <div className="mt-8 flex flex-col items-center gap-3">
                   {p.featured ? (
                     <a
                       href={p.href}
+                      download={p.telecharge}
                       className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-400 px-6 py-3.5 font-bold text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
                     >
                       {p.cta}
                       <ArrowRight />
                     </a>
                   ) : (
-                    <Button href={p.href} variant={p.variant} size="lg" block>
+                    <Button href={p.href} download={p.telecharge} variant={p.variant} size="lg" block>
                       {p.cta}
                       <ArrowRight />
                     </Button>
+                  )}
+
+                  {p.secondaire && (
+                    <a
+                      href={p.secondaire.href}
+                      className={cx(
+                        'text-[0.85rem] font-bold underline underline-offset-4',
+                        p.featured ? 'text-green-200 hover:text-white' : 'text-green-700',
+                      )}
+                    >
+                      {p.secondaire.label}
+                    </a>
                   )}
                 </div>
               </article>

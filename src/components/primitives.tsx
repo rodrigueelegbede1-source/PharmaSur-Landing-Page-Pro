@@ -66,6 +66,13 @@ type ButtonProps = {
    * casser la compilation, pas emmener le visiteur ailleurs.
    */
   href: string
+  /*
+   * Nom du fichier à enregistrer. Le poser transforme le lien en
+   * téléchargement au lieu d'une navigation. Il est ici et pas seulement sur
+   * l'appelant pour qu'un bouton de téléchargement ne perde pas
+   * silencieusement son attribut le jour où il change de variante.
+   */
+  download?: string
   variant?: 'primary' | 'ghost' | 'dark'
   size?: 'md' | 'lg'
   block?: boolean
@@ -77,6 +84,7 @@ const sizes = { md: 'px-5 py-2.5 text-[0.9rem]', lg: 'px-7 py-3.5 text-base' }
 export function Button({
   children,
   href,
+  download,
   variant = 'primary',
   size = 'md',
   block = false,
@@ -93,6 +101,7 @@ export function Button({
   return (
     <a
       href={href}
+      download={download}
       className={cx(
         'group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full font-bold transition-all duration-300 ease-[var(--ease-cine)]',
         sizes[size],

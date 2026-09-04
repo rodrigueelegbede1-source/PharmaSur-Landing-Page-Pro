@@ -42,11 +42,17 @@ export default defineConfig(({ command, mode }) => {
     build: {
       // Les pages légales sont des entrées à part entière : une URL propre,
       // indexable et partageable, comme l'exige un document opposable.
+      //
+      // L'application patient en est une aussi, à /app/ : c'est une
+      // application installable, avec son manifeste, son service worker et son
+      // propre point d'entrée. Elle ne partage avec le site que la charte
+      // (src/index.css) et la police déjà servie.
       rollupOptions: {
         input: {
           index: resolve(import.meta.dirname,'index.html'),
           mentions: resolve(import.meta.dirname,'mentions-legales/index.html'),
           confidentialite: resolve(import.meta.dirname,'confidentialite/index.html'),
+          app: resolve(import.meta.dirname,'app/index.html'),
         },
       },
     },

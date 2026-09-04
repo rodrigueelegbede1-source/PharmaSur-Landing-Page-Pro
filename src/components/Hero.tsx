@@ -1,6 +1,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import { cx } from '../lib/cx'
+import { APP_PATIENT } from '../lib/destinations'
 import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Button, Counter } from './primitives'
@@ -79,7 +80,7 @@ export function Hero() {
               className="mt-8 flex flex-wrap gap-3 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none"
               style={{ animationDelay: '0.54s' }}
             >
-              <Button href="#telecharger" size="lg">
+              <Button href={APP_PATIENT} size="lg">
                 Télécharger l'application
                 <ArrowRight />
               </Button>
