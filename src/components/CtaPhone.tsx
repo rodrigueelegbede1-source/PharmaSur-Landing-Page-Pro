@@ -17,6 +17,12 @@ const messages = {
   failed: 'Envoi impossible pour le moment. Réessayez dans un instant.',
 }
 
+/*
+ * L'ancre `#telecharger` de cette section est la destination de tous les boutons
+ * « Télécharger » du site : tant que l'application n'est pas publiée, télécharger
+ * consiste à laisser son numéro. `scroll-mt` compense l'en-tête fixe, sinon le
+ * titre de la section se glisse dessous à l'arrivée.
+ */
 export function CtaPhone() {
   const [phone, setPhone] = useState('')
   /*
@@ -66,7 +72,7 @@ export function CtaPhone() {
   }
 
   return (
-    <section className="pb-20 lg:pb-28">
+    <section id="telecharger" className="scroll-mt-24 pb-20 lg:pb-28">
       <div className="rail">
         <Reveal>
           <div className="relative overflow-hidden rounded-[2rem] bg-green-900 px-6 py-14 text-green-100/85 sm:px-10 lg:px-14 lg:py-16">

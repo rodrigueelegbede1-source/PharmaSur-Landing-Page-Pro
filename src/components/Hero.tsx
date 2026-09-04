@@ -65,7 +65,7 @@ export function Hero() {
               className="mt-8 flex flex-wrap gap-3 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none"
               style={{ animationDelay: '0.54s' }}
             >
-              <Button href="#pricing" size="lg">
+              <Button href="#telecharger" size="lg">
                 Télécharger l'application
                 <ArrowRight />
               </Button>

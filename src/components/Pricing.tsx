@@ -1,13 +1,28 @@
 import { cx } from '../lib/cx'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
-const plans = [
+type Offre = {
+  name: string
+  desc: string
+  price: string
+  unit: string
+  cta: string
+  variant: 'primary' | 'ghost' | 'dark'
+  /** Destination du bouton ; `#contact` par défaut. */
+  href?: string
+  featured?: boolean
+  tag?: string
+  features: string[]
+}
+
+const plans: Offre[] = [
   {
     name: 'Offre Citoyen',
     desc: "Pour tous les patients de Côte d'Ivoire.",
     price: 'Gratuit',
     unit: '',
     cta: 'Télécharger gratuitement',
+    href: '#telecharger',
     variant: 'ghost' as const,
     features: [
       'Géolocalisation des pharmacies ouvertes',
@@ -150,14 +165,14 @@ export function Pricing() {
                 <div className="mt-8">
                   {p.featured ? (
                     <a
-                      href="#contact"
+                      href={p.href ?? '#contact'}
                       className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-400 px-6 py-3.5 font-bold text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
                     >
                       {p.cta}
                       <ArrowRight />
                     </a>
                   ) : (
-                    <Button href="#contact" variant={p.variant} size="lg" block>
+                    <Button href={p.href ?? '#contact'} variant={p.variant} size="lg" block>
                       {p.cta}
                       <ArrowRight />
                     </Button>
