@@ -19,6 +19,13 @@ const messages = {
 
 export function CtaPhone() {
   const [phone, setPhone] = useState('')
+  /*
+   * Champ leurre. Invisible et inatteignable au clavier, aucun humain ne le
+   * remplit ; les robots qui moissonnent le formulaire, si. Formspree rejette
+   * l'envoi dès que `_gotcha` est non vide. L'endpoint étant public dans le
+   * bundle, c'est la seule barrière que nous puissions poser sans serveur.
+   */
+  const [leurre, setLeurre] = useState('')
   const [pending, setPending] = useState(false)
   const [status, setStatus] = useState<{ ok: boolean; msg: string } | null>(null)
 
@@ -45,7 +52,7 @@ export function CtaPhone() {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ phone: value, source: 'landing-cta' }),
+        body: JSON.stringify({ phone: value, source: 'landing-cta', _gotcha: leurre }),
         signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -87,6 +94,18 @@ export function CtaPhone() {
                 <label className="sr-only" htmlFor="phone">
                   Numéro de téléphone
                 </label>
+
+                {/* Leurre : hors écran, hors tabulation, masqué aux lecteurs d'écran. */}
+                <input
+                  type="text"
+                  name="_gotcha"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  value={leurre}
+                  onChange={(e) => setLeurre(e.target.value)}
+                  className="pointer-events-none absolute -left-[9999px] size-0 opacity-0"
+                />
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <input
                     id="phone"

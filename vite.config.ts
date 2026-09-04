@@ -4,16 +4,31 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd(), 'VITE_')
+
+  /*
+   * Sans endpoint, le formulaire affiche une confirmation sans rien envoyer —
+   * comportement voulu en développement, désastreux en production : chaque
+   * prospect serait perdu pendant qu'on l'assure de son inscription. Le build
+   * de production échoue donc plutôt que de produire ce piège silencieux.
+   */
+  if (command === 'build' && mode === 'production' && !env.VITE_LEAD_ENDPOINT) {
+    throw new Error(
+      'VITE_LEAD_ENDPOINT est absente.\n' +
+        "Sans elle, le formulaire confirmerait l'inscription sans envoyer aucun " +
+        'numéro. Build interrompu volontairement.\n' +
+        'Renseignez-la dans .env en local, ou dans les variables du projet Vercel.',
+    )
+  }
+
   /*
    * Les métadonnées de partage (og:image, canonical) exigent des URL absolues :
    * un chemin relatif n'est pas résolu par WhatsApp ni Facebook. Le domaine est
    * injecté dans index.html à la place de %SITE_URL%, et se règle au build via
    * VITE_SITE_URL (voir .env.example).
    */
-  const siteUrl = (loadEnv(mode, process.cwd(), 'VITE_').VITE_SITE_URL || 'https://pharmasur.ci')
-    .trim()
-    .replace(/\/+$/, '')
+  const siteUrl = (env.VITE_SITE_URL || 'https://pharmasur.ci').trim().replace(/\/+$/, '')
 
   return {
     plugins: [

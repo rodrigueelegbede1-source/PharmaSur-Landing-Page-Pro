@@ -290,7 +290,7 @@ for (const [nom, sombre] of [
   ['pharmasur-logo-fond-clair', false],
   ['pharmasur-logo-fond-sombre', true],
 ]) {
-  const { svg, W, H } = logoHorizontal({ surSombre: sombre })
+  const { svg } = logoHorizontal({ surSombre: sombre })
   writeFileSync(`${dossierLogo}/${nom}.svg`, svg)
   const png = rendre(svg, 2400)
   const info = await sharp(png).png({ compressionLevel: 9 }).toFile(`${dossierLogo}/${nom}.png`)
