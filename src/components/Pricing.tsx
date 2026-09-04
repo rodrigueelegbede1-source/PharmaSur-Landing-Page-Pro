@@ -8,12 +8,38 @@ type Offre = {
   unit: string
   cta: string
   variant: 'primary' | 'ghost' | 'dark'
-  /** Destination du bouton ; `#contact` par défaut. */
-  href?: string
+  /** Destination du bouton. Obligatoire : une offre sans suite n'est pas une offre. */
+  href: string
+  /** Ancre de la carte, quand un lien du site doit y mener directement. */
+  id?: string
   featured?: boolean
   tag?: string
   features: string[]
 }
+
+/*
+ * Un mailto sans corps ouvre une fenêtre vide : le pharmacien doit deviner ce
+ * qu'on attend de lui, et le message arrive incomplet. Le corps reprend les
+ * cinq informations de l'inscription — nom, commune, pharmacien, agrément,
+ * téléphone — pour que le premier échange serve à quelque chose.
+ */
+const INSCRIPTION_OFFICINE = `mailto:contact@pharmasur.ci?subject=${encodeURIComponent(
+  'Inscription de mon officine',
+)}&body=${encodeURIComponent(
+  [
+    'Bonjour,',
+    '',
+    'Je souhaite inscrire mon officine sur PharmaSur.',
+    '',
+    "Nom de l'officine :",
+    'Commune :',
+    'Pharmacien titulaire :',
+    "Numéro d'agrément :",
+    'Téléphone :',
+    '',
+    'Merci de me préciser la suite de la démarche.',
+  ].join('\n'),
+)}`
 
 const plans: Offre[] = [
   {
@@ -70,7 +96,9 @@ const plans: Offre[] = [
     cta: 'Inscrire mon officine',
     /* Une officine ne peut pas s'inscrire seule : le courriel pré-rempli ouvre
        un canal réel, là où une ancre ne ferait que défiler. */
-    href: 'mailto:contact@pharmasur.ci?subject=Inscription%20de%20mon%20officine',
+    href: INSCRIPTION_OFFICINE,
+    /* Cible du lien « Espace pharmaciens » du pied de page. */
+    id: 'pharmacie-pro',
     variant: 'primary' as const,
     features: [
       "Géolocalisation de l'officine",
@@ -115,8 +143,9 @@ export function Pricing() {
           {plans.map((p, i) => (
             <Reveal key={p.name} delay={i * 0.1} className="h-full">
               <article
+                id={p.id}
                 className={cx(
-                  'relative flex h-full flex-col rounded-3xl p-7 transition-all duration-500 ease-[var(--ease-cine)] lg:p-8',
+                  'relative flex h-full scroll-mt-28 flex-col rounded-3xl p-7 transition-all duration-500 ease-[var(--ease-cine)] lg:p-8',
                   p.featured
                     ? 'bg-green-900 text-green-100/85 shadow-lg lg:-translate-y-4 lg:hover:-translate-y-5'
                     : 'border border-line bg-paper hover:-translate-y-1.5 hover:border-green-200 hover:shadow-md',
@@ -171,14 +200,14 @@ export function Pricing() {
                 <div className="mt-8">
                   {p.featured ? (
                     <a
-                      href={p.href ?? '#contact'}
+                      href={p.href}
                       className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-400 px-6 py-3.5 font-bold text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
                     >
                       {p.cta}
                       <ArrowRight />
                     </a>
                   ) : (
-                    <Button href={p.href ?? '#contact'} variant={p.variant} size="lg" block>
+                    <Button href={p.href} variant={p.variant} size="lg" block>
                       {p.cta}
                       <ArrowRight />
                     </Button>

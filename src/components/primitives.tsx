@@ -59,7 +59,13 @@ export function Badge({ children }: { children: ReactNode }) {
 
 type ButtonProps = {
   children: ReactNode
-  href?: string
+  /*
+   * Obligatoire, et sans valeur par défaut : le repli silencieux vers
+   * « #pricing » transformait un bouton dont on avait oublié la destination
+   * en bouton qui marche mais qui ment. Une destination manquante doit
+   * casser la compilation, pas emmener le visiteur ailleurs.
+   */
+  href: string
   variant?: 'primary' | 'ghost' | 'dark'
   size?: 'md' | 'lg'
   block?: boolean
@@ -70,7 +76,7 @@ const sizes = { md: 'px-5 py-2.5 text-[0.9rem]', lg: 'px-7 py-3.5 text-base' }
 
 export function Button({
   children,
-  href = '#pricing',
+  href,
   variant = 'primary',
   size = 'md',
   block = false,

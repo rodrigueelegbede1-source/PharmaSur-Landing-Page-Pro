@@ -1,8 +1,8 @@
 import { motion, useScroll, useSpring, useTransform } from 'motion/react'
-import { useRef } from 'react'
-import { Reveal, SectionHead } from './primitives'
+import { type ReactNode, useRef } from 'react'
+import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
-const steps = [
+const steps: { num: string; id?: string; title: string; body: string; icon: ReactNode }[] = [
   {
     num: '01',
     title: 'Composez votre liste',
@@ -27,6 +27,9 @@ const steps = [
   },
   {
     num: '03',
+    /* Cible du lien « Scanner anti-contrefaçon » du pied de page, qui menait
+       jusqu'ici en haut de la section sans montrer ce qu'il annonçait. */
+    id: 'scanner',
     title: 'Scannez et authentifiez',
     body: 'Sur place, scannez le code de la boîte : PharmaSur confirme en une seconde si le médicament est authentique ou contrefait.',
     icon: (
@@ -65,7 +68,10 @@ export function HowItWorks() {
           <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
             {steps.map((s, i) => (
               <Reveal key={s.num} delay={i * 0.1}>
-                <article className="group relative h-full rounded-3xl border border-line bg-paper p-7 transition-all duration-500 ease-[var(--ease-cine)] hover:-translate-y-1.5 hover:border-green-200 hover:shadow-md">
+                <article
+                  id={s.id}
+                  className="group relative h-full scroll-mt-28 rounded-3xl border border-line bg-paper p-7 transition-all duration-500 ease-[var(--ease-cine)] hover:-translate-y-1.5 hover:border-green-200 hover:shadow-md"
+                >
                   <div className="flex items-center justify-between">
                     <span className="grid size-14 place-items-center rounded-2xl bg-green-50 text-green-600 transition-colors duration-500 group-hover:bg-green-600 group-hover:text-white">
                       <svg
@@ -93,6 +99,24 @@ export function HowItWorks() {
             ))}
           </div>
         </div>
+
+        {/*
+          La section expliquait les trois étapes puis s'arrêtait : le visiteur
+          convaincu n'avait aucune suite sous la main et devait remonter au
+          menu. C'est le seul endroit de la page où l'appel à l'action
+          manquait vraiment.
+        */}
+        <Reveal delay={0.35}>
+          <div className="mt-14 flex flex-col items-center gap-4 lg:mt-16">
+            <Button href="#telecharger" size="lg">
+              Télécharger l'application
+              <ArrowRight />
+            </Button>
+            <p className="text-[0.88rem] text-body-soft">
+              Gratuit pour les patients · Disponible en Côte d'Ivoire
+            </p>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

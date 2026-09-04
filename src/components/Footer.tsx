@@ -7,13 +7,16 @@ const columns = [
       { label: 'Comment ça marche', href: '#how' },
       { label: 'Tarifs', href: '#pricing' },
       { label: 'Engagements', href: '#engagements' },
-      { label: 'Scanner anti-contrefaçon', href: '#how' },
+      /* Menait en haut de « Comment ça marche » : le visiteur devait chercher
+         lui-même l'étape qu'on venait de lui nommer. */
+      { label: 'Scanner anti-contrefaçon', href: '#scanner' },
     ],
   },
   {
     title: 'Ressources',
     links: [
-      { label: 'Espace pharmaciens', href: '#pricing' },
+      /* Menait sur la grille de tarifs entière, pas sur l'offre des officines. */
+      { label: 'Espace pharmaciens', href: '#pharmacie-pro' },
       // Aucun centre d'aide n'existe : le courriel est le seul recours réel.
       { label: "Centre d'aide", href: "mailto:contact@pharmasur.ci?subject=Besoin%20d'aide" },
       { label: 'Mentions légales', href: '/mentions-legales/' },
@@ -47,8 +50,13 @@ const socials: { label: string; path: string; href: string | null }[] = [
 ]
 
 export function Footer() {
+  /*
+   * scroll-mt sur le pied de page : sans elle, le lien « Contact » de la barre
+   * de navigation amenait le haut du pied exactement sous la barre fixe, qui
+   * recouvrait le logo de 9 px. Mesuré sur le rendu, pas supposé.
+   */
   return (
-    <footer id="contact" className="bg-green-950 text-green-100/70">
+    <footer id="contact" className="scroll-mt-20 bg-green-950 text-green-100/70">
       <div className="rail py-16">
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1.1fr]">
           <div>
