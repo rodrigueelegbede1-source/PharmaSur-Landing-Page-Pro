@@ -42,7 +42,9 @@ const plans: Offre[] = [
     price: '2 500',
     unit: 'FCFA / an',
     cta: 'Souscrire',
-    href: '#souscrire',
+    /* Rien n'est souscriptible avant l'ouverture : la seule action réelle est
+       de laisser son numéro pour être prévenu. */
+    href: '#telecharger',
     variant: 'primary' as const,
     featured: true,
     tag: 'Le plus choisi',
@@ -66,8 +68,9 @@ const plans: Offre[] = [
     price: '10 000',
     unit: 'FCFA / mois',
     cta: 'Inscrire mon officine',
-    /* Ancre distincte : le formulaire s'ouvre directement sur le profil officine. */
-    href: '#souscrire-officine',
+    /* Une officine ne peut pas s'inscrire seule : le courriel pré-rempli ouvre
+       un canal réel, là où une ancre ne ferait que défiler. */
+    href: 'mailto:contact@pharmasur.ci?subject=Inscription%20de%20mon%20officine',
     variant: 'primary' as const,
     features: [
       "Géolocalisation de l'officine",

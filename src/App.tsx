@@ -6,7 +6,6 @@ import { HowItWorks } from './components/HowItWorks'
 import { Nav } from './components/Nav'
 import { Pricing } from './components/Pricing'
 import { Reliability } from './components/Reliability'
-import { Souscription } from './components/Souscription'
 import { Testimonials } from './components/Testimonials'
 
 function ScrollProgress() {
@@ -32,7 +31,6 @@ export default function App() {
         <HowItWorks />
         <Reliability />
         <Pricing />
-        <Souscription />
         <Testimonials />
         <CtaPhone />
       </main>
