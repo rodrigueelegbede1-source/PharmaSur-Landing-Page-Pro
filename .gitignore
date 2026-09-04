@@ -15,6 +15,11 @@ dist-ssr
 # Lien vers le projet Vercel, propre à chaque machine
 .vercel
 
+# Outillage de fabrication des visuels : installé au besoin, jamais livré
+design/node_modules
+design/PlusJakartaSans.ttf
+design/package*.json
+
 # Variables d'environnement (seul .env.example est versionné)
 .env
 .env.*
@@ -30,3 +35,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+.env*

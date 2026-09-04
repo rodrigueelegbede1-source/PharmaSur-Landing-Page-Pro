@@ -148,6 +148,31 @@ son fichier variable), pour ne pas imposer ces dépendances au site. `apple-touc
 `favicon.svg` en 180 px sur fond plein : iOS applique son propre masque arrondi et ferait ressortir
 en noir des coins transparents.
 
+## Marque et réseaux sociaux
+
+Tout est dans `design/`, hors de `public/` : ce sont des fichiers de marque, pas des ressources
+du site, et rien n'est déployé.
+
+| Fichier | Usage |
+| --- | --- |
+| `logo/pharmasur-marque.svg` | la tuile seule, en vectoriel — favicon, avatar, app |
+| `logo/pharmasur-marque-512.png` · `-1024.png` | même tuile en PNG, pour les plateformes qui refusent le SVG |
+| `logo/pharmasur-logo-fond-clair.png` · `.svg` | verrou horizontal sur fond clair, 2400 px, fond transparent |
+| `logo/pharmasur-logo-fond-sombre.png` · `.svg` | idem pour fond sombre : mot en blanc, « Sur » en vert clair |
+| `reseaux-sociaux/*.jpg` | couvertures aux dimensions de chaque plateforme |
+
+Les couvertures sont dimensionnées **sur la largeur visible**, jamais sur le petit côté : une bande
+comme celle de YouTube (zone sûre 1546 × 423 au centre d'un 2560 × 1440) donnerait sinon un logo
+minuscule, et un carré un logo qui déborde.
+
+`generer-visuels.mjs` régénère l'ensemble. Ses deux dépendances ne sont pas dans `package.json` :
+elles ne servent qu'à fabriquer des images et n'ont rien à faire dans le site livré. Les
+instructions d'installation sont en tête du fichier.
+
+> Le mot-symbole est rendu en simulant l'extra-bold par un contour de 5,5 % du corps : la police
+> variable ne s'expose qu'en graisse par défaut au rendu. Au-delà de 7 %, les contreformes du
+> « a » et du « e » se referment.
+
 ## Conventions
 
 - **Entrée en CSS, interaction en JavaScript.** Les animations d'entrée du héros sont des
