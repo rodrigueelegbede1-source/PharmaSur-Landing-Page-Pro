@@ -6,7 +6,7 @@ const columns = [
     links: [
       { label: 'Comment ça marche', href: '#how' },
       { label: 'Tarifs', href: '#pricing' },
-      { label: 'Témoignages', href: '#testimonials' },
+      { label: 'Engagements', href: '#engagements' },
       { label: 'Scanner anti-contrefaçon', href: '#how' },
     ],
   },
@@ -22,16 +22,25 @@ const columns = [
   },
 ]
 
-const socials = [
+/*
+ * Ces icônes pointaient toutes vers « #hero » : elles renvoyaient le visiteur
+ * en haut de la page en lui laissant croire qu'un compte existait. Tant que
+ * href reste nul, le bloc n'est pas rendu du tout. Renseignez l'URL réelle du
+ * compte pour le faire réapparaître, sans autre modification.
+ */
+const socials: { label: string; path: string; href: string | null }[] = [
   {
+    href: null,
     label: 'Facebook',
     path: 'M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.25-1.5 1.55-1.5H16.7V4.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V14h2.7v8h3.5Z',
   },
   {
+    href: null,
     label: 'LinkedIn',
     path: 'M6.9 8.5H4V20h2.9V8.5ZM5.45 4a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20 13.6c0-3.1-1.7-4.6-3.9-4.6-1.8 0-2.6 1-3 1.7V8.5H10.2c.04.9 0 11.5 0 11.5h2.9v-6.4c0-.3 0-.6.1-.8.3-.6.8-1.3 1.8-1.3 1.3 0 1.9.99 1.9 2.5V20H20v-6.4Z',
   },
   {
+    href: null,
     label: 'X',
     path: 'M17.5 3h3l-6.6 7.6L21.8 21h-5.9l-4.3-5.6L6.5 21H3.4l7-8.1L2.6 3h6l3.9 5.2L17.5 3Zm-1 16.2h1.6L7.6 4.7H5.9l10.6 14.5Z',
   },
@@ -48,20 +57,26 @@ export function Footer() {
               L'application d'utilité publique qui rend le médicament disponible, traçable et sûr en
               Côte d'Ivoire.
             </p>
-            <div className="mt-6 flex gap-2.5">
-              {socials.map((s) => (
-                <a
-                  key={s.label}
-                  href="#hero"
-                  aria-label={s.label}
-                  className="grid size-10 place-items-center rounded-full border border-white/12 text-green-100/80 transition-all duration-300 hover:-translate-y-0.5 hover:border-green-400 hover:bg-green-400 hover:text-green-950"
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="size-4.5" aria-hidden>
-                    <path d={s.path} />
-                  </svg>
-                </a>
-              ))}
-            </div>
+            {socials.some((s) => s.href) && (
+              <div className="mt-6 flex gap-2.5">
+                {socials
+                  .filter((s) => s.href)
+                  .map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href ?? undefined}
+                      aria-label={s.label}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      className="grid size-10 place-items-center rounded-full border border-white/12 text-green-100/80 transition-all duration-300 hover:-translate-y-0.5 hover:border-green-400 hover:bg-green-400 hover:text-green-950"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="size-4.5" aria-hidden>
+                        <path d={s.path} />
+                      </svg>
+                    </a>
+                  ))}
+              </div>
+            )}
           </div>
 
           {columns.map((c) => (
@@ -85,11 +100,12 @@ export function Footer() {
           <div>
             <h4 className="text-[0.95rem] text-white">Contact</h4>
             <ul className="mt-5 flex flex-col gap-3 text-[0.92rem]">
-              <li>
-                <a href="tel:+2252722000000" className="transition-colors hover:text-green-400">
-                  +225 27 22 00 00 00
-                </a>
-              </li>
+              {/*
+                Le numéro affiché ici, +225 27 22 00 00 00, était un
+                remplissage : personne ne décrochait. Un numéro faux sur un
+                service de santé est pire que pas de numéro du tout. Remettez
+                la ligne dès que la ligne réelle existe.
+              */}
               <li>
                 <a href="mailto:contact@pharmasur.ci" className="transition-colors hover:text-green-400">
                   contact@pharmasur.ci

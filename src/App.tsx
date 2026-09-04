@@ -1,12 +1,12 @@
 import { motion, useScroll, useSpring } from 'motion/react'
 import { CtaPhone } from './components/CtaPhone'
+import { Engagements } from './components/Engagements'
 import { Footer } from './components/Footer'
 import { Hero } from './components/Hero'
 import { HowItWorks } from './components/HowItWorks'
 import { Nav } from './components/Nav'
 import { Pricing } from './components/Pricing'
 import { Reliability } from './components/Reliability'
-import { Testimonials } from './components/Testimonials'
 
 function ScrollProgress() {
   const { scrollYProgress } = useScroll()
@@ -31,7 +31,7 @@ export default function App() {
         <HowItWorks />
         <Reliability />
         <Pricing />
-        <Testimonials />
+        <Engagements />
         <CtaPhone />
       </main>
       <Footer />

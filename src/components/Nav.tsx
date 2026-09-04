@@ -6,7 +6,7 @@ import { ArrowRight } from './primitives'
 const links = [
   { label: 'Comment ça marche', href: '#how' },
   { label: 'Tarifs', href: '#pricing' },
-  { label: 'Témoignages', href: '#testimonials' },
+  { label: 'Engagements', href: '#engagements' },
   { label: 'Contact', href: '#contact' },
 ]
 

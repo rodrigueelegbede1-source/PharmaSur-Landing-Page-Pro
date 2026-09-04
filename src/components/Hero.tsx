@@ -5,11 +5,17 @@ import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Button, Counter } from './primitives'
 
-const stats = [
-  { to: 1400, suffix: '+', label: 'Pharmacies partenaires' },
-  /* À ACTUALISER avant mise en ligne : chiffres encore provisoires, repris de la maquette. */
-  { to: 98, suffix: '%', label: 'Scans authentifiés' },
-  { to: 45, suffix: 's', label: 'Recherche moyenne' },
+/*
+ * Aucun chiffre de traction ici tant que le service n'a pas d'utilisateurs.
+ * Les trois valeurs ci-dessous sont vérifiables aujourd'hui : le nombre
+ * d'officines du pays, la règle de fraîcheur que s'impose le service, et la
+ * gratuité de l'offre Citoyen. Ne pas y remettre de « pharmacies partenaires »
+ * ni de taux d'authentification avant d'avoir les chiffres réels.
+ */
+const stats: { to?: number; suffix?: string; text?: string; label: string }[] = [
+  { to: 1400, label: "Pharmacies en Côte d'Ivoire" },
+  { to: 48, suffix: ' h', label: 'Au-delà, un stock est dit incertain' },
+  { text: 'Gratuit', label: 'Pour les patients, sans abonnement' },
 ]
 
 export function Hero() {
@@ -82,7 +88,7 @@ export function Hero() {
                 <li key={s.label} className="relative pl-4">
                   <span className="absolute top-1.5 left-0 h-[calc(100%-0.75rem)] w-0.5 rounded-full bg-green-200" />
                   <strong className="block text-[1.75rem] leading-none font-extrabold text-green-700">
-                    <Counter to={s.to} suffix={s.suffix} />
+                    {s.text ?? <Counter to={s.to ?? 0} suffix={s.suffix} />}
                   </strong>
                   <span className="mt-1 block text-[0.85rem]">{s.label}</span>
                 </li>
