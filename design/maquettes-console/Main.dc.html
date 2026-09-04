@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    a { color: #12855d; } a:hover { color: #10714f; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #f7faf9; overflow: hidden;">
+
+  <div style="width: 248px; flex: none; background: #062a1d; display: flex; flex-direction: column; padding: 24px 16px;">
+    <div style="display: flex; align-items: center; gap: 11px; padding: 0 8px 24px;">
+      <div style="width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(140deg, #16a06f, #10714f); display: grid; place-items: center;">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"></path><path d="M12 8v6M9 11h6"></path></svg>
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">Pharma<span style="color: #2fbc86;">Sur</span></span>
+        <span style="font-size: 10.5px; font-weight: 600; color: #7b8b84;">Console officine</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 3px;">
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px; background: rgba(255,255,255,0.09);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2fbc86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="8" rx="2"></rect><rect x="14" y="3" width="7" height="5" rx="2"></rect><rect x="14" y="11" width="7" height="10" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect></svg>
+        <span style="font-size: 13.5px; font-weight: 700; color: #ffffff;">Tableau de bord</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"></path></svg>
+        <span style="font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Stocks</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"></path></svg>
+        <span style="font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Bons d'assurance</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+        <span style="flex: 1; font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Demandes locales</span>
+        <span style="background: #2fbc86; color: #062a1d; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 999px;">14</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7"></path></svg>
+        <span style="font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Paramètres</span>
+      </div>
+    </div>
+
+    <div style="margin-top: auto; padding: 14px 12px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 3px;">
+      <span style="font-size: 12.5px; font-weight: 800; color: #ffffff;">Pharmacie de la Riviera</span>
+      <span style="font-size: 11px; font-weight: 500; color: #b9e8d3;">Dr Kouassi Aya · Cocody</span>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+
+    <div style="height: 76px; flex: none; background: #ffffff; border-bottom: 1px solid #e2ece7; display: flex; align-items: center; justify-content: space-between; padding: 0 32px;">
+      <h1 style="margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; color: #0e1b16;">Tableau de bord</h1>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 9px 14px; border: 1px solid #b9e8d3; background: #f1fbf6; border-radius: 999px;">
+          <span style="width: 8px; height: 8px; border-radius: 999px; background: #2fbc86;"></span>
+          <span style="font-size: 12.5px; font-weight: 700; color: #10714f;">De garde cette semaine</span>
+        </div>
+        <div style="width: 38px; height: 38px; border-radius: 999px; background: #d9f2e7; display: grid; place-items: center;">
+          <span style="font-size: 13px; font-weight: 800; color: #0d5a40;">KA</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex: 1; padding: 28px 32px; display: flex; flex-direction: column; gap: 22px; overflow: hidden;">
+
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px;">
+        <div style="background: #ffffff; border: 1px solid #e2ece7; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 12px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Vues de la fiche</span>
+          <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: #0e1b16; font-variant-numeric: tabular-nums;">1 284</span>
+          <span style="font-size: 12px; font-weight: 600; color: #12855d;">+18 % sur 7 jours</span>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e2ece7; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 12px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Itinéraires lancés</span>
+          <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: #0e1b16; font-variant-numeric: tabular-nums;">312</span>
+          <span style="font-size: 12px; font-weight: 600; color: #12855d;">+9 % sur 7 jours</span>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e2ece7; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 12px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Appels reçus</span>
+          <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: #0e1b16; font-variant-numeric: tabular-nums;">47</span>
+          <span style="font-size: 12px; font-weight: 600; color: #7b8b84;">stable</span>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e2ece7; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 12px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Scans effectués</span>
+          <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: #0e1b16; font-variant-numeric: tabular-nums;">96</span>
+          <span style="font-size: 12px; font-weight: 600; color: #7b8b84;">dont 1 lot signalé</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;">
+
+        <div style="background: #ffffff; border: 1px solid #e2ece7; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <span style="font-size: 15px; font-weight: 800; color: #0e1b16;">Ce qu'on cherche près de vous</span>
+            <span style="font-size: 12px; font-weight: 700; color: #12855d;">7 derniers jours</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                <span style="font-size: 13.5px; font-weight: 700; color: #0e1b16;">Amoxicilline 1 g</span>
+                <span style="font-size: 12.5px; font-weight: 700; color: #c1121f;">86 · vous ne l'avez pas</span>
+              </div>
+              <div style="height: 7px; border-radius: 999px; background: #eef5f1; overflow: hidden;"><div style="width: 86%; height: 7px; border-radius: 999px; background: #c1121f;"></div></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                <span style="font-size: 13.5px; font-weight: 700; color: #0e1b16;">Paracétamol 500 mg</span>
+                <span style="font-size: 12.5px; font-weight: 700; color: #7b8b84;">64 · en stock</span>
+              </div>
+              <div style="height: 7px; border-radius: 999px; background: #eef5f1; overflow: hidden;"><div style="width: 64%; height: 7px; border-radius: 999px; background: #2fbc86;"></div></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                <span style="font-size: 13.5px; font-weight: 700; color: #0e1b16;">Vitamine C 500 mg</span>
+                <span style="font-size: 12.5px; font-weight: 700; color: #7b8b84;">41 · en stock</span>
+              </div>
+              <div style="height: 7px; border-radius: 999px; background: #eef5f1; overflow: hidden;"><div style="width: 41%; height: 7px; border-radius: 999px; background: #2fbc86;"></div></div>
+            </div>
+          </div>
+          <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #4a5b54; text-wrap: pretty;">86 patients ont cherché l'Amoxicilline dans votre quartier sans la trouver chez vous.</p>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e2ece7; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px;">
+          <span style="font-size: 15px; font-weight: 800; color: #0e1b16;">À confirmer aujourd'hui</span>
+          <p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: #4a5b54;">Trois produits n'ont pas été confirmés depuis 48 h. Un clic suffit.</p>
+          <div style="display: flex; flex-direction: column; gap: 9px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid #e2ece7; border-radius: 13px;">
+              <span style="font-size: 13.5px; font-weight: 700; color: #0e1b16;">Paracétamol 500 mg</span>
+              <div style="display: flex; gap: 7px;">
+                <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 14px; border-radius: 999px;">En stock</span>
+                <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 999px;">Rupture</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid #e2ece7; border-radius: 13px;">
+              <span style="font-size: 13.5px; font-weight: 700; color: #0e1b16;">Vitamine C 500 mg</span>
+              <div style="display: flex; gap: 7px;">
+                <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 14px; border-radius: 999px;">En stock</span>
+                <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 999px;">Rupture</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid #e2ece7; border-radius: 13px;">
+              <span style="font-size: 13.5px; font-weight: 700; color: #0e1b16;">Amoxicilline Denk 1 g</span>
+              <div style="display: flex; gap: 7px;">
+                <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 999px;">En stock</span>
+                <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 14px; border-radius: 999px;">Rupture</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

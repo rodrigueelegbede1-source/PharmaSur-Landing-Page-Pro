@@ -15,8 +15,9 @@ dist-ssr
 # Lien vers le projet Vercel, propre à chaque machine
 .vercel
 
-# Canevas de maquettes assemblé : 2,5 Mo régénérables depuis les .dc.html
+# Canevas de maquettes assemblés : 2,5 Mo chacun, régénérables depuis les .dc.html
 design/maquettes-app/pharmasur-application-patient.html
+design/maquettes-console/pharmasur-console-pharmacie.html
 
 # Outillage de fabrication des visuels : installé au besoin, jamais livré
 design/node_modules

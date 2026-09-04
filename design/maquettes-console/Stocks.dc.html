@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    a { color: #12855d; } a:hover { color: #10714f; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #f7faf9; overflow: hidden;">
+
+  <div style="width: 248px; flex: none; background: #062a1d; display: flex; flex-direction: column; padding: 24px 16px;">
+    <div style="display: flex; align-items: center; gap: 11px; padding: 0 8px 24px;">
+      <div style="width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(140deg, #16a06f, #10714f); display: grid; place-items: center;">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"></path><path d="M12 8v6M9 11h6"></path></svg>
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">Pharma<span style="color: #2fbc86;">Sur</span></span>
+        <span style="font-size: 10.5px; font-weight: 600; color: #7b8b84;">Console officine</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 3px;">
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="8" rx="2"></rect><rect x="14" y="3" width="7" height="5" rx="2"></rect><rect x="14" y="11" width="7" height="10" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect></svg>
+        <span style="font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Tableau de bord</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px; background: rgba(255,255,255,0.09);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2fbc86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"></path></svg>
+        <span style="font-size: 13.5px; font-weight: 700; color: #ffffff;">Stocks</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"></path></svg>
+        <span style="font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Bons d'assurance</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+        <span style="flex: 1; font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Demandes locales</span>
+        <span style="background: #2fbc86; color: #062a1d; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 999px;">14</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8M4.6 9a1.6 1.6 0 0 0-.3-1.8"></path></svg>
+        <span style="font-size: 13.5px; font-weight: 600; color: #b9e8d3;">Paramètres</span>
+      </div>
+    </div>
+    <div style="margin-top: auto; padding: 14px 12px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 3px;">
+      <span style="font-size: 12.5px; font-weight: 800; color: #ffffff;">Pharmacie de la Riviera</span>
+      <span style="font-size: 11px; font-weight: 500; color: #b9e8d3;">Dr Kouassi Aya · Cocody</span>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+
+    <div style="height: 76px; flex: none; background: #ffffff; border-bottom: 1px solid #e2ece7; display: flex; align-items: center; justify-content: space-between; padding: 0 32px;">
+      <h1 style="margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; color: #0e1b16;">Stocks</h1>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 9px; padding: 9px 14px; border: 1px solid #e2ece7; border-radius: 999px;">
+          <span style="width: 8px; height: 8px; border-radius: 999px; background: #7b8b84;"></span>
+          <span style="font-size: 12.5px; font-weight: 700; color: #4a5b54;">Synchronisation désactivée</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: #12855d;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+          <span style="font-size: 13px; font-weight: 800; color: #ffffff;">Ajouter un produit</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex: 1; padding: 24px 32px; display: flex; flex-direction: column; gap: 18px; overflow: hidden;">
+
+      <div style="display: flex; align-items: center; gap: 14px; background: #f1fbf6; border: 1px solid #b9e8d3; border-radius: 16px; padding: 16px 20px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#12855d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #0d5a40;">Vous n'avez pas de logiciel de gestion connecté</span>
+          <span style="font-size: 12.5px; line-height: 1.5; color: #4a5b54;">Confirmez la disponibilité en un clic. Les produits non confirmés depuis 48 h sont signalés aux patients comme incertains, jamais comme disponibles.</span>
+        </div>
+        <span style="font-size: 12.5px; font-weight: 800; color: #12855d; white-space: nowrap;">Connecter un logiciel</span>
+      </div>
+
+      <div style="flex: 1; background: #ffffff; border: 1px solid #e2ece7; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+
+        <div style="display: grid; grid-template-columns: 2.4fr 1fr 1.1fr 1.5fr; gap: 16px; padding: 15px 22px; background: #f7faf9; border-bottom: 1px solid #e2ece7;">
+          <span style="font-size: 11.5px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Produit</span>
+          <span style="font-size: 11.5px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Prix</span>
+          <span style="font-size: 11.5px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Confirmé</span>
+          <span style="font-size: 11.5px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.07em;">Disponibilité</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2.4fr 1fr 1.1fr 1.5fr; gap: 16px; align-items: center; padding: 16px 22px; border-bottom: 1px solid #eef5f1;">
+          <span style="font-size: 14px; font-weight: 700; color: #0e1b16;">Paracétamol 500 mg</span>
+          <span style="font-size: 13.5px; font-weight: 700; color: #4a5b54; font-variant-numeric: tabular-nums;">900 F</span>
+          <span style="font-size: 12.5px; font-weight: 600; color: #7b8b84;">il y a 2 h</span>
+          <div style="display: flex; gap: 7px;">
+            <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 15px; border-radius: 999px;">En stock</span>
+            <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 15px; border-radius: 999px;">Rupture</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2.4fr 1fr 1.1fr 1.5fr; gap: 16px; align-items: center; padding: 16px 22px; border-bottom: 1px solid #eef5f1;">
+          <span style="font-size: 14px; font-weight: 700; color: #0e1b16;">Vitamine C 500 mg</span>
+          <span style="font-size: 13.5px; font-weight: 700; color: #4a5b54; font-variant-numeric: tabular-nums;">1 200 F</span>
+          <span style="font-size: 12.5px; font-weight: 600; color: #7b8b84;">il y a 2 h</span>
+          <div style="display: flex; gap: 7px;">
+            <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 15px; border-radius: 999px;">En stock</span>
+            <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 15px; border-radius: 999px;">Rupture</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2.4fr 1fr 1.1fr 1.5fr; gap: 16px; align-items: center; padding: 16px 22px; border-bottom: 1px solid #eef5f1; background: #fdf6f6;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 14px; font-weight: 700; color: #0e1b16;">Amoxicilline 1 g</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #c1121f;">86 recherches cette semaine</span>
+          </div>
+          <span style="font-size: 13.5px; font-weight: 700; color: #4a5b54; font-variant-numeric: tabular-nums;">2 750 F</span>
+          <span style="font-size: 12.5px; font-weight: 700; color: #c1121f;">il y a 3 jours</span>
+          <div style="display: flex; gap: 7px;">
+            <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 15px; border-radius: 999px;">En stock</span>
+            <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 15px; border-radius: 999px;">Rupture</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2.4fr 1fr 1.1fr 1.5fr; gap: 16px; align-items: center; padding: 16px 22px; border-bottom: 1px solid #eef5f1;">
+          <span style="font-size: 14px; font-weight: 700; color: #0e1b16;">Amoxicilline Denk 1 g</span>
+          <span style="font-size: 13.5px; font-weight: 700; color: #4a5b54; font-variant-numeric: tabular-nums;">2 400 F</span>
+          <span style="font-size: 12.5px; font-weight: 600; color: #7b8b84;">il y a 2 h</span>
+          <div style="display: flex; gap: 7px;">
+            <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 15px; border-radius: 999px;">En stock</span>
+            <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 15px; border-radius: 999px;">Rupture</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2.4fr 1fr 1.1fr 1.5fr; gap: 16px; align-items: center; padding: 16px 22px;">
+          <span style="font-size: 14px; font-weight: 700; color: #0e1b16;">Ibuprofène 400 mg</span>
+          <span style="font-size: 13.5px; font-weight: 700; color: #4a5b54; font-variant-numeric: tabular-nums;">1 100 F</span>
+          <span style="font-size: 12.5px; font-weight: 600; color: #7b8b84;">hier</span>
+          <div style="display: flex; gap: 7px;">
+            <span style="background: #12855d; color: #ffffff; font-size: 12px; font-weight: 800; padding: 7px 15px; border-radius: 999px;">En stock</span>
+            <span style="border: 1px solid #e2ece7; color: #7b8b84; font-size: 12px; font-weight: 700; padding: 7px 15px; border-radius: 999px;">Rupture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "artboards": [
+    { "file": "Inscription.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "1 · Inscription de l'officine" },
+    { "file": "Main.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 900, "title": "2 · Tableau de bord" },
+    { "file": "Stocks.dc.html", "x": 3120, "y": 0, "w": 1440, "h": 900, "title": "3 · Stocks" },
+    { "file": "Bons.dc.html", "x": 0, "y": 1160, "w": 1440, "h": 900, "title": "4 · Bons d'assurance" },
+    { "file": "Demandes.dc.html", "x": 1560, "y": 1160, "w": 1440, "h": 900, "title": "5 · Demandes locales" }
+  ],
+  "annotations": [
+    {
+      "id": "entree-officine",
+      "x": 0,
+      "y": -210,
+      "w": 1440,
+      "text": "L'ENTRÉE DE L'OFFICINE\nCinq champs, pas un de plus : nom, commune, pharmacien, agrément, téléphone. Le numéro d'agrément est le seul verrou — la fiche reste hors ligne tant qu'il n'est pas vérifié auprès de l'Ordre. Aucun paiement n'est demandé avant cette vérification."
+    },
+    {
+      "id": "note-stocks",
+      "x": 3120,
+      "y": -210,
+      "w": 1440,
+      "text": "LA DOCTRINE DE FIABILITÉ, CÔTÉ OFFICINE\nLa plupart des pharmacies n'ont pas de logiciel de gestion connecté. La console ne fait donc jamais semblant de connaître le stock : le pharmacien confirme en un clic, et un produit non confirmé depuis 48 h est signalé au patient comme incertain — jamais comme disponible. C'est la contrepartie exacte de la promesse faite sur la landing page."
+    },
+    {
+      "id": "note-bons",
+      "x": 0,
+      "y": 960,
+      "w": 1440,
+      "text": "BONS D'ASSURANCE — AJOUT MANUEL, RETRAIT À TOUT MOMENT\nL'officine déclare elle-même les bons qu'elle accepte et peut en retirer un dès qu'elle cesse de l'accepter. Une liste périmée renverrait le patient au problème que le service résout : la date de vérification est donc toujours affichée, jamais masquée."
+    },
+    {
+      "id": "note-demandes",
+      "x": 1560,
+      "y": 960,
+      "w": 1440,
+      "text": "CE QUI JUSTIFIE LES 10 000 FCFA / MOIS\nLes demandes locales sont la seule page que l'officine ne peut obtenir nulle part ailleurs : ce que les patients à 3 km cherchent et que personne n'a. Comptages agrégés uniquement — aucun patient identifié, aucune ordonnance transmise, seuil d'affichage à 5 recherches."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}
