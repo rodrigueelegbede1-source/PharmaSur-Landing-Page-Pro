@@ -91,7 +91,7 @@ src/
     PhoneMock.tsx        maquette : liste multi-produits, prix, équivalent générique, itinéraire
     HowItWorks.tsx       3 étapes, fil conducteur tracé au scroll
     Reliability.tsx      les trois voies qui tiennent le stock à jour
-    Pricing.tsx          3 offres en FCFA, carte « Le plus choisi » surélevée
+    Pricing.tsx          2 offres : gratuite pour les patients, abonnement pour les officines
     Testimonials.tsx     3 témoignages
     CtaPhone.tsx         capture de numéro, envoi à l'endpoint, mention d'usage
     Footer.tsx

@@ -42,13 +42,18 @@ const INSCRIPTION_OFFICINE = `mailto:contact@pharmasur.ci?subject=${encodeURICom
 )}`
 
 /*
- * Les trois offres annonçaient un quota de scans d'authentification. Retiré :
- * sans base de codes authentiques, le scan ne peut rien affirmer. Vendre un
- * quota d'une vérification qui n'existe pas, c'est vendre du vide.
+ * Deux offres, et non plus trois. L'offre Santé Famille à 2 500 FCFA / an a été
+ * supprimée et ses fonctionnalités encore tenables — rappels de prise, alertes
+ * de retour en stock — sont passées dans l'offre gratuite. Tout ce qui est
+ * payant pour le patient a donc disparu : le service ne se finance plus que
+ * par l'abonnement des officines.
+ *
+ * Le montant de cet abonnement n'est plus affiché. C'est un choix commercial,
+ * pas un oubli : tant qu'aucun prix n'est écrit, aucun prix n'est promis.
  */
 const plans: Offre[] = [
   {
-    name: 'Offre Citoyen',
+    name: 'Offre Prompt rétablissement',
     desc: "Pour tous les patients de Côte d'Ivoire.",
     price: 'Gratuit',
     unit: '',
@@ -56,46 +61,23 @@ const plans: Offre[] = [
     href: '#telecharger',
     variant: 'ghost' as const,
     features: [
+      'Recherche de médicaments illimitée',
+      "Prix des médicaments et coût total de l'ordonnance",
+      'Équivalent générique signalé en cas de rupture',
+      "Bons d'assurance acceptés, affichés par officine",
       'Géolocalisation des pharmacies ouvertes',
+      'Contacter la pharmacie',
+      'Rappels intelligents de prise',
+      'Alertes de retour en stock à la demande',
       'Carte interactive des pharmacies de garde',
       "Itinéraire GPS et horaires d'ouverture",
-      'Contacter la pharmacie',
-      'Recherche de médicaments illimitée',
-      "Prix des médicaments et coût total de l'ordonnance",
-      'Équivalent générique signalé en cas de rupture',
-      "Bons d'assurance acceptés, affichés par officine",
-    ],
-  },
-  {
-    name: 'Offre Santé Famille',
-    desc: 'Pour protéger toute la famille au quotidien.',
-    price: '2 500',
-    unit: 'FCFA / an',
-    cta: 'Souscrire',
-    /* Rien n'est souscriptible avant l'ouverture : la seule action réelle est
-       de laisser son numéro pour être prévenu. */
-    href: '#telecharger',
-    variant: 'primary' as const,
-    featured: true,
-    tag: 'Le plus choisi',
-    features: [
-      'Recherche de médicaments illimitée',
-      "Prix des médicaments et coût total de l'ordonnance",
-      'Équivalent générique signalé en cas de rupture',
-      "Bons d'assurance acceptés, affichés par officine",
-      'Géolocalisation des pharmacies de garde',
-      'Contacter la pharmacie',
-      'Carnet de traitement numérique pour 5 membres',
-      'Rappels intelligents de prise & notices vocales',
-      'Support client prioritaire 24/7',
-      'Alertes de retour en stock',
     ],
   },
   {
     name: 'Offre Pharmacie Pro',
     desc: 'Pour les officines qui veulent être visibles.',
-    price: '10 000',
-    unit: 'FCFA / mois',
+    price: 'Abonnement',
+    unit: '',
     cta: 'Inscrire mon officine',
     /* Une officine ne peut pas s'inscrire seule : le courriel pré-rempli ouvre
        un canal réel, là où une ancre ne ferait que défiler. */
@@ -103,6 +85,10 @@ const plans: Offre[] = [
     /* Cible du lien « Espace pharmaciens » du pied de page. */
     id: 'pharmacie-pro',
     variant: 'primary' as const,
+    /* La carte sombre était sur Santé Famille. Elle passe à l'offre des
+       officines, seule offre payante restante, sans reprendre l'étiquette
+       « Le plus choisi » : aucune officine n'est encore inscrite. */
+    featured: true,
     features: [
       "Géolocalisation de l'officine",
       "Bons d'assurance acceptés : ajout et retrait à tout moment",
@@ -137,11 +123,11 @@ export function Pricing() {
       <div className="rail">
         <SectionHead
           eyebrow="Tarifs"
-          title="Une offre pour chacun"
-          lede="Gratuit pour les citoyens, complet pour les familles, puissant pour les officines."
+          title="Gratuit pour les patients"
+          lede="Tout ce qu'un patient cherche est gratuit, sans limite et sans compte payant. Le service se finance par l'abonnement des officines qui veulent être trouvées."
         />
 
-        <div className="mt-14 grid items-start gap-6 lg:mt-20 lg:grid-cols-3 lg:gap-7">
+        <div className="mx-auto mt-14 grid items-start gap-6 lg:mt-20 lg:max-w-4xl lg:grid-cols-2 lg:gap-7">
           {plans.map((p, i) => (
             <Reveal key={p.name} delay={i * 0.1} className="h-full">
               <article
@@ -222,7 +208,8 @@ export function Pricing() {
 
         <Reveal delay={0.25}>
           <p className="mt-10 text-center text-[0.88rem] text-body-soft">
-            Sans engagement · Paiement Mobile Money accepté · Résiliable à tout moment
+            Abonnement officine sans engagement de durée · Paiement Mobile Money accepté ·
+            Résiliable à tout moment
           </p>
         </Reveal>
       </div>
