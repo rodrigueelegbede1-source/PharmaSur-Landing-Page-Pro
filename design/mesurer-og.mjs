@@ -6,31 +6,22 @@
  * seul — photo plus voile, sans les textes — et on relève le pixel le plus
  * clair sous chaque bloc, cas le plus défavorable pour un texte clair.
  *
+ * Les boîtes viennent de la même mise en page que le rendu (og-commun.mjs) :
+ * les recopier ici les avait déjà fait diverger une fois, et une boîte qui ne
+ * couvre plus son texte donne un verdict rassurant sur rien.
+ *
  *   node mesurer-og.mjs
  */
-import { Resvg } from '@resvg/resvg-js'
 import sharp from 'sharp'
-import { H, L, PHOTO_POS, VOILE } from './og-commun.mjs'
-
-const ICI = new URL('.', import.meta.url).pathname.slice(1)
-const FONT = `${ICI}PlusJakartaSans.ttf`
-const PHOTO = `${ICI}../public/hero-officine.jpg`
+import { disposer, H, L, PHOTO, PHOTO_POS, rendre, VOILE } from './og-commun.mjs'
 
 const voile = `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${H}">
   <defs>${VOILE}</defs>
   <rect width="${L}" height="${H}" fill="url(#voile)"/></svg>`
 
-const png = new Resvg(voile, {
-  fitTo: { mode: 'width', value: L },
-  font: { fontFiles: [FONT], loadSystemFonts: false },
-  background: 'rgba(0,0,0,0)',
-})
-  .render()
-  .asPng()
-
 const fond = await sharp(PHOTO).resize(L, H, PHOTO_POS).toBuffer()
 const { data, info } = await sharp(fond)
-  .composite([{ input: png, top: 0, left: 0 }])
+  .composite([{ input: rendre(voile, L), top: 0, left: 0 }])
   .raw()
   .toBuffer({ resolveWithObject: true })
 
@@ -42,27 +33,18 @@ const lum = (r, g, b) => 0.2126 * canal(r) + 0.7152 * canal(g) + 0.0722 * canal(
 const contraste = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))
 
-/* Boîtes déduites de la géométrie de generer-og.mjs : corps 64, interligne 74,
-   première ligne de base à 227. */
-const blocs = [
-  { nom: 'Titre ligne 1 (blanc)', couleur: '#ffffff', x: 72, y: 181, w: 760, h: 60 },
-  { nom: 'Titre ligne 2 (vert 400)', couleur: '#2fbc86', x: 72, y: 255, w: 760, h: 60 },
-  { nom: 'Titre ligne 3 (vert 400)', couleur: '#2fbc86', x: 72, y: 329, w: 300, h: 60 },
-  { nom: 'Sous-titre (vert 200)', couleur: '#b9e8d3', x: 72, y: 434, w: 710, h: 30 },
-  { nom: 'Pastille (blanc)', couleur: '#ffffff', x: 72, y: 509, w: 330, h: 44 },
-  { nom: 'Mot-symbole (blanc)', couleur: '#ffffff', x: 148, y: 76, w: 220, h: 42 },
-]
+const { boites } = await disposer()
 
-console.log('Bloc                        seuil   pire fond   contraste')
-console.log('-'.repeat(60))
+console.log('Bloc              seuil   pire fond          contraste')
+console.log('-'.repeat(58))
 let plancher = Infinity
-for (const b of blocs) {
+for (const b of boites) {
   const [tr, tg, tb] = hex(b.couleur)
   const lTexte = lum(tr, tg, tb)
   let pire = Infinity
   let pirePixel = null
-  for (let y = b.y; y < b.y + b.h; y++) {
-    for (let x = b.x; x < b.x + b.w; x++) {
+  for (let y = Math.max(0, b.y); y < Math.min(H, b.y + b.h); y++) {
+    for (let x = Math.max(0, b.x); x < Math.min(L, b.x + b.w); x++) {
       const i = (y * info.width + x) * info.channels
       const c = contraste(lTexte, lum(data[i], data[i + 1], data[i + 2]))
       if (c < pire) {
@@ -72,12 +54,14 @@ for (const b of blocs) {
     }
   }
   plancher = Math.min(plancher, pire)
-  const seuil = b.h >= 40 ? 3 : 4.5
-  const verdict = pire >= seuil ? 'OK' : 'INSUFFISANT'
+  /* 3:1 pour un grand texte (>= 24 px gras), 4,5:1 sinon. */
+  const seuil = b.h >= 30 ? 3 : 4.5
   console.log(
-    `${b.nom.padEnd(28)}${String(seuil).padEnd(8)}rgb(${pirePixel.join(',')})`.padEnd(52) +
-      `${pire.toFixed(2)}:1  ${verdict}`,
+    b.nom.padEnd(18) +
+      String(seuil).padEnd(8) +
+      `rgb(${pirePixel.join(',')})`.padEnd(19) +
+      `${pire.toFixed(2)}:1  ${pire >= seuil ? 'OK' : 'INSUFFISANT'}`,
   )
 }
-console.log('-'.repeat(60))
+console.log('-'.repeat(58))
 console.log(`plancher de la carte : ${plancher.toFixed(2)}:1`)

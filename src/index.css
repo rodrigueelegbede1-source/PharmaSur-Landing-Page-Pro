@@ -241,19 +241,5 @@
   }
 }
 
-@keyframes scanline {
-  0% {
-    transform: translateY(-2px);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(58px);
-    opacity: 0;
-  }
-}
+/* L'animation « scanline » vivait ici. Elle balayait la carte de scan de la
+   maquette du téléphone, retirée avec la fonctionnalité d'authentification. */

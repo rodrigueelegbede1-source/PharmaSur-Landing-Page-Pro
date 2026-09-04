@@ -299,17 +299,20 @@ export function PhoneMock() {
             ))}
           </div>
 
-          {/* Carte de scan, ancrée en bas comme dans l'original */}
+          {/*
+            Cette carte annonçait « Boîte authentifiée · Lot #CI-4471 ». Le scan
+            d'authentification a été retiré du produit faute de base de codes
+            authentiques : montrer une boîte vérifiée dans la maquette du
+            téléphone donnerait à voir une fonctionnalité qui n'existe pas.
+            Elle affiche à la place la dernière action réelle du parcours —
+            aller à l'officine retenue.
+          */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={done ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
             className="relative mt-auto flex shrink-0 items-center gap-2.5 overflow-hidden rounded-2xl bg-green-900 px-3 py-2.5 text-white"
           >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-green-400/80 motion-safe:animate-[scanline_3.2s_ease-in-out_infinite]"
-            />
             <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/12 text-green-400">
               <svg
                 viewBox="0 0 24 24"
@@ -321,13 +324,12 @@ export function PhoneMock() {
                 className="size-4.5"
                 aria-hidden
               >
-                <path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z" />
-                <path d="m9 12 2 2 4-4" />
+                <path d="M3 11 21 3l-8 18-2-7-8-3Z" />
               </svg>
             </span>
             <div>
-              <p className="text-[0.78rem] font-bold">Boîte authentifiée</p>
-              <p className="text-[0.66rem] text-white/70">Lot #CI-4471 • Vérifié</p>
+              <p className="text-[0.78rem] font-bold">Y aller maintenant</p>
+              <p className="text-[0.66rem] text-white/70">Itinéraire • 1,2 km • Ouvert 24h/24</p>
             </div>
           </motion.div>
         </div>

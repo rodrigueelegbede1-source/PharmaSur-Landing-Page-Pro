@@ -7,6 +7,9 @@
  * le visiteur lit une promesse dans le partage et en trouve une autre sur la
  * page. Les deux libellés sont donc tenus ensemble ici et dans index.html.
  *
+ * Le voile, les textes et la mise en page vivent dans og-commun.mjs, partagés
+ * avec mesurer-og.mjs — à lancer après toute retouche.
+ *
  * Les dépendances ne sont pas dans package.json : elles ne servent qu'à
  * fabriquer un visuel et n'ont rien à faire dans le site livré. Depuis design/ :
  *   npm install sharp @resvg/resvg-js
@@ -14,16 +17,25 @@
  *     "https://raw.githubusercontent.com/google/fonts/main/ofl/plusjakartasans/PlusJakartaSans%5Bwght%5D.ttf"
  *   node generer-og.mjs
  */
-import { Resvg } from '@resvg/resvg-js'
 import sharp from 'sharp'
 import { existsSync } from 'node:fs'
-import { H, L, MARGE, PHOTO_POS, V, VOILE, ZONE } from './og-commun.mjs'
-
-const ICI = new URL('.', import.meta.url).pathname.slice(1)
-const PROJET = `${ICI}..`
-const FONT = `${ICI}PlusJakartaSans.ttf`
-const PHOTO = `${PROJET}/public/hero-officine.jpg`
-const SORTIE = `${PROJET}/public/og.jpg`
+import {
+  disposer,
+  FONT,
+  gras,
+  H,
+  L,
+  MARGE,
+  PASTILLE,
+  PHOTO,
+  PHOTO_POS,
+  rendre,
+  SOUS_TITRE,
+  TITRE,
+  V,
+  VOILE,
+  ZONE,
+} from './og-commun.mjs'
 
 for (const [chemin, quoi] of [
   [FONT, 'Police absente'],
@@ -35,23 +47,7 @@ for (const [chemin, quoi] of [
   }
 }
 
-/* Le titre de la carte est celui du héros, mot pour mot. Le découpage suit
-   celui de src/components/Hero.tsx pour que le partage et la page se lisent
-   de la même façon. */
-const TITRE = [
-  { texte: 'Trouvez vos médicaments', couleur: V.blanc },
-  { texte: 'et les pharmacies proches', couleur: V.vert400 },
-  { texte: 'en un clic.', couleur: V.vert400 },
-]
-const SOUS_TITRE = "Le coût de l'ordonnance avant de sortir · Scan anti-contrefaçon"
-const PASTILLE = "Disponible en Côte d'Ivoire"
-
-/* La police est variable et resvg n'expose que son instance par défaut. Un
-   contour de la même couleur épaissit le trait et restitue l'extra-bold de la
-   charte. 5,5 % du corps : mesuré comme l'équivalent du 800. */
-const GRAS = 0.055
-const gras = (corps, couleur) =>
-  `paint-order="stroke" stroke="${couleur}" stroke-width="${(corps * GRAS).toFixed(2)}" stroke-linejoin="round"`
+const SORTIE = new URL('../public/og.jpg', import.meta.url).pathname.slice(1)
 
 const repere = (x, y, taille, couleur) => {
   const s = taille / 16
@@ -62,74 +58,26 @@ const repere = (x, y, taille, couleur) => {
   </g>`
 }
 
-const rendre = (svg, largeur) =>
-  new Resvg(svg, {
-    fitTo: { mode: 'width', value: largeur },
-    font: { fontFiles: [FONT], loadSystemFonts: false, defaultFontFamily: 'Plus Jakarta Sans' },
-    background: 'rgba(0,0,0,0)',
-  })
-    .render()
-    .asPng()
+const g = await disposer()
 
-/*
- * Largeur réelle de l'encre, mesurée sur un rendu plutôt qu'estimée : sur ce
- * même projet, une estimation au jugé s'était révélée fausse de 9 %, ce qui
- * suffit à faire déborder une ligne hors de la zone de texte.
- */
-async function ratioLargeur(texte, { extraGras }) {
-  const corps = 120
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="4000" height="300">
-    <text x="30" y="200" font-family="Plus Jakarta Sans" font-size="${corps}"
-      letter-spacing="${-corps * 0.02}" fill="#000"
-      ${extraGras ? gras(corps, '#000') : ''}>${texte}</text></svg>`
-  const { data, info } = await sharp(rendre(svg, 4000)).raw().toBuffer({ resolveWithObject: true })
-  let minX = 1e9
-  let maxX = -1
-  for (let y = 0; y < info.height; y++) {
-    for (let x = 0; x < info.width; x++) {
-      if (data[(y * info.width + x) * info.channels + 3] > 40) {
-        if (x < minX) minX = x
-        if (x > maxX) maxX = x
-      }
-    }
-  }
-  return (maxX - minX + 1) / corps
+for (const b of g.boites) {
+  console.log(
+    `${b.nom.padEnd(16)} ${String(b.w).padStart(4)} px de large sur ${ZONE} disponibles`,
+  )
 }
-
-const ratios = await Promise.all(TITRE.map((l) => ratioLargeur(l.texte, { extraGras: true })))
-const ratioMax = Math.max(...ratios)
-const CORPS = Math.min(66, Math.floor(ZONE / ratioMax))
-const INTERLIGNE = Math.round(CORPS * 1.16)
-
-const ratioMot = await ratioLargeur('PharmaSur', { extraGras: true })
-const ratioSous = await ratioLargeur(SOUS_TITRE, { extraGras: false })
-const ratioPastille = await ratioLargeur(PASTILLE, { extraGras: false })
-
-console.log(`corps du titre : ${CORPS} px (la ligne la plus large occupe ${Math.round(ratioMax * CORPS)} px sur ${ZONE})`)
-console.log(`sous-titre     : ${Math.round(ratioSous * 25)} px de large`)
-
-/* Composition verticale, calée sur la hauteur réelle du bloc de titre. */
-const CORPS_SOUS = 25
-const hTitre = INTERLIGNE * TITRE.length
-const yLogo = 96
-const yTitre = Math.round((H - hTitre) / 2) + CORPS * 0.36
-const ySous = yTitre + hTitre - INTERLIGNE + CORPS * 0.28 + 62
-const yPastille = ySous + 54
+if (g.deborde.length) {
+  console.error(`\nDébordement hors de la zone de texte : ${g.deborde.map((b) => b.nom).join(', ')}`)
+  process.exit(1)
+}
 
 const lignes = TITRE.map(
   (l, i) =>
-    `<text x="${MARGE}" y="${yTitre + i * INTERLIGNE}" font-family="Plus Jakarta Sans"
-      font-size="${CORPS}" letter-spacing="${-CORPS * 0.02}" fill="${l.couleur}"
-      ${gras(CORPS, l.couleur)}>${l.texte}</text>`,
+    `<text x="${MARGE}" y="${g.yTitre + i * g.INTERLIGNE}" font-family="Plus Jakarta Sans"
+      font-size="${g.CORPS}" letter-spacing="${-g.CORPS * 0.02}" fill="${l.couleur}"
+      ${gras(g.CORPS, l.couleur)}>${l.texte}</text>`,
 ).join('')
 
-const coteTuile = 56
-const cxTuile = MARGE + coteTuile / 2
-const corpsMot = 40
-const xMot = MARGE + coteTuile + 20
-
-const largeurPastille = Math.round(ratioPastille * 19) + 30 + 24 + 14
-const hPastille = 44
+const cxTuile = MARGE + g.coteTuile / 2
 
 const calque = `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${H}" viewBox="0 0 ${L} ${H}">
   <defs>
@@ -141,23 +89,24 @@ const calque = `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${H
 
   <rect width="${L}" height="${H}" fill="url(#voile)"/>
 
-  <rect x="${MARGE}" y="${yLogo - coteTuile / 2}" width="${coteTuile}" height="${coteTuile}"
-    rx="${coteTuile * 0.28}" fill="url(#tuile)"/>
-  ${repere(cxTuile, yLogo, coteTuile * 0.47, V.blanc)}
-  <text x="${xMot}" y="${yLogo + corpsMot * 0.36}" font-family="Plus Jakarta Sans"
-    font-size="${corpsMot}" letter-spacing="${-corpsMot * 0.02}" fill="${V.blanc}"
-    ${gras(corpsMot, V.blanc)}>Pharma<tspan fill="${V.vert400}" ${gras(corpsMot, V.vert400)}>Sur</tspan></text>
+  <rect x="${MARGE}" y="${g.yLogo - g.coteTuile / 2}" width="${g.coteTuile}" height="${g.coteTuile}"
+    rx="${g.coteTuile * 0.28}" fill="url(#tuile)"/>
+  ${repere(cxTuile, g.yLogo, g.coteTuile * 0.47, V.blanc)}
+  <text x="${MARGE + g.coteTuile + 20}" y="${g.yLogo + g.corpsMot * 0.36}"
+    font-family="Plus Jakarta Sans" font-size="${g.corpsMot}"
+    letter-spacing="${-g.corpsMot * 0.02}" fill="${V.blanc}" ${gras(g.corpsMot, V.blanc)}
+    >Pharma<tspan fill="${V.vert400}" ${gras(g.corpsMot, V.vert400)}>Sur</tspan></text>
 
   ${lignes}
 
-  <text x="${MARGE}" y="${ySous}" font-family="Plus Jakarta Sans" font-size="${CORPS_SOUS}"
+  <text x="${MARGE}" y="${g.ySous}" font-family="Plus Jakarta Sans" font-size="${g.CORPS_SOUS}"
     fill="${V.vert200}">${SOUS_TITRE}</text>
 
-  <rect x="${MARGE}" y="${yPastille}" width="${largeurPastille}" height="${hPastille}"
-    rx="${hPastille / 2}" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.30)" stroke-width="1.5"/>
-  <circle cx="${MARGE + 24}" cy="${yPastille + hPastille / 2}" r="5" fill="${V.vert400}"/>
-  <text x="${MARGE + 42}" y="${yPastille + hPastille / 2 + 7}" font-family="Plus Jakarta Sans"
-    font-size="19" fill="${V.blanc}">${PASTILLE}</text>
+  <rect x="${MARGE}" y="${g.yPastille}" width="${g.largeurPastille}" height="${g.hPastille}"
+    rx="${g.hPastille / 2}" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.30)" stroke-width="1.5"/>
+  <circle cx="${MARGE + 24}" cy="${g.yPastille + g.hPastille / 2}" r="5" fill="${V.vert400}"/>
+  <text x="${MARGE + 42}" y="${g.yPastille + g.hPastille / 2 + 7}" font-family="Plus Jakarta Sans"
+    font-size="${g.CORPS_PASTILLE}" fill="${V.blanc}">${PASTILLE}</text>
 </svg>`
 
 const fond = await sharp(PHOTO).resize(L, H, PHOTO_POS).toBuffer()

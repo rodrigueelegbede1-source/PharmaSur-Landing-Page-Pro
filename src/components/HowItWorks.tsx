@@ -2,6 +2,14 @@ import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import { type ReactNode, useRef } from 'react'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
+/*
+ * Il y avait ici une troisième étape, « Scannez et authentifiez ». Elle a été
+ * retirée : authentifier une boîte suppose une base de codes authentiques que
+ * le projet n'a pas. Tant qu'elle n'existe pas, l'annoncer sur la page revient
+ * à promettre à un patient une vérification qu'il n'obtiendra pas — sur un
+ * produit de santé, c'est la promesse la plus grave qu'on puisse tenir à faux.
+ * Ne pas la remettre avant que la base existe et soit interrogeable.
+ */
 const steps: { num: string; id?: string; title: string; body: string; icon: ReactNode }[] = [
   {
     num: '01',
@@ -25,20 +33,6 @@ const steps: { num: string; id?: string; title: string; body: string; icon: Reac
       </>
     ),
   },
-  {
-    num: '03',
-    /* Cible du lien « Scanner anti-contrefaçon » du pied de page, qui menait
-       jusqu'ici en haut de la section sans montrer ce qu'il annonçait. */
-    id: 'scanner',
-    title: 'Scannez et authentifiez',
-    body: 'Sur place, scannez le code de la boîte : PharmaSur confirme en une seconde si le médicament est authentique ou contrefait.',
-    icon: (
-      <>
-        <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
-        <path d="M7 12h10" />
-      </>
-    ),
-  },
 ]
 
 export function HowItWorks() {
@@ -52,20 +46,22 @@ export function HowItWorks() {
       <div className="rail">
         <SectionHead
           eyebrow="Comment ça marche"
-          title="Trois étapes, moins d'une minute"
-          lede="De la recherche du médicament à la vérification de la boîte, PharmaSur vous accompagne à chaque étape."
+          title="Deux étapes, moins d'une minute"
+          lede="De la liste de votre ordonnance à l'officine qui la sert le plus complètement, sans passer un appel."
         />
 
         <div ref={ref} className="relative mt-14 lg:mt-20">
-          {/* Fil conducteur tracé au scroll, uniquement sur grand écran */}
+          {/* Fil conducteur tracé au scroll, uniquement sur grand écran. Les
+              bornes suivent le centre des colonnes : 16 % quand il y en avait
+              trois, 25 % maintenant qu'il y en a deux. */}
           <div
             aria-hidden
-            className="absolute top-11 right-[16%] left-[16%] hidden h-px bg-line lg:block"
+            className="absolute top-11 right-[25%] left-[25%] hidden h-px bg-line lg:block"
           >
             <motion.div style={{ scaleX }} className="h-px w-full origin-left bg-green-400" />
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
             {steps.map((s, i) => (
               <Reveal key={s.num} delay={i * 0.1}>
                 <article

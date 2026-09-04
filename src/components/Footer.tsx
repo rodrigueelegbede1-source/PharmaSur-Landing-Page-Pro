@@ -7,9 +7,10 @@ const columns = [
       { label: 'Comment ça marche', href: '#how' },
       { label: 'Tarifs', href: '#pricing' },
       { label: 'Engagements', href: '#engagements' },
-      /* Menait en haut de « Comment ça marche » : le visiteur devait chercher
-         lui-même l'étape qu'on venait de lui nommer. */
-      { label: 'Scanner anti-contrefaçon', href: '#scanner' },
+      /* Il y avait ici « Scanner anti-contrefaçon », vers l'étape 03 de
+         « Comment ça marche ». L'étape et la fonctionnalité ont été retirées
+         faute de base de codes authentiques. */
+      { label: 'Fiabilité des stocks', href: '#fiabilite' },
     ],
   },
   {

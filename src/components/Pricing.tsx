@@ -41,6 +41,11 @@ const INSCRIPTION_OFFICINE = `mailto:contact@pharmasur.ci?subject=${encodeURICom
   ].join('\n'),
 )}`
 
+/*
+ * Les trois offres annonçaient un quota de scans d'authentification. Retiré :
+ * sans base de codes authentiques, le scan ne peut rien affirmer. Vendre un
+ * quota d'une vérification qui n'existe pas, c'est vendre du vide.
+ */
 const plans: Offre[] = [
   {
     name: 'Offre Citoyen',
@@ -52,7 +57,6 @@ const plans: Offre[] = [
     variant: 'ghost' as const,
     features: [
       'Géolocalisation des pharmacies ouvertes',
-      "10 scans d'authentification / mois",
       'Carte interactive des pharmacies de garde',
       "Itinéraire GPS et horaires d'ouverture",
       'Contacter la pharmacie',
@@ -81,7 +85,6 @@ const plans: Offre[] = [
       "Bons d'assurance acceptés, affichés par officine",
       'Géolocalisation des pharmacies de garde',
       'Contacter la pharmacie',
-      "Scans d'authentification illimités",
       'Carnet de traitement numérique pour 5 membres',
       'Rappels intelligents de prise & notices vocales',
       'Support client prioritaire 24/7',
@@ -107,7 +110,6 @@ const plans: Offre[] = [
       'Tableau de bord analytique de visibilité locale',
       'Canal direct de contact avec les patients',
       'Synchronisation des stocks en temps réel, facultative',
-      "Scans d'authentification illimités",
       'Tableau de bord des demandes locales',
       'Support prioritaire 7j/7',
     ],

@@ -10,7 +10,7 @@ import { ArrowRight, Badge, Button, Counter } from './primitives'
  * Les trois valeurs ci-dessous sont vérifiables aujourd'hui : le nombre
  * d'officines du pays, la règle de fraîcheur que s'impose le service, et la
  * gratuité de l'offre Citoyen. Ne pas y remettre de « pharmacies partenaires »
- * ni de taux d'authentification avant d'avoir les chiffres réels.
+ * avant d'avoir les chiffres réels.
  */
 const stats: { to?: number; suffix?: string; text?: string; label: string }[] = [
   { to: 1400, label: "Pharmacies en Côte d'Ivoire" },
@@ -72,7 +72,7 @@ export function Hero() {
             >
               Ajoutez les produits de votre ordonnance : vous en connaissez le coût avant même de
               sortir de chez vous, et PharmaSur classe les pharmacies proches selon le nombre de
-              médicaments réellement disponibles. Chaque boîte s'authentifie ensuite en un scan.
+              médicaments réellement disponibles — pas seulement selon la distance.
             </p>
 
             <div

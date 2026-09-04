@@ -1,13 +1,23 @@
 # PharmaSur — Landing page (version pro)
 
 Version modernisée de la landing page PharmaSur : géolocalisation des médicaments disponibles dans
-les pharmacies de Côte d'Ivoire et authentification anti-contrefaçon par scan.
+les pharmacies de Côte d'Ivoire.
 
 L'identité verte et la trame générale viennent de la version statique (`../Pharmasur-landing-page`),
 mais le produit décrit a depuis divergé : la recherche porte sur une **liste de produits** classée
 par complétude, affiche le **coût de l'ordonnance** et propose un **équivalent générique** en cas de
 rupture. La promesse de scan d'ordonnance, présente à l'origine, a été retirée au profit d'une
 saisie manuelle réellement prévue.
+
+Deux fonctionnalités annoncées à l'origine ont été retirées, pour la même raison : elles étaient
+promises et non construites.
+
+- **Le scan d'ordonnance**, remplacé par la saisie manuelle.
+- **Le scan d'authentification anti-contrefaçon**, retiré faute de base de codes authentiques.
+  Vérifier qu'une boîte est authentique suppose d'interroger un référentiel que le projet n'a pas.
+  Tant qu'il n'existe pas, l'annoncer promettrait à un patient une vérification qu'il n'obtiendrait
+  pas — sur un produit de santé, c'est la promesse la plus grave qu'on puisse tenir à faux. Ne pas
+  la remettre avant que la base existe et soit interrogeable.
 
 ## Stack
 
@@ -78,7 +88,7 @@ src/
     Nav.tsx              header fixe translucide, logo, menu mobile
     Hero.tsx             titre révélé ligne par ligne, parallaxe, compteurs
     HeroBackdrop.tsx     fond dessiné en SVG : plan urbain, cercles de recherche, repères
-    PhoneMock.tsx        maquette : liste multi-produits, prix, équivalent générique, scan
+    PhoneMock.tsx        maquette : liste multi-produits, prix, équivalent générique, itinéraire
     HowItWorks.tsx       3 étapes, fil conducteur tracé au scroll
     Reliability.tsx      les trois voies qui tiennent le stock à jour
     Pricing.tsx          3 offres en FCFA, carte « Le plus choisi » surélevée
@@ -175,9 +185,12 @@ instructions d'installation sont en tête du fichier.
 
 ## Maquettes de l'application
 
-`design/maquettes-app/` contient les dix écrans de l'application patient, un fichier `.dc.html`
+`design/maquettes-app/` contient les sept écrans de l'application patient, un fichier `.dc.html`
 par écran plus `canvas.json` qui les dispose. Ce sont des **maquettes à valider**, pas du code
 applicatif : elles servent de référence à qui construira l'application en Flutter ou React Native.
+
+`design/maquettes-console/` contient de la même façon les cinq écrans de la console pharmacie :
+inscription de l'officine, tableau de bord, stocks, bons d'assurance et demandes locales.
 
 Elles reprennent les tokens de `src/index.css` et le contenu réel du site — mêmes produits, mêmes
 prix, même classement par complétude — pour qu'un développeur n'ait pas à réinventer des valeurs
@@ -186,9 +199,10 @@ déjà arrêtées.
 Le canevas assemblé (2,5 Mo) n'est pas versionné : il se régénère depuis ces sources, et vit en
 ligne comme document partageable.
 
-> L'écran 8, « Boîte non reconnue », n'affirme jamais la contrefaçon : un code abîmé donne le même
-> résultat, et accuser à tort exposerait autant le service qu'une officine honnête. Il énonce la
-> conduite à tenir, qui elle ne change pas.
+> Le canevas comptait trois écrans de plus — Scan, Boîte authentifiée, Boîte non reconnue — retirés
+> avec la fonctionnalité. Ils avaient posé une règle qui reste valable le jour où elle reviendra :
+> ne jamais affirmer la contrefaçon, parce qu'un code abîmé donne le même résultat qu'une fausse
+> boîte, et qu'accuser à tort exposerait autant le service qu'une officine honnête.
 
 ## Conventions
 
@@ -209,7 +223,7 @@ ligne comme document partageable.
   ferait perdre son pouvoir d'alerte.
 - L'écran du téléphone dans `PhoneMock.tsx` est **à saturation** : 8 px de marge. Tout ajout
   suppose d'en retirer autre chose, faute de quoi le conteneur flex comprime silencieusement la
-  carte de scan sans provoquer de débordement visible.
+  carte du bas sans provoquer de débordement visible.
 - PharmaSur localise et informe, mais n'interprète jamais : l'équivalence proposée porte sur le
   principe actif seul, jamais sur une autre molécule, et reste soumise au pharmacien.
 
