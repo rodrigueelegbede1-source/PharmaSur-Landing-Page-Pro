@@ -1,0 +1,45 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 844, "title": "1 · Accueil" },
+    { "file": "Liste.dc.html", "x": 470, "y": 0, "w": 390, "h": 844, "title": "2 · Ma liste" },
+    { "file": "Equivalent.dc.html", "x": 940, "y": 0, "w": 390, "h": 844, "title": "3 · Équivalent générique" },
+    { "file": "Resultats.dc.html", "x": 1410, "y": 0, "w": 390, "h": 844, "title": "4 · Officines classées" },
+    { "file": "Officine.dc.html", "x": 0, "y": 1000, "w": 390, "h": 844, "title": "5 · Fiche officine" },
+    { "file": "Scan.dc.html", "x": 470, "y": 1000, "w": 390, "h": 844, "title": "6 · Scan" },
+    { "file": "ScanAuthentique.dc.html", "x": 940, "y": 1000, "w": 390, "h": 844, "title": "7 · Boîte authentifiée" },
+    { "file": "ScanContrefait.dc.html", "x": 1410, "y": 1000, "w": 390, "h": 844, "title": "8 · Boîte non reconnue" },
+    { "file": "Carte.dc.html", "x": 0, "y": 2000, "w": 390, "h": 844, "title": "9 · Carte" },
+    { "file": "Profil.dc.html", "x": 470, "y": 2000, "w": 390, "h": 844, "title": "10 · Profil" }
+  ],
+  "annotations": [
+    {
+      "id": "parcours-recherche",
+      "x": 0,
+      "y": -150,
+      "w": 860,
+      "text": "PARCOURS 1 — TROUVER SES MÉDICAMENTS\nOn compose sa liste, on voit le coût avant de sortir, et les officines sont classées par nombre de produits disponibles — pas par distance."
+    },
+    {
+      "id": "parcours-scan",
+      "x": 470,
+      "y": 850,
+      "w": 860,
+      "text": "PARCOURS 2 — AUTHENTIFIER SA BOÎTE\nL'écran 8 est le plus important du produit : un patient debout au comptoir doit savoir quoi faire, pas seulement qu'il y a un problème."
+    },
+    {
+      "id": "note-equivalent",
+      "x": 940,
+      "y": -150,
+      "w": 390,
+      "text": "La mention de validation par le pharmacien est en rouge #c1121f, seule couleur hors charte. Elle n'est pas décorative : proposer un équivalent sans elle reviendrait à substituer à la place du pharmacien."
+    },
+    {
+      "id": "onglets-restants",
+      "x": 0,
+      "y": 1850,
+      "w": 860,
+      "text": "LES DEUX ONGLETS RESTANTS\nLa carte reprend le même classement que la liste — la pastille du repère dit la complétude, pas la distance. Le profil affiche le quota de scans de l'offre gratuite : 7 sur 10, remis à zéro chaque mois."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

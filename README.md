@@ -173,6 +173,23 @@ instructions d'installation sont en tête du fichier.
 > variable ne s'expose qu'en graisse par défaut au rendu. Au-delà de 7 %, les contreformes du
 > « a » et du « e » se referment.
 
+## Maquettes de l'application
+
+`design/maquettes-app/` contient les dix écrans de l'application patient, un fichier `.dc.html`
+par écran plus `canvas.json` qui les dispose. Ce sont des **maquettes à valider**, pas du code
+applicatif : elles servent de référence à qui construira l'application en Flutter ou React Native.
+
+Elles reprennent les tokens de `src/index.css` et le contenu réel du site — mêmes produits, mêmes
+prix, même classement par complétude — pour qu'un développeur n'ait pas à réinventer des valeurs
+déjà arrêtées.
+
+Le canevas assemblé (2,5 Mo) n'est pas versionné : il se régénère depuis ces sources, et vit en
+ligne comme document partageable.
+
+> L'écran 8, « Boîte non reconnue », n'affirme jamais la contrefaçon : un code abîmé donne le même
+> résultat, et accuser à tort exposerait autant le service qu'une officine honnête. Il énonce la
+> conduite à tenir, qui elle ne change pas.
+
 ## Conventions
 
 - **Entrée en CSS, interaction en JavaScript.** Les animations d'entrée du héros sont des

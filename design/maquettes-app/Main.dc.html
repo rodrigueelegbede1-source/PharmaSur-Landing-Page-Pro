@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    a { color: #12855d; } a:hover { color: #10714f; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #ffffff; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="padding: 24px 20px 0; display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(140deg, #16a06f, #10714f); display: grid; place-items: center; box-shadow: 0 12px 30px rgb(18 133 93 / 0.28);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"></path>
+            <path d="M12 8v6M9 11h6"></path>
+          </svg>
+        </div>
+        <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em; color: #0e1b16;">Pharma<span style="color: #12855d;">Sur</span></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px; background: #f1fbf6; border-radius: 999px; padding: 8px 14px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#12855d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z"></path>
+        </svg>
+        <span style="font-size: 12px; font-weight: 700; color: #10714f;">Abidjan, Cocody</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; color: #0e1b16;">Que cherchez-vous&nbsp;?</h1>
+      <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #4a5b54;">Ajoutez les produits de votre ordonnance, un par un.</p>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px; border: 1.5px solid #e2ece7; border-radius: 18px; background: #ffffff; box-shadow: 0 4px 16px rgb(11 61 44 / 0.06);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a06f" stroke-width="2.2" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <span style="font-size: 15px; font-weight: 500; color: #7b8b84;">Ajouter un produit…</span>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 0 40px;">
+    <div style="width: 96px; height: 96px; border-radius: 32px; background: #f1fbf6; display: grid; place-items: center;">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#b9e8d3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="3" width="16" height="18" rx="3"></rect>
+        <path d="M9 8h6M9 12h6M9 16h3"></path>
+      </svg>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; text-align: center;">
+      <p style="margin: 0; font-size: 17px; font-weight: 800; color: #0e1b16;">Votre liste est vide</p>
+      <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #7b8b84; text-wrap: pretty;">Nous chercherons ensuite les pharmacies qui ont le plus de vos produits, pas seulement les plus proches.</p>
+    </div>
+  </div>
+
+  <div style="display: flex; border-top: 1px solid #e2ece7; background: #ffffff; padding: 10px 8px 22px;">
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 0; min-height: 44px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#12855d" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path>
+      </svg>
+      <span style="font-size: 11px; font-weight: 700; color: #12855d;">Recherche</span>
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 0; min-height: 44px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"></path><path d="M7 12h10"></path>
+      </svg>
+      <span style="font-size: 11px; font-weight: 600; color: #7b8b84;">Scan</span>
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 0; min-height: 44px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z"></path><path d="M9 4v13M15 7v13"></path>
+      </svg>
+      <span style="font-size: 11px; font-weight: 600; color: #7b8b84;">Carte</span>
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 0; min-height: 44px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#7b8b84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"></circle><path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7"></path>
+      </svg>
+      <span style="font-size: 11px; font-weight: 600; color: #7b8b84;">Profil</span>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
