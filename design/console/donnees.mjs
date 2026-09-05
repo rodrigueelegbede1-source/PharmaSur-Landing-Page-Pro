@@ -51,12 +51,72 @@ export const A_CONFIRMER = [
   { nom: 'Smecta', detail: 'Jamais confirmé' },
 ]
 
+/*
+ * Chaque produit porte son principe actif et les équivalents que l'officine
+ * peut proposer à sa place — même molécule, même dosage, rien d'autre.
+ *
+ * Ces équivalents ne sont PAS proposés automatiquement au patient : c'est le
+ * pharmacien qui en désigne un, produit par produit, quand il déclare une
+ * rupture. C'est le sens de la fonctionnalité pour une officine sans logiciel
+ * de gestion connecté — elle ne peut pas publier son stock, mais elle peut
+ * dire « je n'ai pas celui-ci, j'ai celui-là ».
+ *
+ * La liste est volontairement courte : proposer un équivalent est un acte
+ * professionnel, pas un moteur de suggestion. Un produit sans équivalent au
+ * même principe actif n'en a aucun, et l'interface doit le dire.
+ */
 export const STOCKS = [
-  { nom: 'Amoxicilline 500 mg', forme: 'Boîte de 12 gélules', prix: '2 400 F', confirme: 'il y a 3 j', etat: 'incertain', note: '86 recherches cette semaine' },
-  { nom: 'Paracétamol 1 g', forme: 'Boîte de 8 comprimés', prix: '900 F', confirme: 'il y a 3 h', etat: 'stock' },
-  { nom: 'Ibuprofène 400 mg', forme: 'Boîte de 20 comprimés', prix: '1 300 F', confirme: 'il y a 6 h', etat: 'stock' },
-  { nom: 'Ventoline 100 µg', forme: 'Flacon pressurisé', prix: '3 200 F', confirme: '—', etat: 'rupture' },
-  { nom: 'Sérum physiologique', forme: 'Boîte de 20 dosettes', prix: '1 800 F', confirme: 'il y a 2 h', etat: 'stock' },
+  {
+    id: 'amox500',
+    nom: 'Amoxicilline 500 mg',
+    forme: 'Boîte de 12 gélules',
+    prix: '2 400 F',
+    confirme: 'il y a 3 j',
+    etat: 'incertain',
+    note: '86 recherches cette semaine',
+    principeActif: 'amoxicilline',
+    equivalents: [{ nom: 'Clamoxyl 500 mg', forme: 'Boîte de 12 gélules', prix: '3 900 F' }],
+  },
+  {
+    id: 'para1000',
+    nom: 'Paracétamol 1 g',
+    forme: 'Boîte de 8 comprimés',
+    prix: '900 F',
+    confirme: 'il y a 3 h',
+    etat: 'stock',
+    principeActif: 'paracétamol',
+    equivalents: [{ nom: 'Doliprane 1 g', forme: 'Boîte de 8 comprimés', prix: '1 500 F' }],
+  },
+  {
+    id: 'ibu400',
+    nom: 'Ibuprofène 400 mg',
+    forme: 'Boîte de 20 comprimés',
+    prix: '1 300 F',
+    confirme: 'il y a 6 h',
+    etat: 'stock',
+    principeActif: 'ibuprofène',
+    equivalents: [],
+  },
+  {
+    id: 'vent100',
+    nom: 'Ventoline 100 µg',
+    forme: 'Flacon pressurisé',
+    prix: '3 200 F',
+    confirme: '—',
+    etat: 'rupture',
+    principeActif: 'salbutamol',
+    equivalents: [{ nom: 'Salbutamol 100 µg', forme: 'Flacon pressurisé', prix: '2 100 F' }],
+  },
+  {
+    id: 'sero500',
+    nom: 'Sérum physiologique',
+    forme: 'Boîte de 20 dosettes',
+    prix: '1 800 F',
+    confirme: 'il y a 2 h',
+    etat: 'stock',
+    principeActif: 'chlorure de sodium',
+    equivalents: [],
+  },
 ]
 
 export const BONS = [

@@ -100,6 +100,81 @@ ${STYLE}
   /* On ouvre sur l'inscription : le pharmacien voit d'abord comment entrer,
      puis ce qu'il trouve une fois entré. */
   montrer('inscription');
+
+  /*
+   * Déclaration de disponibilité, et proposition d'un équivalent en rupture.
+   *
+   * Les deux vues du même produit — carte sur téléphone, ligne de tableau sur
+   * grand écran — portent le même data-produit et sont mises à jour ensemble :
+   * une officine qui bascule la Ventoline sur son portable puis rouvre le
+   * fichier sur l'ordinateur du comptoir doit voir la même chose.
+   *
+   * Rien n'est enregistré : c'est une démonstration hors ligne, et le bandeau
+   * du haut le dit.
+   */
+  var ETATS = {
+    stock: ['stock', 'En stock'],
+    incertain: ['incertain', 'Incertain'],
+    rupture: ['rupture', 'Rupture'],
+  };
+
+  function vues(produit) {
+    return [].slice.call(document.querySelectorAll('[data-produit="' + produit + '"]'));
+  }
+
+  function rendre(produit) {
+    vues(produit).forEach(function (v) {
+      var etat = v.getAttribute('data-etat');
+      var choisi = v.getAttribute('data-equivalent-choisi');
+      var puce = v.querySelector('[data-etat-puce]');
+      if (puce) {
+        var e = ETATS[etat] || ETATS.stock;
+        puce.innerHTML = '<span class="etat ' + e[0] + '">' + e[1] + '</span>';
+      }
+      var panneau = v.querySelector('[data-panneau]');
+      var resume = v.querySelector('[data-choisi]');
+      if (panneau) panneau.hidden = !(etat === 'rupture' && !choisi);
+      if (resume) {
+        resume.hidden = !choisi;
+        var nom = resume.querySelector('[data-nom-choisi]');
+        if (nom && choisi) nom.textContent = choisi;
+      }
+    });
+  }
+
+  function poser(produit, attribut, valeur) {
+    vues(produit).forEach(function (v) {
+      if (valeur === null) v.removeAttribute(attribut);
+      else v.setAttribute(attribut, valeur);
+    });
+    rendre(produit);
+  }
+
+  document.addEventListener('click', function (ev) {
+    var cible = ev.target.closest ? ev.target.closest('[data-marquer],[data-equivalent],[data-annuler]') : null;
+    if (!cible) return;
+    var vue = cible.closest('[data-produit]');
+    if (!vue) return;
+    var produit = vue.getAttribute('data-produit');
+
+    if (cible.hasAttribute('data-marquer')) {
+      poser(produit, 'data-etat', cible.getAttribute('data-marquer'));
+      /* Repasser en stock retire la proposition : elle n'avait de sens que
+         pendant la rupture. */
+      if (cible.getAttribute('data-marquer') !== 'rupture') {
+        poser(produit, 'data-equivalent-choisi', null);
+      }
+    } else if (cible.hasAttribute('data-equivalent')) {
+      var nom = cible.getAttribute('data-equivalent');
+      poser(produit, 'data-equivalent-choisi', nom || null);
+    } else if (cible.hasAttribute('data-annuler')) {
+      poser(produit, 'data-equivalent-choisi', null);
+    }
+  });
+
+  [].slice.call(document.querySelectorAll('[data-produit]')).forEach(function (v) {
+    rendre(v.getAttribute('data-produit'));
+  });
 })();
 </script>
 </body>

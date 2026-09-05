@@ -119,6 +119,30 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 .ligne .actions { margin-top:12px; display:flex; gap:8px; }
 .ligne .actions .btn { flex:1; }
 
+/* — Proposition d'un équivalent, repliée hors rupture — */
+.equivalent, .equivalent-choisi { margin-top:12px; padding-top:12px; border-top:1px solid var(--trait-doux); }
+.equivalent .intro { margin:0; font-size:12.5px; line-height:1.55; color:var(--corps); }
+.equivalent .intro strong { color:var(--encre); }
+.equivalent .vide { margin:0; font-size:12.5px; line-height:1.55; color:var(--doux); }
+.equivalent .choix { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+.equivalent .choix .btn { min-height:44px; gap:10px; }
+.equivalent .choix .prix { font-weight:700; color:var(--doux); }
+.equivalent .rappel { margin:10px 0 0; font-size:11.5px; line-height:1.5; color:var(--doux); }
+
+.equivalent-choisi {
+  display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+  font-size:12.5px; color:var(--vert-800);
+}
+.equivalent-choisi strong { color:var(--encre); }
+.equivalent-choisi svg { flex:none; color:var(--vert-600); }
+.equivalent-choisi .btn { min-height:36px; padding:0 12px; font-size:12px; color:var(--alerte); margin-left:auto; }
+
+/* Sur grand écran le panneau vit dans la première colonne du tableau : on le
+   borne pour qu'il ne pousse pas les autres colonnes. */
+@media (min-width: 900px) {
+  .tableau .equivalent, .tableau .equivalent-choisi { max-width:460px; }
+}
+
 /* — Barres de recherche — */
 .barre-mesure { height:7px; border-radius:999px; background:var(--trait-doux); overflow:hidden; }
 .barre-mesure i { display:block; height:100%; border-radius:999px; background:var(--vert-400); }

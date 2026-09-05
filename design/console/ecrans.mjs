@@ -174,6 +174,44 @@ export const tableau = () => `
   </div>
 </section>`
 
+/*
+ * Panneau de proposition d'un générique, replié tant que le produit n'est pas
+ * en rupture.
+ *
+ * Il existe pour les officines qui ne connectent pas leur logiciel de gestion :
+ * elles ne peuvent pas publier leur stock, mais elles peuvent dire « je n'ai
+ * pas celui-ci, j'ai celui-là ». L'équivalent vient alors du pharmacien, pas
+ * d'un algorithme — ce qui règle au passage la règle que le produit s'impose
+ * depuis le début : seul un pharmacien peut valider une équivalence.
+ *
+ * Il n'apparaît que sur une rupture. Le proposer sur un produit en stock
+ * reviendrait à pousser à la substitution sans raison.
+ */
+const panneauEquivalent = (s) => `
+<div class="equivalent" data-panneau hidden>
+  ${
+    s.equivalents.length === 0
+      ? `<p class="vide">Aucun équivalent au même principe actif (${s.principeActif}) dans votre catalogue. Les patients verront ce produit comme introuvable chez vous.</p>`
+      : `<p class="intro">Vous avez déclaré une rupture. Proposez-vous un équivalent au même principe actif&nbsp;? <strong>${s.principeActif}</strong></p>
+    <div class="choix">
+      ${s.equivalents
+        .map(
+          (e) => `<button class="btn contour" type="button" data-equivalent="${e.nom}">
+        <span>${e.nom}</span><span class="prix">${e.prix}</span>
+      </button>`,
+        )
+        .join('')}
+      <button class="btn" type="button" data-equivalent="" style="color:var(--doux)">Aucun</button>
+    </div>
+    <p class="rappel">Le patient verra «&nbsp;proposé par l'officine, à valider au comptoir&nbsp;». Votre nom engage la proposition : c'est un acte professionnel, pas une suggestion automatique.</p>`
+  }
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  ${svg('coche', 15, 2.6)}
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>`
+
 /* — 3. Stocks — */
 export const stocks = () => `
 <section class="ecran" id="ecran-stocks">
@@ -183,24 +221,25 @@ export const stocks = () => `
   <div class="contenu">
     <div class="bandeau">
       <span style="color:var(--vert-800)">${svg('info', 18)}</span>
-      <p><strong>Vous n'avez pas de logiciel de gestion connecté.</strong> Confirmez la disponibilité en un clic. Les produits non confirmés depuis 48 h sont signalés aux patients comme incertains, jamais comme disponibles.</p>
+      <p><strong>Vous n'avez pas de logiciel de gestion connecté.</strong> Confirmez la disponibilité en un clic. Les produits non confirmés depuis 48 h sont signalés aux patients comme incertains, jamais comme disponibles. <strong>Quand vous déclarez une rupture, vous pouvez proposer vous-même un équivalent au même principe actif</strong> — le patient le verra comme venant de votre officine.</p>
     </div>
 
     <div class="liste">
       ${STOCKS.map(
-        (s) => `<div class="ligne${s.note ? ' alerte' : ''}">
+        (s) => `<div class="ligne${s.note ? ' alerte' : ''}" data-produit="${s.id}" data-etat="${s.etat}">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">${s.nom}</div>
             <div class="det">${s.forme} · ${s.prix}</div>
             <div class="det">Confirmé ${s.confirme}${s.note ? ` · <strong style="color:var(--alerte)">${s.note}</strong>` : ''}</div>
           </div>
-          ${etat(s.etat)}
+          <span data-etat-puce>${etat(s.etat)}</span>
         </div>
         <div class="actions">
-          <button class="btn clair" type="button">En stock</button>
-          <button class="btn danger" type="button">Rupture</button>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
+        ${panneauEquivalent(s)}
       </div>`,
       ).join('')}
     </div>
@@ -210,15 +249,18 @@ export const stocks = () => `
         <span>Produit</span><span>Prix</span><span>Confirmé</span><span>Disponibilité</span>
       </div>
       ${STOCKS.map(
-        (s) => `<div class="tr${s.note ? ' alerte' : ''}" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
+        (s) => `<div class="tr${s.note ? ' alerte' : ''}" data-produit="${s.id}" data-etat="${s.etat}" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
         <div>
           <div class="nom">${s.nom}</div>
           <div class="det">${s.forme}${s.note ? ` · <strong style="color:var(--alerte)">${s.note}</strong>` : ''}</div>
+          ${panneauEquivalent(s)}
         </div>
         <span style="font-size:13.5px;font-weight:700;color:var(--encre)">${s.prix}</span>
         <span style="font-size:12.5px;color:var(--doux)">${s.confirme}</span>
-        <div style="display:flex;gap:7px;align-items:center">${etat(s.etat)}
-          <button class="btn clair" type="button">Confirmer</button>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <span data-etat-puce>${etat(s.etat)}</span>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
       </div>`,
       ).join('')}

@@ -121,6 +121,30 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 .ligne .actions { margin-top:12px; display:flex; gap:8px; }
 .ligne .actions .btn { flex:1; }
 
+/* — Proposition d'un équivalent, repliée hors rupture — */
+.equivalent, .equivalent-choisi { margin-top:12px; padding-top:12px; border-top:1px solid var(--trait-doux); }
+.equivalent .intro { margin:0; font-size:12.5px; line-height:1.55; color:var(--corps); }
+.equivalent .intro strong { color:var(--encre); }
+.equivalent .vide { margin:0; font-size:12.5px; line-height:1.55; color:var(--doux); }
+.equivalent .choix { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+.equivalent .choix .btn { min-height:44px; gap:10px; }
+.equivalent .choix .prix { font-weight:700; color:var(--doux); }
+.equivalent .rappel { margin:10px 0 0; font-size:11.5px; line-height:1.5; color:var(--doux); }
+
+.equivalent-choisi {
+  display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+  font-size:12.5px; color:var(--vert-800);
+}
+.equivalent-choisi strong { color:var(--encre); }
+.equivalent-choisi svg { flex:none; color:var(--vert-600); }
+.equivalent-choisi .btn { min-height:36px; padding:0 12px; font-size:12px; color:var(--alerte); margin-left:auto; }
+
+/* Sur grand écran le panneau vit dans la première colonne du tableau : on le
+   borne pour qu'il ne pousse pas les autres colonnes. */
+@media (min-width: 900px) {
+  .tableau .equivalent, .tableau .equivalent-choisi { max-width:460px; }
+}
+
 /* — Barres de recherche — */
 .barre-mesure { height:7px; border-radius:999px; background:var(--trait-doux); overflow:hidden; }
 .barre-mesure i { display:block; height:100%; border-radius:999px; background:var(--vert-400); }
@@ -435,75 +459,141 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
   <div class="contenu">
     <div class="bandeau">
       <span style="color:var(--vert-800)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
-      <p><strong>Vous n'avez pas de logiciel de gestion connecté.</strong> Confirmez la disponibilité en un clic. Les produits non confirmés depuis 48 h sont signalés aux patients comme incertains, jamais comme disponibles.</p>
+      <p><strong>Vous n'avez pas de logiciel de gestion connecté.</strong> Confirmez la disponibilité en un clic. Les produits non confirmés depuis 48 h sont signalés aux patients comme incertains, jamais comme disponibles. <strong>Quand vous déclarez une rupture, vous pouvez proposer vous-même un équivalent au même principe actif</strong> — le patient le verra comme venant de votre officine.</p>
     </div>
 
     <div class="liste">
-      <div class="ligne alerte">
+      <div class="ligne alerte" data-produit="amox500" data-etat="incertain">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Amoxicilline 500 mg</div>
             <div class="det">Boîte de 12 gélules · 2 400 F</div>
             <div class="det">Confirmé il y a 3 j · <strong style="color:var(--alerte)">86 recherches cette semaine</strong></div>
           </div>
-          <span class="etat incertain">Incertain</span>
+          <span data-etat-puce><span class="etat incertain">Incertain</span></span>
         </div>
         <div class="actions">
-          <button class="btn clair" type="button">En stock</button>
-          <button class="btn danger" type="button">Rupture</button>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="ligne">
+        
+<div class="equivalent" data-panneau hidden>
+  <p class="intro">Vous avez déclaré une rupture. Proposez-vous un équivalent au même principe actif&nbsp;? <strong>amoxicilline</strong></p>
+    <div class="choix">
+      <button class="btn contour" type="button" data-equivalent="Clamoxyl 500 mg">
+        <span>Clamoxyl 500 mg</span><span class="prix">3 900 F</span>
+      </button>
+      <button class="btn" type="button" data-equivalent="" style="color:var(--doux)">Aucun</button>
+    </div>
+    <p class="rappel">Le patient verra «&nbsp;proposé par l'officine, à valider au comptoir&nbsp;». Votre nom engage la proposition : c'est un acte professionnel, pas une suggestion automatique.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
+      </div><div class="ligne" data-produit="para1000" data-etat="stock">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Paracétamol 1 g</div>
             <div class="det">Boîte de 8 comprimés · 900 F</div>
             <div class="det">Confirmé il y a 3 h</div>
           </div>
-          <span class="etat stock">En stock</span>
+          <span data-etat-puce><span class="etat stock">En stock</span></span>
         </div>
         <div class="actions">
-          <button class="btn clair" type="button">En stock</button>
-          <button class="btn danger" type="button">Rupture</button>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="ligne">
+        
+<div class="equivalent" data-panneau hidden>
+  <p class="intro">Vous avez déclaré une rupture. Proposez-vous un équivalent au même principe actif&nbsp;? <strong>paracétamol</strong></p>
+    <div class="choix">
+      <button class="btn contour" type="button" data-equivalent="Doliprane 1 g">
+        <span>Doliprane 1 g</span><span class="prix">1 500 F</span>
+      </button>
+      <button class="btn" type="button" data-equivalent="" style="color:var(--doux)">Aucun</button>
+    </div>
+    <p class="rappel">Le patient verra «&nbsp;proposé par l'officine, à valider au comptoir&nbsp;». Votre nom engage la proposition : c'est un acte professionnel, pas une suggestion automatique.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
+      </div><div class="ligne" data-produit="ibu400" data-etat="stock">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Ibuprofène 400 mg</div>
             <div class="det">Boîte de 20 comprimés · 1 300 F</div>
             <div class="det">Confirmé il y a 6 h</div>
           </div>
-          <span class="etat stock">En stock</span>
+          <span data-etat-puce><span class="etat stock">En stock</span></span>
         </div>
         <div class="actions">
-          <button class="btn clair" type="button">En stock</button>
-          <button class="btn danger" type="button">Rupture</button>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="ligne">
+        
+<div class="equivalent" data-panneau hidden>
+  <p class="vide">Aucun équivalent au même principe actif (ibuprofène) dans votre catalogue. Les patients verront ce produit comme introuvable chez vous.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
+      </div><div class="ligne" data-produit="vent100" data-etat="rupture">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Ventoline 100 µg</div>
             <div class="det">Flacon pressurisé · 3 200 F</div>
             <div class="det">Confirmé —</div>
           </div>
-          <span class="etat rupture">Rupture</span>
+          <span data-etat-puce><span class="etat rupture">Rupture</span></span>
         </div>
         <div class="actions">
-          <button class="btn clair" type="button">En stock</button>
-          <button class="btn danger" type="button">Rupture</button>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="ligne">
+        
+<div class="equivalent" data-panneau hidden>
+  <p class="intro">Vous avez déclaré une rupture. Proposez-vous un équivalent au même principe actif&nbsp;? <strong>salbutamol</strong></p>
+    <div class="choix">
+      <button class="btn contour" type="button" data-equivalent="Salbutamol 100 µg">
+        <span>Salbutamol 100 µg</span><span class="prix">2 100 F</span>
+      </button>
+      <button class="btn" type="button" data-equivalent="" style="color:var(--doux)">Aucun</button>
+    </div>
+    <p class="rappel">Le patient verra «&nbsp;proposé par l'officine, à valider au comptoir&nbsp;». Votre nom engage la proposition : c'est un acte professionnel, pas une suggestion automatique.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
+      </div><div class="ligne" data-produit="sero500" data-etat="stock">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Sérum physiologique</div>
             <div class="det">Boîte de 20 dosettes · 1 800 F</div>
             <div class="det">Confirmé il y a 2 h</div>
           </div>
-          <span class="etat stock">En stock</span>
+          <span data-etat-puce><span class="etat stock">En stock</span></span>
         </div>
         <div class="actions">
-          <button class="btn clair" type="button">En stock</button>
-          <button class="btn danger" type="button">Rupture</button>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
+        
+<div class="equivalent" data-panneau hidden>
+  <p class="vide">Aucun équivalent au même principe actif (chlorure de sodium) dans votre catalogue. Les patients verront ce produit comme introuvable chez vous.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
       </div>
     </div>
 
@@ -511,55 +601,131 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
       <div class="tr th" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
         <span>Produit</span><span>Prix</span><span>Confirmé</span><span>Disponibilité</span>
       </div>
-      <div class="tr alerte" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
+      <div class="tr alerte" data-produit="amox500" data-etat="incertain" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
         <div>
           <div class="nom">Amoxicilline 500 mg</div>
           <div class="det">Boîte de 12 gélules · <strong style="color:var(--alerte)">86 recherches cette semaine</strong></div>
+          
+<div class="equivalent" data-panneau hidden>
+  <p class="intro">Vous avez déclaré une rupture. Proposez-vous un équivalent au même principe actif&nbsp;? <strong>amoxicilline</strong></p>
+    <div class="choix">
+      <button class="btn contour" type="button" data-equivalent="Clamoxyl 500 mg">
+        <span>Clamoxyl 500 mg</span><span class="prix">3 900 F</span>
+      </button>
+      <button class="btn" type="button" data-equivalent="" style="color:var(--doux)">Aucun</button>
+    </div>
+    <p class="rappel">Le patient verra «&nbsp;proposé par l'officine, à valider au comptoir&nbsp;». Votre nom engage la proposition : c'est un acte professionnel, pas une suggestion automatique.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
         </div>
         <span style="font-size:13.5px;font-weight:700;color:var(--encre)">2 400 F</span>
         <span style="font-size:12.5px;color:var(--doux)">il y a 3 j</span>
-        <div style="display:flex;gap:7px;align-items:center"><span class="etat incertain">Incertain</span>
-          <button class="btn clair" type="button">Confirmer</button>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <span data-etat-puce><span class="etat incertain">Incertain</span></span>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="tr" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
+      </div><div class="tr" data-produit="para1000" data-etat="stock" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
         <div>
           <div class="nom">Paracétamol 1 g</div>
           <div class="det">Boîte de 8 comprimés</div>
+          
+<div class="equivalent" data-panneau hidden>
+  <p class="intro">Vous avez déclaré une rupture. Proposez-vous un équivalent au même principe actif&nbsp;? <strong>paracétamol</strong></p>
+    <div class="choix">
+      <button class="btn contour" type="button" data-equivalent="Doliprane 1 g">
+        <span>Doliprane 1 g</span><span class="prix">1 500 F</span>
+      </button>
+      <button class="btn" type="button" data-equivalent="" style="color:var(--doux)">Aucun</button>
+    </div>
+    <p class="rappel">Le patient verra «&nbsp;proposé par l'officine, à valider au comptoir&nbsp;». Votre nom engage la proposition : c'est un acte professionnel, pas une suggestion automatique.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
         </div>
         <span style="font-size:13.5px;font-weight:700;color:var(--encre)">900 F</span>
         <span style="font-size:12.5px;color:var(--doux)">il y a 3 h</span>
-        <div style="display:flex;gap:7px;align-items:center"><span class="etat stock">En stock</span>
-          <button class="btn clair" type="button">Confirmer</button>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <span data-etat-puce><span class="etat stock">En stock</span></span>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="tr" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
+      </div><div class="tr" data-produit="ibu400" data-etat="stock" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
         <div>
           <div class="nom">Ibuprofène 400 mg</div>
           <div class="det">Boîte de 20 comprimés</div>
+          
+<div class="equivalent" data-panneau hidden>
+  <p class="vide">Aucun équivalent au même principe actif (ibuprofène) dans votre catalogue. Les patients verront ce produit comme introuvable chez vous.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
         </div>
         <span style="font-size:13.5px;font-weight:700;color:var(--encre)">1 300 F</span>
         <span style="font-size:12.5px;color:var(--doux)">il y a 6 h</span>
-        <div style="display:flex;gap:7px;align-items:center"><span class="etat stock">En stock</span>
-          <button class="btn clair" type="button">Confirmer</button>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <span data-etat-puce><span class="etat stock">En stock</span></span>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="tr" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
+      </div><div class="tr" data-produit="vent100" data-etat="rupture" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
         <div>
           <div class="nom">Ventoline 100 µg</div>
           <div class="det">Flacon pressurisé</div>
+          
+<div class="equivalent" data-panneau hidden>
+  <p class="intro">Vous avez déclaré une rupture. Proposez-vous un équivalent au même principe actif&nbsp;? <strong>salbutamol</strong></p>
+    <div class="choix">
+      <button class="btn contour" type="button" data-equivalent="Salbutamol 100 µg">
+        <span>Salbutamol 100 µg</span><span class="prix">2 100 F</span>
+      </button>
+      <button class="btn" type="button" data-equivalent="" style="color:var(--doux)">Aucun</button>
+    </div>
+    <p class="rappel">Le patient verra «&nbsp;proposé par l'officine, à valider au comptoir&nbsp;». Votre nom engage la proposition : c'est un acte professionnel, pas une suggestion automatique.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
         </div>
         <span style="font-size:13.5px;font-weight:700;color:var(--encre)">3 200 F</span>
         <span style="font-size:12.5px;color:var(--doux)">—</span>
-        <div style="display:flex;gap:7px;align-items:center"><span class="etat rupture">Rupture</span>
-          <button class="btn clair" type="button">Confirmer</button>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <span data-etat-puce><span class="etat rupture">Rupture</span></span>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
-      </div><div class="tr" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
+      </div><div class="tr" data-produit="sero500" data-etat="stock" style="grid-template-columns:2.4fr 1fr 1.1fr 1.5fr">
         <div>
           <div class="nom">Sérum physiologique</div>
           <div class="det">Boîte de 20 dosettes</div>
+          
+<div class="equivalent" data-panneau hidden>
+  <p class="vide">Aucun équivalent au même principe actif (chlorure de sodium) dans votre catalogue. Les patients verront ce produit comme introuvable chez vous.</p>
+</div>
+<div class="equivalent-choisi" data-choisi hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg>
+  <span>Vous proposez <strong data-nom-choisi></strong> à la place</span>
+  <button class="btn" type="button" data-annuler>Retirer</button>
+</div>
         </div>
         <span style="font-size:13.5px;font-weight:700;color:var(--encre)">1 800 F</span>
         <span style="font-size:12.5px;color:var(--doux)">il y a 2 h</span>
-        <div style="display:flex;gap:7px;align-items:center"><span class="etat stock">En stock</span>
-          <button class="btn clair" type="button">Confirmer</button>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <span data-etat-puce><span class="etat stock">En stock</span></span>
+          <button class="btn clair" type="button" data-marquer="stock">En stock</button>
+          <button class="btn danger" type="button" data-marquer="rupture">Rupture</button>
         </div>
       </div>
     </div>
@@ -839,6 +1005,81 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
   /* On ouvre sur l'inscription : le pharmacien voit d'abord comment entrer,
      puis ce qu'il trouve une fois entré. */
   montrer('inscription');
+
+  /*
+   * Déclaration de disponibilité, et proposition d'un équivalent en rupture.
+   *
+   * Les deux vues du même produit — carte sur téléphone, ligne de tableau sur
+   * grand écran — portent le même data-produit et sont mises à jour ensemble :
+   * une officine qui bascule la Ventoline sur son portable puis rouvre le
+   * fichier sur l'ordinateur du comptoir doit voir la même chose.
+   *
+   * Rien n'est enregistré : c'est une démonstration hors ligne, et le bandeau
+   * du haut le dit.
+   */
+  var ETATS = {
+    stock: ['stock', 'En stock'],
+    incertain: ['incertain', 'Incertain'],
+    rupture: ['rupture', 'Rupture'],
+  };
+
+  function vues(produit) {
+    return [].slice.call(document.querySelectorAll('[data-produit="' + produit + '"]'));
+  }
+
+  function rendre(produit) {
+    vues(produit).forEach(function (v) {
+      var etat = v.getAttribute('data-etat');
+      var choisi = v.getAttribute('data-equivalent-choisi');
+      var puce = v.querySelector('[data-etat-puce]');
+      if (puce) {
+        var e = ETATS[etat] || ETATS.stock;
+        puce.innerHTML = '<span class="etat ' + e[0] + '">' + e[1] + '</span>';
+      }
+      var panneau = v.querySelector('[data-panneau]');
+      var resume = v.querySelector('[data-choisi]');
+      if (panneau) panneau.hidden = !(etat === 'rupture' && !choisi);
+      if (resume) {
+        resume.hidden = !choisi;
+        var nom = resume.querySelector('[data-nom-choisi]');
+        if (nom && choisi) nom.textContent = choisi;
+      }
+    });
+  }
+
+  function poser(produit, attribut, valeur) {
+    vues(produit).forEach(function (v) {
+      if (valeur === null) v.removeAttribute(attribut);
+      else v.setAttribute(attribut, valeur);
+    });
+    rendre(produit);
+  }
+
+  document.addEventListener('click', function (ev) {
+    var cible = ev.target.closest ? ev.target.closest('[data-marquer],[data-equivalent],[data-annuler]') : null;
+    if (!cible) return;
+    var vue = cible.closest('[data-produit]');
+    if (!vue) return;
+    var produit = vue.getAttribute('data-produit');
+
+    if (cible.hasAttribute('data-marquer')) {
+      poser(produit, 'data-etat', cible.getAttribute('data-marquer'));
+      /* Repasser en stock retire la proposition : elle n'avait de sens que
+         pendant la rupture. */
+      if (cible.getAttribute('data-marquer') !== 'rupture') {
+        poser(produit, 'data-equivalent-choisi', null);
+      }
+    } else if (cible.hasAttribute('data-equivalent')) {
+      var nom = cible.getAttribute('data-equivalent');
+      poser(produit, 'data-equivalent-choisi', nom || null);
+    } else if (cible.hasAttribute('data-annuler')) {
+      poser(produit, 'data-equivalent-choisi', null);
+    }
+  });
+
+  [].slice.call(document.querySelectorAll('[data-produit]')).forEach(function (v) {
+    rendre(v.getAttribute('data-produit'));
+  });
 })();
 </script>
 </body>
