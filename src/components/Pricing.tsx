@@ -18,7 +18,6 @@ type Offre = {
   /** Second lien, sous le bouton, pour l'action que le bouton ne fait pas. */
   secondaire?: { label: string; href: string; telecharge?: string }
   featured?: boolean
-  tag?: string
   features: string[]
 }
 
@@ -150,11 +149,6 @@ export function Pricing() {
                     : 'border border-line bg-paper hover:-translate-y-1.5 hover:border-green-200 hover:shadow-md',
                 )}
               >
-                {p.tag && (
-                  <span className="absolute -top-3 left-7 rounded-full bg-green-400 px-3 py-1 text-[0.7rem] font-extrabold tracking-wide text-green-950 uppercase">
-                    {p.tag}
-                  </span>
-                )}
 
                 <h3 className={cx('text-[1.2rem]', p.featured && 'text-white')}>{p.name}</h3>
                 <p className="mt-1.5 text-[0.92rem]">{p.desc}</p>

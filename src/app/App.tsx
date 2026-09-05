@@ -298,7 +298,7 @@ function EcranRecherche({
                   key={mot}
                   type="button"
                   onClick={() => setRequete(mot)}
-                  className="min-h-10 rounded-full border border-line px-4 text-[0.83rem] font-bold text-ink"
+                  className="min-h-11 rounded-full border border-line px-4 text-[0.83rem] font-bold text-ink"
                 >
                   {mot}
                 </button>
@@ -378,7 +378,7 @@ function EcranListe({
                   type="button"
                   onClick={() => liste.retirer(p.id)}
                   aria-label={`Retirer ${p.nom}`}
-                  className="-mt-1 -mr-1 grid size-9 shrink-0 place-items-center rounded-full text-body-soft"
+                  className="-mt-1.5 -mr-1.5 grid size-11 shrink-0 place-items-center rounded-full text-body-soft"
                 >
                   <Svg className="size-4" trait={2.4}>
                     {Icone.croix}
@@ -399,7 +399,7 @@ function EcranListe({
                     <button
                       type="button"
                       onClick={() => onEquivalent(p.id)}
-                      className="mt-3 inline-flex min-h-9 items-center gap-1.5 text-[0.8rem] font-bold text-green-700"
+                      className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-[0.8rem] font-bold text-green-700"
                     >
                       {economie > 0
                         ? `Équivalent moins cher : ${fcfa(economie)} de moins`
@@ -424,7 +424,7 @@ function EcranListe({
         <button
           type="button"
           onClick={liste.vider}
-          className="mx-auto min-h-10 text-[0.82rem] font-bold text-body-soft"
+          className="mx-auto min-h-11 px-4 text-[0.82rem] font-bold text-body-soft"
         >
           Vider la liste
         </button>

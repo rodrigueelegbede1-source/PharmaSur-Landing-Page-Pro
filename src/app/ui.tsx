@@ -34,18 +34,6 @@ export function Logo({ compact = false }: { compact?: boolean }) {
   )
 }
 
-export function EnTete({ titre, chapo, action }: { titre: string; chapo?: string; action?: ReactNode }) {
-  return (
-    <div className="flex flex-col gap-2 px-5 pt-5">
-      {action}
-      <h1 className="text-[1.65rem] leading-[1.15] font-extrabold tracking-[-0.03em] text-ink">
-        {titre}
-      </h1>
-      {chapo && <p className="text-[0.88rem] leading-relaxed text-body">{chapo}</p>}
-    </div>
-  )
-}
-
 export function Puce({
   ton = 'neutre',
   children,
