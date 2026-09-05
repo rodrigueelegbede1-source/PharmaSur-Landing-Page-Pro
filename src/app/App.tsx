@@ -6,6 +6,7 @@ import {
   chercher,
   classer,
   equivalentsDe,
+  estEnRupture,
   etatDuProduit,
   fcfa,
   verdict,
@@ -385,6 +386,7 @@ function EcranListe({
       <div className="mt-5 flex flex-col gap-2.5 px-5">
         {liste.produits.map((p) => {
           const equivalents = equivalentsDe(p)
+          const enRupture = estEnRupture(p.id, OFFICINES)
           return (
             <Carte key={p.id}>
               <div className="flex items-start gap-3">
@@ -406,31 +408,39 @@ function EcranListe({
                   </Svg>
                 </button>
               </div>
-              {equivalents.length > 0 &&
-                (() => {
-                  /*
-                    Le libellé annonçait « un équivalent moins cher » sans
-                    vérifier les prix : sur le paracétamol, il menait au
-                    Doliprane, plus cher de 600 F. On n'annonce une économie que
-                    lorsqu'elle existe, et on l'annonce chiffrée.
-                  */
-                  const moinsCher = Math.min(...equivalents.map((e) => e.prix))
-                  const economie = p.prix - moinsCher
-                  return (
-                    <button
-                      type="button"
-                      onClick={() => onEquivalent(p.id)}
-                      className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-[0.8rem] font-bold text-green-700"
-                    >
-                      {economie > 0
-                        ? `Équivalent moins cher : ${fcfa(economie)} de moins`
-                        : 'Voir les équivalents'}
-                      <Svg className="size-3.5" trait={2.6}>
-                        {Icone.fleche}
-                      </Svg>
-                    </button>
-                  )
-                })()}
+              {/*
+                L'équivalent n'est proposé QU'EN CAS DE RUPTURE — aucune
+                officine des environs n'a confirmé le produit. Il s'affichait
+                auparavant sur chaque ligne qui en avait un, y compris sur des
+                médicaments disponibles à côté de chez soi : c'était pousser à
+                la substitution pour une raison de prix, alors que la page
+                d'accueil s'engage à ne le signaler qu'en cas de rupture.
+                Le motif est donc affiché avec le lien : sans lui, le patient ne
+                comprendrait pas pourquoi une ligne en propose un et pas l'autre.
+              */}
+              {enRupture && equivalents.length > 0 && (
+                <div className="mt-3 border-t border-line-soft pt-3">
+                  <p className="text-[0.78rem] font-bold text-alert">
+                    Introuvable dans les officines proches
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => onEquivalent(p.id)}
+                    className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-[0.8rem] font-bold text-green-700"
+                  >
+                    Voir un équivalent au même principe actif
+                    <Svg className="size-3.5" trait={2.6}>
+                      {Icone.fleche}
+                    </Svg>
+                  </button>
+                </div>
+              )}
+
+              {enRupture && equivalents.length === 0 && (
+                <p className="mt-3 border-t border-line-soft pt-3 text-[0.78rem] font-bold text-alert">
+                  Introuvable dans les officines proches, et sans équivalent connu.
+                </p>
+              )}
             </Carte>
           )
         })}
@@ -720,6 +730,16 @@ function EcranEquivalent({
         <p className="mt-1.5 text-[0.88rem] leading-relaxed text-body">
           {produit.nom} {produit.dosage} — principe actif : {produit.principeActif}. Ces produits
           contiennent la même molécule au même dosage.
+        </p>
+
+        {/*
+          Le motif est rappelé ici : cet écran ne s'ouvre que sur un produit
+          qu'aucune officine proche n'a confirmé. Sans cette phrase, il se
+          lirait comme une suggestion d'économie, ce qu'il n'est pas.
+        */}
+        <p className="mt-2 text-[0.82rem] leading-relaxed font-semibold text-alert">
+          Vous le voyez parce qu'aucune officine proche n'a confirmé{' '}
+          {produit.nom} {produit.dosage}.
         </p>
       </div>
 

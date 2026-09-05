@@ -52,6 +52,20 @@ export type Officine = {
   stock: Record<string, { confirmeIlYaHeures: number }>
 }
 
+/*
+ * DEUX PRODUITS SONT VOLONTAIREMENT EN RUPTURE PARTOUT, et doivent le rester :
+ *
+ *   - Clamoxyl 500 mg, qui a un équivalent au même principe actif
+ *     (Amoxicilline 500 mg, disponible aux Deux-Plateaux) ;
+ *   - Insuline Lantus, qui n'en a aucun.
+ *
+ * Sans eux, aucun produit du catalogue ne serait jamais introuvable : la règle
+ * « on ne propose un équivalent qu'en cas de rupture » ne se déclencherait
+ * jamais, et personne ne pourrait vérifier qu'elle marche. Les deux cas
+ * couvrent les deux branches — avec équivalent, et sans.
+ *
+ * Si vous ajoutez ces produits à un stock, ajoutez-en d'autres en rupture.
+ */
 export const OFFICINES: Officine[] = [
   {
     id: 'riviera',
@@ -68,7 +82,6 @@ export const OFFICINES: Officine[] = [
       ibu400: { confirmeIlYaHeures: 6 },
       sero500: { confirmeIlYaHeures: 2 },
       metf850: { confirmeIlYaHeures: 30 },
-      clamox500: { confirmeIlYaHeures: 5 },
     },
   },
   {
@@ -100,7 +113,6 @@ export const OFFICINES: Officine[] = [
       amox500: { confirmeIlYaHeures: 7 },
       para1000: { confirmeIlYaHeures: 20 },
       metf850: { confirmeIlYaHeures: 8 },
-      lanto: { confirmeIlYaHeures: 14 },
     },
   },
   {
@@ -131,6 +143,21 @@ export function etatDuProduit(officine: Officine, produitId: string): Etat {
   const ligne = officine.stock[produitId]
   if (!ligne) return 'absent'
   return ligne.confirmeIlYaHeures <= SEUIL_INCERTAIN_H ? 'disponible' : 'incertain'
+}
+
+/**
+ * Un produit est en rupture quand AUCUNE officine des environs ne l'a confirmé
+ * disponible. Un stock incertain ne suffit pas à le déclarer trouvable : c'est
+ * la même règle que partout ailleurs.
+ *
+ * C'est la seule condition qui autorise à proposer un équivalent. Le proposer
+ * sur un produit disponible reviendrait à pousser à la substitution pour une
+ * raison de prix — exactement ce que la page d'accueil s'engage à ne pas faire :
+ * « En cas de rupture, l'application PEUT signaler un médicament ayant le même
+ * principe actif. »
+ */
+export function estEnRupture(produitId: string, officines: Officine[]): boolean {
+  return !officines.some((o) => etatDuProduit(o, produitId) === 'disponible')
 }
 
 /**
