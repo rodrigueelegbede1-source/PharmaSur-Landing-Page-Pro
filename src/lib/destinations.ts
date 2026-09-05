@@ -21,13 +21,31 @@
  * écran, et elle est en noindex. Ne pas retirer l'un sans l'autre.
  */
 
-/** Application patient installable. */
+/**
+ * APK Android de l'application patient. Le bouton le télécharge directement.
+ *
+ * L'APK n'embarque aucun code : c'est une coquille qui ouvre /app/ en plein
+ * écran. Il est signé avec la clé de débogage — installable sur un téléphone,
+ * refusé par le Play Store.
+ *
+ * Le nom du fichier porte la version : le changer ici suppose de déposer le
+ * nouvel APK dans public/ et de laisser l'ancien, pour ne pas casser les liens
+ * déjà partagés.
+ */
+export const APK_PATIENT = '/pharmasur-1.0.0.apk'
+
+/**
+ * Version web de l'application, pour qui n'est pas sur Android : un iPhone ou
+ * un ordinateur ne fait rien d'un APK. Safari propose « Sur l'écran
+ * d'accueil », Chrome « Installer l'application ».
+ */
 export const APP_PATIENT = '/app/'
 
 /**
  * Console pharmacie, livrée en fichier unique à télécharger : le pharmacien
  * l'enregistre et l'ouvre dans son navigateur, sans installation ni compte.
  * Elle non plus n'a pas de serveur — c'est une démonstration hors ligne.
+ * La mise en page s'adapte du téléphone au grand écran.
  */
 export const CONSOLE_PHARMACIE = '/console-pharmasur.html'
 

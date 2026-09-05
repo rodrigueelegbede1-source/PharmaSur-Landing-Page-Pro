@@ -33,6 +33,10 @@ android/*
 *.keystore
 *.jks
 
+# Exception : l'APK servi aux visiteurs. Vercel construit depuis git — un
+# fichier non versionné n'est jamais déployé, et le bouton renverrait un 404.
+!public/*.apk
+
 # Variables d'environnement (seul .env.example est versionné)
 .env
 .env.*

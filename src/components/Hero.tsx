@@ -1,7 +1,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import { cx } from '../lib/cx'
-import { APP_PATIENT } from '../lib/destinations'
+import { APK_PATIENT, APP_PATIENT } from '../lib/destinations'
 import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Button, Counter } from './primitives'
@@ -80,7 +80,7 @@ export function Hero() {
               className="mt-8 flex flex-wrap gap-3 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none"
               style={{ animationDelay: '0.54s' }}
             >
-              <Button href={APP_PATIENT} size="lg">
+              <Button href={APK_PATIENT} download="pharmasur-1.0.0.apk" size="lg">
                 Télécharger l'application
                 <ArrowRight />
               </Button>
@@ -88,6 +88,22 @@ export function Hero() {
                 Voir comment ça marche
               </Button>
             </div>
+
+            {/*
+              Un APK ne sert à rien sur un iPhone ni sur un ordinateur. Plutôt
+              que de détecter la plateforme — ce qui échoue toujours sur un
+              appareil — on annonce ce que le bouton donne et on offre l'autre
+              voie à côté.
+            */}
+            <p
+              className="mt-3 animate-[ps-fade_0.9s_linear_both] text-[0.82rem] text-body-soft motion-reduce:animate-none"
+              style={{ animationDelay: '0.66s' }}
+            >
+              APK Android · 1,2 Mo ·{' '}
+              <a href={APP_PATIENT} className="font-bold text-green-700 underline underline-offset-2">
+                iPhone ou ordinateur&nbsp;: ouvrir la version web
+              </a>
+            </p>
 
             <ul
               className="mt-11 flex flex-wrap gap-x-10 gap-y-6 animate-[ps-fade_0.9s_linear_both] motion-reduce:animate-none"

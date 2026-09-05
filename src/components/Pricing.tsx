@@ -1,5 +1,5 @@
 import { cx } from '../lib/cx'
-import { APP_PATIENT, CONSOLE_PHARMACIE } from '../lib/destinations'
+import { APK_PATIENT, APP_PATIENT, CONSOLE_PHARMACIE } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 type Offre = {
@@ -63,7 +63,9 @@ const plans: Offre[] = [
     price: 'Gratuit',
     unit: '',
     cta: 'Télécharger gratuitement',
-    href: APP_PATIENT,
+    href: APK_PATIENT,
+    telecharge: 'pharmasur-1.0.0.apk',
+    secondaire: { label: 'iPhone ou ordinateur : version web', href: APP_PATIENT },
     variant: 'ghost' as const,
     features: [
       'Recherche de médicaments illimitée',

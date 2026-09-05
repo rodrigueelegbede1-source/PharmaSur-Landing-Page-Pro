@@ -7,164 +7,93 @@
  * unique s'envoie par WhatsApp à un pharmacien, s'ouvre sans compte et
  * fonctionne sans réseau — c'est ce qu'on peut réellement livrer aujourd'hui.
  *
- * Le contenu vient des maquettes de maquettes-console/ : une seule source,
- * pour que la console livrée et le canevas de design ne divergent jamais. La
- * police est intégrée en base64, sinon le fichier serait dépendant de Google
- * Fonts et s'afficherait dans une autre typographie hors ligne.
+ * La console était auparavant un décalque des maquettes de bureau, figé à
+ * 1440 px : sur le téléphone d'un pharmacien elle se lisait en la faisant
+ * défiler latéralement, c'est-à-dire pas. Elle est désormais écrite pour les
+ * deux formes — cartes empilées et barre d'onglets sous 900 px, barre latérale
+ * et tableaux au-dessus — depuis une source unique (design/console/).
+ *
+ * Les maquettes de maquettes-console/ restent le document de design ; ce
+ * fichier-ci est le produit livré. Modifier l'un sans l'autre les fait
+ * diverger : le contenu de référence est design/console/donnees.mjs.
  *
  * Depuis design/ :  node generer-console.mjs
  */
 import { readFile, writeFile } from 'node:fs/promises'
+import { bons, demandes, inscription, laterale, onglets, stocks, tableau } from './console/ecrans.mjs'
+import { STYLE } from './console/style.mjs'
 
 const ICI = new URL('.', import.meta.url).pathname.slice(1)
 const SORTIE = `${ICI}../public/console-pharmasur.html`
 const POLICE = `${ICI}../public/fonts/plus-jakarta-sans.woff2`
 
-/* Ordre d'apparition. Inscription ouvre le fichier : on montre d'abord
-   comment une officine entre, puis ce qu'elle y trouve. */
-const ECRANS = [
-  { id: 'inscription', fichier: 'Inscription.dc.html', menu: null },
-  { id: 'tableau', fichier: 'Main.dc.html', menu: 'Tableau de bord' },
-  { id: 'stocks', fichier: 'Stocks.dc.html', menu: 'Stocks' },
-  { id: 'bons', fichier: 'Bons.dc.html', menu: "Bons d'assurance" },
-  { id: 'demandes', fichier: 'Demandes.dc.html', menu: 'Demandes locales' },
-]
-
-/** Ne garde que le contenu de l'artboard : ni en-tête, ni helmet. */
-function extraire(source) {
-  const corps = source.slice(source.indexOf('<x-dc>') + 6, source.lastIndexOf('</x-dc>'))
-  return corps.replace(/<helmet>[\s\S]*?<\/helmet>/, '').trim()
-}
-
 const police = await readFile(POLICE)
-const parties = []
-for (const e of ECRANS) {
-  const source = await readFile(`${ICI}maquettes-console/${e.fichier}`, 'utf8')
-  parties.push(`<section class="ecran" id="ecran-${e.id}" data-menu="${e.menu ?? ''}">
-${extraire(source)}
-</section>`)
-}
 
 const fichier = `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
 <title>PharmaSur — Console pharmacie (démonstration)</title>
 <style>
 @font-face {
-  font-family: 'Plus Jakarta Sans';
-  src: url(data:font/woff2;base64,${police.toString('base64')}) format('woff2');
-  font-weight: 200 800;
-  font-display: swap;
+  font-family:'Plus Jakarta Sans';
+  src:url(data:font/woff2;base64,${police.toString('base64')}) format('woff2');
+  font-weight:200 800;
+  font-display:swap;
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: #eef5f1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-.avis {
-  width: 100%;
-  background: #fdf7ea;
-  border-bottom: 1px solid #f0dcb4;
-  color: #8a5a12;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.5;
-  padding: 10px 20px;
-  text-align: center;
-}
-.cadre { padding: 20px; width: 100%; display: flex; justify-content: center; }
-.ecran { display: none; box-shadow: 0 30px 70px rgb(11 61 44 / 0.16); border-radius: 16px; overflow: hidden; }
-.ecran.actif { display: block; }
-/* Les maquettes sont dessinées à 1440 px : on les réduit plutôt que de les
-   casser, pour que le fichier reste lisible sur un portable d'officine. */
-@media (max-width: 1500px) {
-  .cadre { justify-content: flex-start; overflow-x: auto; }
-}
-[data-cliquable] { cursor: pointer; }
-[data-cliquable]:hover { filter: brightness(1.08); }
-.pied {
-  width: 100%;
-  padding: 14px 20px 26px;
-  text-align: center;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #4a5b54;
-}
-.pied a { color: #12855d; font-weight: 700; }
+${STYLE}
 </style>
 </head>
 <body>
 
-<p class="avis">
-  Démonstration hors ligne de la console PharmaSur. Officines, stocks, demandes et chiffres sont
-  fictifs, rien n'est enregistré ni transmis. Ce fichier ne remplace pas un logiciel de gestion.
-</p>
+<div class="appli">
+  <p class="avis">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></svg>
+    <span>Démonstration hors ligne. Officines, stocks, demandes et chiffres sont fictifs, rien n'est enregistré ni transmis. Ce fichier ne remplace pas un logiciel de gestion.</span>
+  </p>
 
-<div class="cadre">
-${parties.join('\n')}
+  <div class="corps">
+    ${laterale()}
+    <main class="principal">
+      ${inscription()}
+      ${tableau()}
+      ${stocks()}
+      ${bons()}
+      ${demandes()}
+    </main>
+  </div>
+
+  ${onglets()}
 </div>
 
-<p class="pied">
-  Fichier unique, à ouvrir dans un navigateur. Aucun compte, aucune installation, aucun réseau.<br>
-  Une question&nbsp;? <a href="mailto:contact@pharmasur.ci">contact@pharmasur.ci</a>
-</p>
-
 <script>
-/*
- * Navigation : chaque écran porte sa propre barre latérale, avec le bon
- * élément déjà actif. Basculer d'écran entier suffit donc à obtenir une
- * navigation juste, sans recalculer d'état.
- */
 (function () {
-  var ecrans = [].slice.call(document.querySelectorAll('.ecran'));
-  var parMenu = {};
-  ecrans.forEach(function (e) {
-    var m = e.getAttribute('data-menu');
-    if (m) parMenu[m] = e;
+  var ecrans = {};
+  [].forEach.call(document.querySelectorAll('.ecran'), function (e) {
+    ecrans[e.id.replace('ecran-', '')] = e;
   });
 
-  function montrer(ecran) {
-    ecrans.forEach(function (e) { e.classList.toggle('actif', e === ecran); });
+  function montrer(id) {
+    if (!ecrans[id]) return;
+    for (var cle in ecrans) ecrans[cle].classList.toggle('actif', cle === id);
+    [].forEach.call(document.querySelectorAll('[data-va]'), function (b) {
+      if (b.classList.contains('item') || b.classList.contains('onglet')) {
+        if (b.getAttribute('data-va') === id) b.setAttribute('aria-current', 'page');
+        else b.removeAttribute('aria-current');
+      }
+    });
     window.scrollTo(0, 0);
   }
 
-  ecrans.forEach(function (ecran) {
-    /*
-     * Les libellés de menu sont cherchés DANS LA BARRE LATÉRALE seulement.
-     * Cherchés dans tout l'écran, ils attrapaient aussi la vignette
-     * « Bons d'assurance » du tableau de bord, qui devenait un faux élément
-     * de menu. La barre est le premier enfant de la racine de la maquette.
-     */
-    var racine = ecran.firstElementChild;
-    var barre = racine && racine.firstElementChild;
-    if (barre) {
-      [].slice.call(barre.querySelectorAll('span')).forEach(function (span) {
-        var cible = parMenu[span.textContent.trim()];
-        if (!cible) return;
-        var ligne = span.closest('div');
-        if (!ligne) return;
-        ligne.setAttribute('data-cliquable', '');
-        ligne.addEventListener('click', function () { montrer(cible); });
-      });
-    }
-
-    // « Continuer » de l'inscription mène au tableau de bord.
-    [].slice.call(ecran.querySelectorAll('span')).forEach(function (span) {
-      if (span.textContent.trim() !== 'Continuer') return;
-      var bouton = span.parentElement;
-      bouton.setAttribute('data-cliquable', '');
-      bouton.addEventListener('click', function () { montrer(parMenu['Tableau de bord']); });
-    });
+  [].forEach.call(document.querySelectorAll('[data-va]'), function (b) {
+    b.addEventListener('click', function () { montrer(b.getAttribute('data-va')); });
   });
 
-  montrer(ecrans[0]);
+  /* On ouvre sur l'inscription : le pharmacien voit d'abord comment entrer,
+     puis ce qu'il trouve une fois entré. */
+  montrer('inscription');
 })();
 </script>
 </body>
@@ -172,6 +101,4 @@ ${parties.join('\n')}
 `
 
 await writeFile(SORTIE, fichier, 'utf8')
-console.log(
-  `console-pharmasur.html  ${ECRANS.length} écrans  ${Math.round(Buffer.byteLength(fichier) / 1024)} ko`,
-)
+console.log(`console-pharmasur.html  5 écrans  ${Math.round(Buffer.byteLength(fichier) / 1024)} ko`)

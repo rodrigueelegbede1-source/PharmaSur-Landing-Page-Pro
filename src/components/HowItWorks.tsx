@@ -1,6 +1,6 @@
 import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import { type ReactNode, useRef } from 'react'
-import { APP_PATIENT } from '../lib/destinations'
+import { APK_PATIENT, APP_PATIENT } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 /*
@@ -105,12 +105,17 @@ export function HowItWorks() {
         */}
         <Reveal delay={0.35}>
           <div className="mt-14 flex flex-col items-center gap-4 lg:mt-16">
-            <Button href={APP_PATIENT} size="lg">
+            <Button href={APK_PATIENT} download="pharmasur-1.0.0.apk" size="lg">
               Télécharger l'application
               <ArrowRight />
             </Button>
-            <p className="text-[0.88rem] text-body-soft">
-              Gratuit pour les patients · Disponible en Côte d'Ivoire
+            <p className="text-center text-[0.88rem] text-body-soft">
+              APK Android · 1,2 Mo · gratuit
+              <br className="sm:hidden" />
+              <span className="hidden sm:inline"> · </span>
+              <a href={APP_PATIENT} className="font-bold text-green-700 underline underline-offset-2">
+                iPhone ou ordinateur&nbsp;: ouvrir la version web
+              </a>
             </p>
           </div>
         </Reveal>
