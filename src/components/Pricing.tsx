@@ -132,7 +132,7 @@ export function Pricing() {
     <section id="pricing" className="border-y border-line bg-green-50 py-20 lg:py-28">
       <div className="rail">
         <SectionHead
-          eyebrow="Tarifs"
+          eyebrow="Offres"
           title="Gratuit pour les patients"
           lede="Tout ce qu'un patient cherche est gratuit, sans limite et sans compte payant. Le service se finance par l'abonnement des officines qui veulent être trouvées."
         />

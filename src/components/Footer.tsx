@@ -5,7 +5,7 @@ const columns = [
     title: 'Produit',
     links: [
       { label: 'Comment ça marche', href: '#how' },
-      { label: 'Tarifs', href: '#pricing' },
+      { label: 'Offres', href: '#pricing' },
       { label: 'Engagements', href: '#engagements' },
       /* Il y avait ici « Scanner anti-contrefaçon », vers l'étape 03 de
          « Comment ça marche ». L'étape et la fonctionnalité ont été retirées
@@ -16,7 +16,7 @@ const columns = [
   {
     title: 'Ressources',
     links: [
-      /* Menait sur la grille de tarifs entière, pas sur l'offre des officines. */
+      /* Menait sur les deux offres, pas sur celle des officines. */
       { label: 'Espace pharmaciens', href: '#pharmacie-pro' },
       // Aucun centre d'aide n'existe : le courriel est le seul recours réel.
       { label: "Centre d'aide", href: "mailto:contact@pharmasur.ci?subject=Besoin%20d'aide" },
