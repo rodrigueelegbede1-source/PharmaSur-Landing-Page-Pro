@@ -117,10 +117,7 @@ destinations sont réunies dans `src/lib/destinations.ts`.
 elle s'ouvre sans réseau — un patient qui cherche une pharmacie a souvent un forfait épuisé au
 moment où il en a besoin.
 
-Ce n'est **pas** un fichier `.apk`, et il ne peut pas en être produit ici : cela demande la chaîne
-d'outils Android (JDK, SDK, Gradle) et une clé de signature. Le chemin le plus court, une fois cette
-application en ligne en HTTPS, est de l'emballer en TWA avec Bubblewrap : l'application reste
-celle-ci, l'APK n'en est que l'emballage pour le Play Store.
+Elle est aussi empaquetée en **APK Android**, voir plus bas.
 
 **La console pharmacie**, en un fichier unique à télécharger. Une console en ligne suppose un
 serveur, des comptes et une base de données, dont aucun n'existe. Un fichier s'envoie par WhatsApp à
@@ -132,6 +129,64 @@ design ne divergent jamais.
 > référentiel d'officines, ni stock réel. Chacun porte un bandeau qui le dit, et l'application est
 > en `noindex`. Ne retirez pas l'un sans l'autre : une démonstration qui ne s'annonce pas est un
 > mensonge, et sur un produit de santé un mensonge qui peut coûter cher.
+
+## L'APK Android
+
+L'application Android **n'embarque aucun code** : c'est une *Trusted Web Activity*, une coquille
+qui ouvre `https://pharmasur.ci/app/` en plein écran. Corriger l'application, c'est déployer le
+site ; l'APK n'a pas à être reconstruit.
+
+`android/twa-manifest.json` la décrit et est le seul fichier du projet Android versionné. Tout le
+reste — Gradle, sources Java, ressources — est regénéré, et ni les APK ni les clés n'ont leur place
+dans un dépôt.
+
+### Reconstruire
+
+```
+cd android
+node ../node_modules/@bubblewrap/cli/bin/bubblewrap.js update --skipVersionUpgrade
+node ../node_modules/@bubblewrap/cli/bin/bubblewrap.js build --skipPwaValidation
+```
+
+Trois pièges rencontrés sur cette machine, notés pour la prochaine fois :
+
+- Bubblewrap 1.25 exige `build-tools;36.1.0`, pas la dernière en date.
+- Il cherche le SDK à l'ancien emplacement, `<sdk>/tools/bin/sdkmanager`. Le SDK moderne l'installe
+  dans `<sdk>/cmdline-tools/latest/`. Une copie de ce dossier vers `<sdk>/tools` suffit — une
+  jonction Windows ne fonctionne pas, `fs.existsSync` de Node ne la traverse pas.
+- La variable d'environnement `NoDefaultCurrentDirectoryInExePath=1` empêche `cmd` de trouver
+  `gradlew.bat` dans le dossier courant. Il faut la retirer (`unset`) avant de lancer la
+  compilation, sinon Gradle est introuvable alors qu'il est là.
+
+### Les liens numériques
+
+`public/.well-known/assetlinks.json` publie l'empreinte SHA-256 de la clé de signature. Sans lui,
+Android ne peut pas vérifier que l'application et le domaine ont le même propriétaire, et coiffe
+l'application d'une barre d'adresse de navigateur. Vérifiable à tout moment :
+
+```
+curl "https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https%3A%2F%2Fpharmasur.ci&relation=delegate_permission%2Fcommon.handle_all_urls"
+```
+
+### La clé de signature
+
+L'APK produit ici est signé avec la **clé de débogage** Android, dont le mot de passe `android` est
+la convention publique documentée par Google. Elle permet d'installer l'application sur un
+téléphone ; elle ne permet **pas** de publier sur le Play Store, qui refuse les APK signés en
+débogage.
+
+Pour publier, le propriétaire du projet crée sa propre clé de release, avec un mot de passe que lui
+seul connaît :
+
+```
+keytool -genkeypair -keystore pharmasur-release.keystore -alias pharmasur \
+  -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Cette clé **est** l'identité de l'application sur le Play Store, définitivement : la perdre
+interdit toute mise à jour. Elle ne se met ni dans le dépôt, ni dans une conversation. Son empreinte
+s'ajoute ensuite dans `assetlinks.json`, à côté de celle de débogage, et son chemin dans
+`twa-manifest.json`.
 
 ## Pages légales
 
