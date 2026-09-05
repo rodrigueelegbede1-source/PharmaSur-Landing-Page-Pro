@@ -52,6 +52,7 @@ export default defineConfig(({ command, mode }) => {
           index: resolve(import.meta.dirname,'index.html'),
           mentions: resolve(import.meta.dirname,'mentions-legales/index.html'),
           confidentialite: resolve(import.meta.dirname,'confidentialite/index.html'),
+          aide: resolve(import.meta.dirname,'aide/index.html'),
           app: resolve(import.meta.dirname,'app/index.html'),
         },
       },

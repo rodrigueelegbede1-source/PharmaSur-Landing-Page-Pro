@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b3d2c" />
+    <title>Centre d'aide — PharmaSur</title>
+    <meta
+      name="description"
+      content="Recherche, gardes, itinéraires et prix : ce que PharmaSur fait aujourd'hui en Côte d'Ivoire, et ce qui n'est pas encore en service."
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/plus-jakarta-sans.woff2"
+      crossorigin
+    />
+    <script type="module" src="/src/legal.ts"></script>
+  </head>
+  <body>
+    <header class="border-b border-white/10 bg-green-950">
+      <div class="rail flex h-18 items-center justify-between">
+        <a href="/" class="flex items-center gap-2.5" aria-label="Retour à l'accueil PharmaSur">
+          <span
+            class="grid size-9.5 place-items-center rounded-xl bg-[linear-gradient(140deg,var(--color-green-500),var(--color-green-700))] text-white shadow-glow"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-5"
+              aria-hidden="true"
+            >
+              <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />
+              <path d="M12 8v6M9 11h6" />
+            </svg>
+          </span>
+          <span class="text-[1.15rem] font-extrabold tracking-[-0.02em] text-white">
+            Pharma<span class="text-green-400">Sur</span>
+          </span>
+        </a>
+        <a href="/" class="text-[0.9rem] font-semibold text-green-100/85 hover:text-white">
+          Retour au site
+        </a>
+      </div>
+    </header>
+
+    <main class="rail max-w-3xl py-14 lg:py-20">
+      <p class="eyebrow text-green-600">Centre d'aide</p>
+      <h1 class="mt-4 text-[2.1rem] sm:text-[2.6rem]">Vos questions, nos réponses</h1>
+      <p class="mt-4 text-[1.02rem]">
+        Ce centre d'aide décrit PharmaSur tel qu'il fonctionne en Côte d'Ivoire, aujourd'hui.
+      </p>
+
+      <!--
+        Ce bandeau n'est pas une précaution d'avocat : plusieurs réponses ci-dessous
+        décrivent des fonctions qui n'existent pas encore. Les annoncer sans le dire
+        enverrait des patients chercher une pharmacie que l'application ne connaît pas.
+      -->
+      <div
+        class="mt-10 rounded-2xl border border-[#f0dcb4] bg-[#fdf7ea] px-5 py-4 text-[0.95rem] leading-relaxed"
+      >
+        <p class="font-extrabold text-[#8a5a12]">PharmaSur est encore une démonstration.</p>
+        <p class="mt-1.5">
+          Aucune vraie pharmacie n'y est référencée, aucun stock réel n'y circule : l'application
+          tourne avec quatre officines fictives d'Abidjan pour montrer ce qu'elle fera. Chaque
+          réponse ci-dessous distingue donc ce qui marche
+          <strong class="text-ink">maintenant</strong> de ce qui viendra avec les premières
+          officines inscrites.
+        </p>
+      </div>
+
+      <nav class="mt-10 flex flex-wrap gap-2.5" aria-label="Sections du centre d'aide">
+        <a
+          href="#recherche"
+          class="inline-flex min-h-11 items-center rounded-xl border border-line bg-paper px-3.5 text-[0.88rem] font-bold text-green-700 hover:border-green-200 hover:bg-green-50"
+          >1. La recherche</a
+        >
+        <a
+          href="#gardes"
+          class="inline-flex min-h-11 items-center rounded-xl border border-line bg-paper px-3.5 text-[0.88rem] font-bold text-green-700 hover:border-green-200 hover:bg-green-50"
+          >2. Les gardes</a
+        >
+        <a
+          href="#trajet"
+          class="inline-flex min-h-11 items-center rounded-xl border border-line bg-paper px-3.5 text-[0.88rem] font-bold text-green-700 hover:border-green-200 hover:bg-green-50"
+          >3. Le trajet et les prix</a
+        >
+      </nav>
+
+      <!-- ————————————————————————— 1 ————————————————————————— -->
+      <h2 id="recherche" class="mt-16 scroll-mt-8 text-[1.4rem]">1. La recherche</h2>
+
+      <h3 class="mt-10 text-[1.1rem]">L'application couvre-t-elle l'intérieur du pays ?</h3>
+      <p class="mt-3">
+        Pas encore, et Abidjan non plus. Aujourd'hui, la carte ne contient que quatre officines
+        fictives de Cocody : aucune pharmacie réelle, à Abidjan comme à l'intérieur, n'est
+        référencée.
+      </p>
+      <p class="mt-3">
+        Le référencement commencera par Abidjan, puis suivra les grandes villes de l'intérieur —
+        Yamoussoukro, Bouaké, San-Pédro, Korhogo. Une officine n'apparaît qu'après s'être inscrite
+        et avoir fait vérifier son numéro d'agrément auprès de l'Ordre : la couverture d'une ville
+        dépend donc des pharmacies qui s'y inscrivent, pas d'une date que nous pourrions promettre.
+      </p>
+
+      <h3 class="mt-10 text-[1.1rem]">Comment trouver la pharmacie la plus proche ?</h3>
+      <ol class="mt-3 flex list-decimal flex-col gap-2 pl-5">
+        <li>Installez PharmaSur — l'application Android, ou le fichier unique qui s'ouvre dans un navigateur.</li>
+        <li>Cherchez vos médicaments et ajoutez-les à votre liste.</li>
+        <li>Touchez <strong class="text-ink">Chercher les officines</strong>.</li>
+      </ol>
+      <p class="mt-3">
+        L'application classe alors les officines : celles qui sont
+        <strong class="text-ink">ouvertes maintenant</strong> d'abord, puis celles qui ont le plus
+        de produits de votre liste, puis les plus proches. Une officine bien fournie mais fermée ne
+        vous sert à rien à 23 h : elle descend en bas de liste, grisée, avec son heure d'ouverture.
+      </p>
+      <p class="mt-3 rounded-xl bg-line-soft px-4 py-3 text-[0.93rem] leading-relaxed">
+        <strong class="text-ink">Pas encore disponible :</strong> les distances affichées viennent
+        des données de démonstration, pas de votre position. Le calcul selon votre géolocalisation
+        arrivera avec les coordonnées réelles des officines — c'est aussi pourquoi l'écran Carte
+        n'affiche pas encore de fond de carte : un décor laisserait croire à une localisation qui
+        n'a pas lieu.
+      </p>
+
+      <h3 class="mt-10 text-[1.1rem]">La géolocalisation ne fonctionne pas, que faire ?</h3>
+      <p class="mt-3">
+        Rien : aucune version actuelle de PharmaSur ne demande votre position, et vous ne verrez
+        donc jamais l'autorisation apparaître. Si une application vous réclame votre position en se
+        présentant comme PharmaSur, ce n'est pas la nôtre.
+      </p>
+      <p class="mt-3">
+        Quand elle sera active, il faudra une connexion internet ou un accès wifi, et l'autorisation
+        de localisation dans les paramètres de votre téléphone.
+      </p>
+
+      <!-- ————————————————————————— 2 ————————————————————————— -->
+      <h2 id="gardes" class="mt-16 scroll-mt-8 text-[1.4rem]">2. Les gardes</h2>
+
+      <h3 class="mt-10 text-[1.1rem]">Comment fonctionne le calendrier de garde ?</h3>
+      <p class="mt-3">
+        En Côte d'Ivoire, les tours de garde basculent généralement le samedi après-midi, après la
+        fermeture habituelle, pour une semaine entière.
+      </p>
+      <p class="mt-3">
+        PharmaSur ne lit aucun calendrier officiel : chaque officine
+        <strong class="text-ink">déclare elle-même sa garde</strong> depuis sa console, et
+        l'application ne la propose en dehors de ses horaires que tant que cette déclaration tient.
+        C'est plus fiable qu'un programme recopié : la pharmacie qui répond au comptoir est celle
+        qui a coché la case. C'est aussi plus fragile — une garde oubliée en fin de semaine
+        laisserait une officine visible pour rien. La console le rappelle au pharmacien, et vous
+        avez la réponse suivante pour vous en prémunir.
+      </p>
+
+      <h3 class="mt-10 text-[1.1rem]">Les horaires de nuit sont-ils les mêmes partout ?</h3>
+      <p class="mt-3">
+        Non. La plupart des pharmacies de garde restent ouvertes en continu, mais certaines exercent
+        à « volet fermé » tard dans la nuit, pour des raisons de sécurité : on vous sert par le
+        guichet, pas dans l'officine.
+      </p>
+      <p class="mt-3">
+        C'est pourquoi l'application affiche l'heure de fermeture déclarée — « Ouverte jusqu'à
+        22 h », « De garde cette nuit » — plutôt qu'un simple « ouvert » qui ne dit rien de ce qui
+        vous attend devant la porte.
+      </p>
+
+      <h3 class="mt-10 text-[1.1rem]">Faut-il appeler avant de se déplacer ?</h3>
+      <p class="mt-3">
+        Oui, et particulièrement la nuit. Le bouton
+        <strong class="text-ink">Appeler</strong> est sur la fiche de chaque officine, à côté de
+        l'itinéraire.
+      </p>
+      <p class="mt-3">
+        La raison tient à la façon dont les stocks sont tenus : la plupart des pharmacies n'ont pas
+        de logiciel de gestion connecté, et confirment leurs disponibilités à la main. PharmaSur ne
+        présente jamais comme disponible un produit qui n'a pas été confirmé depuis plus de 48 h —
+        il est signalé « incertain » — mais même une confirmation d'hier peut avoir été rattrapée
+        par une ordonnance de ce matin. Un appel coûte moins cher qu'un taxi de nuit.
+      </p>
+
+      <!-- ————————————————————————— 3 ————————————————————————— -->
+      <h2 id="trajet" class="mt-16 scroll-mt-8 text-[1.4rem]">3. Le trajet et les prix</h2>
+
+      <h3 class="mt-10 text-[1.1rem]">Comment m'y rendre si je ne connais pas le quartier ?</h3>
+      <p class="mt-3">
+        Le bouton <strong class="text-ink">Itinéraire</strong>, sur la fiche de l'officine, ouvre
+        Google Maps avec le nom de la pharmacie et son quartier.
+      </p>
+      <p class="mt-3">
+        Il transmet ce nom et ce quartier, pas des coordonnées GPS : l'itinéraire vous amène dans la
+        bonne rue, pas systématiquement au pas de la porte. Le passage direct vers Yango ou une
+        autre application de course n'est pas encore branché.
+      </p>
+
+      <h3 class="mt-10 text-[1.1rem]">Les prix des médicaments sont-ils indiqués ?</h3>
+      <p class="mt-3">
+        Oui. Le prix des médicaments est homologué en Côte d'Ivoire : un produit a un prix officiel,
+        le même dans toutes les officines. PharmaSur affiche ce prix, et le total de votre liste
+        avant que vous ne vous déplaciez — il n'y a donc rien à comparer d'une pharmacie à l'autre
+        de ce côté-là, et l'application ne vous fera jamais courir après quelques francs.
+      </p>
+      <p class="mt-3">
+        Des écarts existent en pratique. Le prix affiché est indicatif : c'est celui du comptoir qui
+        fait foi, et lui seul.
+      </p>
+
+      <!-- ————————————————————————— fin ————————————————————————— -->
+      <div class="mt-16 rounded-2xl border border-line bg-green-50 px-5 py-6 sm:px-7">
+        <h2 class="text-[1.25rem]">Votre question n'est pas ici ?</h2>
+        <p class="mt-3 text-[0.98rem]">
+          Écrivez-nous : une vraie personne lit ces messages, et il n'y a pas d'autre canal
+          d'assistance aujourd'hui — ni numéro vert, ni robot conversationnel.
+        </p>
+        <a
+          href="mailto:contact@pharmasur.ci?subject=Besoin%20d'aide"
+          class="mt-5 inline-flex min-h-12 items-center rounded-xl bg-green-600 px-5 font-bold text-white hover:bg-green-700"
+        >
+          contact@pharmasur.ci
+        </a>
+      </div>
+
+      <p class="mt-12 border-t border-line pt-6 text-[0.9rem] text-body-soft">
+        PharmaSur ne délivre aucun conseil médical et ne remplace pas un professionnel de santé. La
+        proposition d'un produit de même principe actif est une information, jamais une
+        prescription : seul le pharmacien peut substituer un médicament.
+      </p>
+    </main>
+
+    <footer class="border-t border-line bg-green-50">
+      <div class="rail flex flex-col gap-2 py-8 text-[0.88rem] sm:flex-row sm:justify-between">
+        <p>© 2026 PharmaSur. Tous droits réservés.</p>
+        <a href="/confidentialite/" class="font-semibold text-green-700 hover:underline">
+          Politique de confidentialité
+        </a>
+      </div>
+    </footer>
+  </body>
+</html>

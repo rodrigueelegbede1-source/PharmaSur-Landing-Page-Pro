@@ -18,8 +18,7 @@ const columns = [
     links: [
       /* Menait sur les deux offres, pas sur celle des officines. */
       { label: 'Espace pharmaciens', href: '#pharmacie-pro' },
-      // Aucun centre d'aide n'existe : le courriel est le seul recours réel.
-      { label: "Centre d'aide", href: "mailto:contact@pharmasur.ci?subject=Besoin%20d'aide" },
+      { label: "Centre d'aide", href: '/aide/' },
       { label: 'Mentions légales', href: '/mentions-legales/' },
       { label: 'Confidentialité', href: '/confidentialite/' },
     ],
