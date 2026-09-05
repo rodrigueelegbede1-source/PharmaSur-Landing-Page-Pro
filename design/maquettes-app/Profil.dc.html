@@ -16,14 +16,15 @@
 
 <div style="width: 390px; height: 844px; background: #f7faf9; display: flex; flex-direction: column; overflow: hidden;">
 
-  <div style="background: #ffffff; padding: 20px 20px 16px; border-bottom: 1px solid #eef5f1; display: flex; align-items: center; gap: 14px;">
-    <div style="width: 54px; height: 54px; border-radius: 999px; background: #d9f2e7; display: grid; place-items: center; flex: none;">
-      <span style="font-size: 19px; font-weight: 800; color: #0d5a40;">AK</span>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 3px;">
-      <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #0e1b16;">Aya Kouassi</span>
-      <span style="font-size: 13px; font-weight: 500; color: #4a5b54; font-variant-numeric: tabular-nums;">+225 07 12 34 56 78</span>
-    </div>
+  <!--
+    Cet en-tête montrait un utilisateur connecté : avatar « AK », « Aya
+    Kouassi », un numéro de téléphone. Il n'y a PAS de compte dans
+    l'application — rien à créer, rien à retenir, la liste vit sur l'appareil.
+    Afficher une identité inventait une session qui n'existe pas, et promettait
+    au passage une fonctionnalité que personne n'a construite.
+  -->
+  <div style="background: #ffffff; padding: 20px 20px 16px; border-bottom: 1px solid #eef5f1;">
+    <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: #0e1b16;">Profil</span>
   </div>
 
   <div style="flex: 1; padding: 14px 20px; display: flex; flex-direction: column; gap: 13px; overflow: hidden;">
@@ -46,7 +47,7 @@
 
         <div style="display: flex; align-items: center; gap: 13px; padding: 13px 16px; min-height: 44px;">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#12855d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"></rect><path d="M9 8h6M9 12h6M9 16h3"></path></svg>
-          <span style="flex: 1; font-size: 14px; font-weight: 700; color: #0e1b16;">Mes ordonnances</span>
+          <span style="flex: 1; font-size: 14px; font-weight: 700; color: #0e1b16;">Produits dans ma liste</span>
           <span style="font-size: 12.5px; font-weight: 700; color: #7b8b84;">3</span>
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#7b8b84" stroke-width="2"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>
         </div>
@@ -55,8 +56,8 @@
 
         <div style="display: flex; align-items: center; gap: 13px; padding: 13px 16px; min-height: 44px;">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#12855d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"></path></svg>
-          <span style="flex: 1; font-size: 14px; font-weight: 700; color: #0e1b16;">Mon assurance</span>
-          <span style="font-size: 12.5px; font-weight: 700; color: #12855d;">CMU</span>
+          <span style="flex: 1; font-size: 14px; font-weight: 700; color: #0e1b16;">Rappels de prise</span>
+          <span style="font-size: 12.5px; font-weight: 700; color: #7b8b84;">Aucun</span>
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#7b8b84" stroke-width="2"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>
         </div>
 
@@ -65,7 +66,7 @@
         <div style="display: flex; align-items: center; gap: 13px; padding: 13px 16px; min-height: 44px;">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#12855d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"></path><path d="M10.5 20a2 2 0 0 0 3 0"></path></svg>
           <span style="flex: 1; font-size: 14px; font-weight: 700; color: #0e1b16;">Alertes de retour en stock</span>
-          <span style="background: #d9f2e7; color: #0d5a40; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px;">2</span>
+          <span style="font-size: 12.5px; font-weight: 700; color: #7b8b84;">Aucune</span>
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#7b8b84" stroke-width="2"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>
         </div>
       </div>

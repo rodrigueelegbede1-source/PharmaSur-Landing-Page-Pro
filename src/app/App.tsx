@@ -241,8 +241,8 @@ function EcranRecherche({
           <input
             value={requete}
             onChange={(e) => setRequete(e.target.value)}
-            placeholder="Nom du médicament"
-            aria-label="Nom du médicament"
+            placeholder="Ajouter un produit…"
+            aria-label="Ajouter un produit à ma liste"
             className="min-h-13 flex-1 bg-transparent text-[0.98rem] font-semibold text-ink outline-none placeholder:font-medium placeholder:text-body-soft"
           />
           {requete && (
@@ -292,10 +292,26 @@ function EcranRecherche({
           )
         })}
 
+        {/*
+          L'écran vide proposait quatre puces de recherche fréquente. Un
+          premier utilisateur ne sait pas encore ce que fait l'application :
+          lui suggérer « Paracétamol » ne le lui apprend pas. La promesse
+          d'abord, les raccourcis ensuite.
+        */}
         {requete.trim().length < 2 && (
-          <div className="pt-2">
-            <p className="text-[0.72rem] font-extrabold tracking-[0.09em] text-body-soft uppercase">
-              Recherches fréquentes
+          <div className="pt-1">
+            {liste.ids.length === 0 && (
+              <div className="rounded-2xl border border-line bg-line-soft px-5 py-6 text-center">
+                <p className="text-[0.98rem] font-extrabold text-ink">Votre liste est vide</p>
+                <p className="mt-2 text-[0.86rem] leading-relaxed text-body">
+                  Ajoutez les produits de votre ordonnance. Nous chercherons ensuite les pharmacies
+                  qui en ont le plus — pas seulement les plus proches.
+                </p>
+              </div>
+            )}
+
+            <p className="mt-6 text-[0.72rem] font-extrabold tracking-[0.09em] text-body-soft uppercase">
+              Pour commencer
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {['Paracétamol', 'Amoxicilline', 'Ventoline', 'Ibuprofène'].map((mot) => (
@@ -361,8 +377,8 @@ function EcranListe({
       <div className="px-5 pt-5">
         <h1 className="text-[1.65rem] font-extrabold tracking-[-0.03em] text-ink">Ma liste</h1>
         <p className="mt-1.5 text-[0.88rem] text-body">
-          {liste.produits.length} produit{liste.produits.length > 1 ? 's' : ''} · prix indicatifs
-          déclarés par les officines
+          {liste.produits.length} produit{liste.produits.length > 1 ? 's' : ''} · prix homologués,
+          identiques dans toutes les officines
         </p>
       </div>
 
@@ -420,7 +436,7 @@ function EcranListe({
         })}
 
         <Carte className="flex items-center justify-between bg-green-50">
-          <span className="text-[0.88rem] font-bold text-ink">Coût total estimé</span>
+          <span className="text-[0.88rem] font-bold text-ink">Coût total</span>
           <span className="text-[1.3rem] font-extrabold tracking-[-0.02em] text-ink">
             {fcfa(total)}
           </span>
@@ -471,7 +487,27 @@ function EcranResultats({
       </div>
 
       <div className="mt-5 flex flex-col gap-2.5 px-5">
-        {classement.map(({ officine, disponibles, incertains, total }) => (
+        {classement.map(({ officine, etats, disponibles, incertains, total }) => {
+          /*
+            « 2/3 » obligeait à ouvrir la fiche pour savoir CE QUI manque.
+            Le patient veut savoir ce qu'il devra chercher ailleurs : on le
+            nomme quand il n'en manque qu'un, on le compte au-delà.
+          */
+          const manquants = etats.filter((e) => e.etat === 'absent').map((e) => e.produit)
+          const resume =
+            manquants.length === 0
+              ? 'Liste complète'
+              : manquants.length === 1
+                ? /*
+                     « Amoxicilline manquant » était faux, « manquante » l'eût
+                     été sur Paracétamol : le genre varie d'un médicament à
+                     l'autre et on ne peut pas le connaître pour des milliers.
+                     Le deux-points supprime l'accord.
+                   */
+                  `Il manque : ${manquants[0].nom} ${manquants[0].dosage}`
+                : `Il manque ${manquants.length} produits`
+
+          return (
           <button
             key={officine.id}
             type="button"
@@ -494,9 +530,17 @@ function EcranResultats({
                 <p className="mt-0.5 text-[0.78rem] font-medium text-body-soft">
                   {officine.distanceKm} km · {officine.horaires}
                 </p>
+                <p
+                  className={cx(
+                    'mt-0.5 text-[0.78rem] font-bold',
+                    manquants.length === 0 ? 'text-green-700' : 'text-alert',
+                  )}
+                >
+                  {resume}
+                </p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {officine.deGarde && <Puce ton="vert">De garde</Puce>}
-                  {incertains > 0 && <Puce ton="ambre">{incertains} incertain{incertains > 1 ? 's' : ''}</Puce>}
+                  {incertains > 0 && <Puce ton="ambre">{incertains} à confirmer</Puce>}
                   {officine.bons.slice(0, 2).map((b) => (
                     <Puce key={b}>{b}</Puce>
                   ))}
@@ -505,7 +549,8 @@ function EcranResultats({
               <span className="shrink-0 text-[0.88rem] font-extrabold text-ink">{fcfa(total)}</span>
             </div>
           </button>
-        ))}
+          )
+        })}
 
         <p className="px-1 pt-2 text-[0.75rem] leading-relaxed text-body-soft">
           Un produit non confirmé depuis plus de 48 h est signalé « incertain ». PharmaSur ne
@@ -525,6 +570,8 @@ function EcranOfficine({
   produits: Produit[]
   onRetour: () => void
 }) {
+  const manquants = produits.filter((p) => etatDuProduit(officine, p.id) === 'absent')
+
   return (
     <>
       <div className="px-5 pt-4">
@@ -585,7 +632,40 @@ function EcranOfficine({
               </div>
             )
           })}
+
+          {/*
+            Le total manquait : c'est pourtant la question du patient devant
+            une fiche — combien je paie si je vais LÀ. Il ne compte que ce que
+            l'officine a ; les produits absents sont dits juste en dessous,
+            pour qu'un total bas ne se lise pas comme une bonne affaire.
+          */}
+          {produits.length > 0 && (
+            <div className="flex items-center justify-between gap-3 border-t border-line bg-green-50 px-4 py-3.5">
+              <span className="text-[0.86rem] font-bold text-ink">Total sur place</span>
+              <span className="text-[1.1rem] font-extrabold tracking-[-0.02em] text-ink">
+                {fcfa(
+                  produits
+                    .filter((p) => etatDuProduit(officine, p.id) !== 'absent')
+                    .reduce((s, p) => s + p.prix, 0),
+                )}
+              </span>
+            </div>
+          )}
         </div>
+
+        {manquants.length > 0 && (
+          <p className="mt-2.5 text-[0.78rem] leading-relaxed font-semibold text-alert">
+            {/* « le chercher » / « la chercher » : encore un accord que le nom
+                du médicament impose et qu'on ne peut pas deviner. */}
+            {manquants.length === 1
+              ? `À chercher ailleurs : ${manquants[0].nom} ${manquants[0].dosage}.`
+              : `${manquants.length} produits sont à chercher ailleurs.`}
+          </p>
+        )}
+
+        <p className="mt-2 text-[0.75rem] leading-relaxed text-body-soft">
+          Les prix des médicaments sont homologués : ils sont les mêmes dans toutes les officines.
+        </p>
       </div>
 
       <div className="mt-6 px-5">
