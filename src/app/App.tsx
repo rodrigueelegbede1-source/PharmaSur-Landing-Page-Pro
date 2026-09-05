@@ -8,6 +8,7 @@ import {
   equivalentsDe,
   etatDuProduit,
   fcfa,
+  verdict,
   type Officine,
   type Produit,
 } from './donnees'
@@ -93,7 +94,11 @@ export default function App() {
           />
         )}
         {vue.nom === 'onglets' && onglet === 'carte' && (
-          <EcranCarte classement={classement} onOfficine={(id) => allerA({ nom: 'officine', id })} />
+          <EcranCarte
+            classement={classement}
+            nbProduits={liste.produits.length}
+            onOfficine={(id) => allerA({ nom: 'officine', id })}
+          />
         )}
         {vue.nom === 'onglets' && onglet === 'profil' && <EcranProfil nbProduits={liste.ids.length} />}
 
@@ -690,9 +695,11 @@ function EcranEquivalent({
 
 function EcranCarte({
   classement,
+  nbProduits,
   onOfficine,
 }: {
   classement: ReturnType<typeof classer>
+  nbProduits: number
   onOfficine: (id: string) => void
 }) {
   return (
@@ -700,7 +707,7 @@ function EcranCarte({
       <div className="px-5 pt-5">
         <h1 className="text-[1.65rem] font-extrabold tracking-[-0.03em] text-ink">Autour de vous</h1>
         <p className="mt-1.5 text-[0.88rem] text-body">
-          La pastille indique la complétude de votre liste, pas la distance.
+          La pastille dit si votre liste est servie sur place, pas la distance.
         </p>
       </div>
 
@@ -720,27 +727,48 @@ function EcranCarte({
       </div>
 
       <div className="mt-4 flex flex-col gap-2.5 px-5">
-        {classement.map(({ officine, disponibles }) => (
-          <button
-            key={officine.id}
-            type="button"
-            onClick={() => onOfficine(officine.id)}
-            className="flex w-full items-center gap-3 rounded-2xl border border-line bg-paper p-4 text-left active:bg-green-50"
-          >
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-green-50 text-green-700">
-              <Svg className="size-5" trait={2.2}>
-                {Icone.repere}
-              </Svg>
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[0.92rem] font-extrabold text-ink">{officine.nom}</p>
-              <p className="mt-0.5 text-[0.76rem] font-medium text-body-soft">
-                {officine.distanceKm} km · {officine.horaires}
-              </p>
-            </div>
-            {disponibles > 0 && <Puce ton="vert">{disponibles} en stock</Puce>}
-          </button>
-        ))}
+        {classement.map(({ officine, disponibles, incertains }) => {
+          /*
+            « 1 en stock » ne disait ni sur combien, ni ce qu'il fallait en
+            conclure — et disparaissait quand l'officine n'avait rien, laissant
+            l'indisponibilité muette. La pastille rend maintenant un verdict.
+            Le décompte exact descend sous le nom, où il informe sans décider.
+          */
+          const v = verdict(disponibles, nbProduits)
+          const puce = {
+            disponible: { ton: 'vert' as const, texte: 'Disponible' },
+            partiel: { ton: 'ambre' as const, texte: 'Partiel' },
+            indisponible: { ton: 'rouge' as const, texte: 'Indisponible' },
+          }[v]
+
+          return (
+            <button
+              key={officine.id}
+              type="button"
+              onClick={() => onOfficine(officine.id)}
+              className="flex w-full items-center gap-3 rounded-2xl border border-line bg-paper p-4 text-left active:bg-green-50"
+            >
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-green-50 text-green-700">
+                <Svg className="size-5" trait={2.2}>
+                  {Icone.repere}
+                </Svg>
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[0.92rem] font-extrabold text-ink">{officine.nom}</p>
+                <p className="mt-0.5 text-[0.76rem] font-medium text-body-soft">
+                  {officine.distanceKm} km · {officine.horaires}
+                </p>
+                {nbProduits > 0 && (
+                  <p className="mt-0.5 text-[0.76rem] font-medium text-body-soft">
+                    {disponibles} sur {nbProduits} confirmé{disponibles > 1 ? 's' : ''}
+                    {incertains > 0 && ` · ${incertains} à confirmer`}
+                  </p>
+                )}
+              </div>
+              {nbProduits > 0 && <Puce ton={puce.ton}>{puce.texte}</Puce>}
+            </button>
+          )
+        })}
       </div>
     </>
   )

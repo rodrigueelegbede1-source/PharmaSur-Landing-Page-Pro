@@ -157,6 +157,25 @@ export function chercher(requete: string): Produit[] {
   ).slice(0, 6)
 }
 
+/**
+ * Verdict d'une officine sur une liste entière, pour la pastille de la carte.
+ *
+ * Le libellé disait « 1 en stock » : un décompte sans dénominateur, illisible,
+ * et surtout absent quand l'officine n'avait rien — l'indisponibilité passait
+ * alors sous silence, ce qui est le pire des cas pour un patient.
+ *
+ * Un produit INCERTAIN ne compte jamais comme disponible. C'est la même règle
+ * que partout ailleurs dans le produit : une disponibilité non confirmée
+ * depuis 48 h n'est pas une disponibilité. Elle ne peut donc pas faire monter
+ * une officine à « Disponible ».
+ */
+export type Verdict = 'disponible' | 'partiel' | 'indisponible'
+
+export function verdict(disponibles: number, nbProduits: number): Verdict {
+  if (nbProduits === 0 || disponibles === 0) return 'indisponible'
+  return disponibles === nbProduits ? 'disponible' : 'partiel'
+}
+
 /** Officines classées par complétude, puis par distance. */
 export function classer(officines: Officine[], produits: Produit[]) {
   return officines
