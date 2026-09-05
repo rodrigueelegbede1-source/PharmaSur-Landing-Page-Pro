@@ -7,7 +7,8 @@
  * raison pour laquelle on n'écrit pas deux consoles.
  */
 import {
-  A_CONFIRMER, BONS, DEMANDES, MENU, OFFICINE, RECHERCHES, STOCKS, VIGNETTES, ZONES,
+  A_CONFIRMER, BONS, DEMANDES, HORAIRES, MENU, OFFICINE, RECHERCHES, STOCKS, VIGNETTES,
+  ZONES,
 } from './donnees.mjs'
 
 const ICONES = {
@@ -120,6 +121,61 @@ export const inscription = () => `
   </div>
 </section>`
 
+/*
+ * Horaires et garde.
+ *
+ * C'est le seul réglage de la console dont l'application patient dépend
+ * directement : hors des heures déclarées, PharmaSur cesse d'orienter vers
+ * l'officine et l'affiche fermée, avec son heure d'ouverture. Envoyer quelqu'un
+ * devant un rideau baissé, la nuit, en taxi, coûte plus qu'une recherche ratée.
+ *
+ * La garde n'allonge pas les horaires, elle les court-circuite : une officine
+ * de garde redevient visible en dehors de ses heures, et seulement là — le
+ * jour, la mention n'apprendrait rien.
+ *
+ * L'aperçu montre la phrase exacte que verra le patient. Un réglage dont on ne
+ * voit pas l'effet se règle de travers.
+ */
+const horaires = () => `
+<div class="carte" data-horaires>
+  <div class="titre-bloc">Horaires et garde</div>
+  <p style="margin:8px 0 0;font-size:12.5px;line-height:1.55;color:var(--corps)">
+    PharmaSur n'oriente les patients vers vous que pendant ces heures.
+  </p>
+
+  <div class="horaires">
+    <div class="champ">
+      <label for="h-ouvre">Ouverture</label>
+      <input type="time" id="h-ouvre" data-ouvre value="${HORAIRES.ouvre}">
+    </div>
+    <div class="champ">
+      <label for="h-ferme">Fermeture</label>
+      <input type="time" id="h-ferme" data-ferme value="${HORAIRES.ferme}">
+    </div>
+  </div>
+
+  <label class="bascule">
+    <input type="checkbox" data-continu${HORAIRES.continu ? ' checked' : ''}>
+    <span>
+      <span class="t">Ouverte 24 h/24</span>
+      <span class="d">Les horaires ci-dessus ne s'appliquent plus.</span>
+    </span>
+  </label>
+
+  <label class="bascule">
+    <input type="checkbox" data-garde${HORAIRES.deGarde ? ' checked' : ''}>
+    <span>
+      <span class="t">De garde cette nuit</span>
+      <span class="d">Vous restez visible en dehors de vos heures, tant que la garde dure. À retirer le lendemain matin&nbsp;: une garde oubliée envoie des patients devant une porte fermée.</span>
+    </span>
+  </label>
+
+  <div class="apercu">
+    <span class="lab">Ce que voit le patient&nbsp;:</span>
+    <span data-apercu></span>
+  </div>
+</div>`
+
 /* — 2. Tableau de bord — */
 export const tableau = () => `
 <section class="ecran" id="ecran-tableau">
@@ -127,6 +183,8 @@ export const tableau = () => `
     <div><h1>Tableau de bord</h1><p>${OFFICINE.nom} · ${OFFICINE.commune}</p></div>
   </header>
   <div class="contenu">
+    ${horaires()}
+
     <div class="vignettes">
       ${VIGNETTES.map(
         (v) => `<div class="vignette">

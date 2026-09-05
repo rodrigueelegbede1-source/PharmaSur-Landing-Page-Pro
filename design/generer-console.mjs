@@ -175,6 +175,76 @@ ${STYLE}
   [].slice.call(document.querySelectorAll('[data-produit]')).forEach(function (v) {
     rendre(v.getAttribute('data-produit'));
   });
+
+  /*
+   * Horaires et garde.
+   *
+   * La phrase de l'aperçu est calculée par la MÊME règle que l'application
+   * patient (src/app/donnees.ts, fonction ouverture) : ouverte pendant les
+   * heures, de garde en dehors si la garde est déclarée, fermée sinon. Si les
+   * deux se mettent à diverger, le pharmacien règle une chose et le patient en
+   * voit une autre — c'est le seul endroit du produit où cette duplication
+   * existe, et elle est volontairement écrite juste à côté de son jumeau.
+   */
+  var bloc = document.querySelector('[data-horaires]');
+  if (bloc) {
+    var champOuvre = bloc.querySelector('[data-ouvre]');
+    var champFerme = bloc.querySelector('[data-ferme]');
+    var caseContinu = bloc.querySelector('[data-continu]');
+    var caseGarde = bloc.querySelector('[data-garde]');
+    var apercu = bloc.querySelector('[data-apercu]');
+
+    /* Découpage plutôt qu'expression régulière : ce script vit dans un gabarit
+       JavaScript, où « \\d » perd sa barre oblique à la génération. La première
+       version l'avait perdue et lisait toute heure comme invalide — sans la
+       moindre erreur en console. */
+    function minutes(champ) {
+      var parts = (champ.value || '').split(':');
+      if (parts.length !== 2) return null;
+      var h = parseInt(parts[0], 10), mn = parseInt(parts[1], 10);
+      if (!(h >= 0 && h < 24 && mn >= 0 && mn < 60)) return null;
+      return h * 60 + mn;
+    }
+
+    function hhmm(min) {
+      var h = Math.floor(min / 60) % 24, m = min % 60;
+      return m === 0 ? h + ' h' : h + ' h ' + (m < 10 ? '0' + m : m);
+    }
+
+    function rendreHoraires() {
+      var continu = caseContinu.checked;
+      champOuvre.disabled = continu;
+      champFerme.disabled = continu;
+
+      var ouvre = minutes(champOuvre), ferme = minutes(champFerme);
+      var classe = 'stock', texte;
+
+      if (continu) {
+        texte = 'Ouverte 24 h/24';
+      } else if (ouvre === null || ferme === null) {
+        /* Une heure vide ne vaut pas « ouverte » : sans horaires déclarés,
+           l'application ne peut rien promettre au patient. */
+        classe = 'neutre';
+        texte = 'Horaires incomplets — vous n\\'apparaissez pas';
+      } else {
+        var d = new Date();
+        var m = d.getHours() * 60 + d.getMinutes();
+        var dedans = ouvre < ferme ? (m >= ouvre && m < ferme) : (m >= ouvre || m < ferme);
+        if (dedans) texte = 'Ouverte jusqu\\'à ' + hhmm(ferme);
+        else if (caseGarde.checked) texte = 'De garde cette nuit';
+        else { classe = 'rupture'; texte = 'Fermée jusqu\\'à ' + hhmm(ouvre); }
+      }
+
+      apercu.innerHTML = '<span class="etat ' + classe + '"></span>';
+      apercu.firstChild.textContent = texte;
+    }
+
+    [champOuvre, champFerme, caseContinu, caseGarde].forEach(function (c) {
+      c.addEventListener('change', rendreHoraires);
+      c.addEventListener('input', rendreHoraires);
+    });
+    rendreHoraires();
+  }
 })();
 </script>
 </body>

@@ -165,6 +165,36 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 .etapes .n { width:21px; height:21px; border-radius:999px; background:var(--trait-doux); color:var(--doux); display:grid; place-items:center; font-size:10.5px; font-weight:800; }
 .etapes .e.on .n { background:var(--vert-600); color:#fff; }
 
+/* — Horaires et garde —
+   Le seul écran de la console qui commande directement ce que voit le patient :
+   hors de ces heures, l'application cesse d'orienter vers l'officine. */
+.horaires { margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; }
+/* Plafonné : sur un écran de comptoir, un champ d'heure étiré sur 460 px
+   laissait « 08:00 » flotter au milieu du vide. */
+.horaires .champ { flex:1 1 140px; max-width:190px; }
+.horaires input[type=time] {
+  min-height:46px; width:100%; box-sizing:border-box;
+  border:1px solid var(--trait); border-radius:12px; padding:0 12px;
+  font:inherit; font-size:15px; font-weight:700; color:var(--encre); background:var(--papier);
+}
+.horaires input[type=time]:disabled { color:var(--doux); background:var(--trait-doux); }
+
+.bascule {
+  margin-top:12px; display:flex; align-items:flex-start; gap:12px;
+  border:1px solid var(--trait); border-radius:14px; padding:13px 15px; cursor:pointer;
+}
+.bascule + .bascule { margin-top:8px; }
+.bascule input { flex:none; width:22px; height:22px; margin:1px 0 0; accent-color:var(--vert-600); }
+.bascule .t { font-size:13.5px; font-weight:700; color:var(--encre); }
+.bascule .d { margin-top:2px; font-size:11.5px; line-height:1.5; font-weight:500; color:var(--doux); }
+.bascule:has(input:checked) { border-color:var(--vert-200); background:var(--vert-50); }
+
+.apercu {
+  margin-top:14px; padding-top:13px; border-top:1px solid var(--trait-doux);
+  display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+}
+.apercu .lab { font-size:11.5px; font-weight:600; color:var(--doux); }
+
 /* — Bandeaux — */
 .bandeau { display:flex; gap:10px; align-items:flex-start; background:var(--vert-50); border:1px solid var(--vert-200); border-radius:16px; padding:13px 15px; }
 .bandeau p { margin:0; font-size:12.5px; line-height:1.55; color:#2a3d35; }

@@ -1,10 +1,45 @@
 {
   "artboards": [
-    { "file": "Inscription.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "1 · Inscription de l'officine" },
-    { "file": "Main.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 900, "title": "2 · Tableau de bord" },
-    { "file": "Stocks.dc.html", "x": 3120, "y": 0, "w": 1440, "h": 900, "title": "3 · Stocks" },
-    { "file": "Bons.dc.html", "x": 0, "y": 1160, "w": 1440, "h": 900, "title": "4 · Bons d'assurance" },
-    { "file": "Demandes.dc.html", "x": 1560, "y": 1160, "w": 1440, "h": 900, "title": "5 · Demandes locales" }
+    {
+      "file": "Inscription.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "1 · Inscription de l'officine"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 1560,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "2 · Tableau de bord"
+    },
+    {
+      "file": "Stocks.dc.html",
+      "x": 3120,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "3 · Stocks"
+    },
+    {
+      "file": "Bons.dc.html",
+      "x": 0,
+      "y": 1160,
+      "w": 1440,
+      "h": 900,
+      "title": "4 · Bons d'assurance"
+    },
+    {
+      "file": "Demandes.dc.html",
+      "x": 1560,
+      "y": 1160,
+      "w": 1440,
+      "h": 900,
+      "title": "5 · Demandes locales"
+    }
   ],
   "annotations": [
     {
@@ -13,6 +48,13 @@
       "y": -210,
       "w": 1440,
       "text": "L'ENTRÉE DE L'OFFICINE\nCinq champs, pas un de plus : nom, commune, pharmacien, agrément, téléphone. Le numéro d'agrément est le seul verrou — la fiche reste hors ligne tant qu'il n'est pas vérifié auprès de l'Ordre. Aucun paiement n'est demandé avant cette vérification."
+    },
+    {
+      "id": "note-horaires",
+      "x": 1560,
+      "y": -210,
+      "w": 1440,
+      "text": "LES HORAIRES COMMANDENT LA GÉOLOCALISATION\nC'est le seul réglage de la console dont l'application patient dépend directement : hors des heures déclarées, PharmaSur cesse d'orienter vers l'officine et l'affiche fermée, avec son heure d'ouverture. La garde n'allonge pas les horaires, elle les court-circuite — l'officine redevient visible la nuit, et seulement tant qu'elle la déclare. Un aperçu montre la phrase exacte que verra le patient : un réglage dont on ne voit pas l'effet se règle de travers."
     },
     {
       "id": "note-stocks",
@@ -36,5 +78,7 @@
       "text": "CE QUI JUSTIFIE LES 10 000 FCFA / MOIS\nLes demandes locales sont la seule page que l'officine ne peut obtenir nulle part ailleurs : ce que les patients à 3 km cherchent et que personne n'a. Comptages agrégés uniquement — aucun patient identifié, aucune ordonnance transmise, seuil d'affichage à 5 recherches."
     }
   ],
-  "launch": { "view": "canvas" }
+  "launch": {
+    "view": "canvas"
+  }
 }

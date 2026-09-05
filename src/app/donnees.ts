@@ -6,14 +6,17 @@
  * à faire fonctionner l'application pour la montrer, pas à renseigner qui que
  * ce soit.
  *
- * Trois règles à ne pas contourner le jour où de vraies données arrivent :
+ * Quatre règles à ne pas contourner le jour où de vraies données arrivent :
  *   1. Une disponibilité non confirmée depuis 48 h est « incertaine », jamais
  *      « disponible ». Le champ `confirmeIlYaHeures` porte cette information
  *      et l'interface doit continuer de l'afficher.
  *   2. L'équivalent proposé porte sur le PRINCIPE ACTIF seul. Jamais sur une
  *      autre molécule, jamais sans la mention de validation par le pharmacien.
- *   3. Les prix sont indicatifs et déclarés par l'officine. L'application ne
- *      les garantit pas et doit le dire.
+ *   3. Les prix des médicaments sont homologués en Côte d'Ivoire : un produit
+ *      a UN prix, le même partout. D'où un prix par produit et non par
+ *      officine — et rien à comparer d'une officine à l'autre là-dessus.
+ *   4. Une officine n'est proposée que si elle est ouverte à l'heure de la
+ *      recherche. Ses horaires viennent d'elle, jamais d'une estimation.
  */
 
 export type Produit = {
@@ -22,7 +25,7 @@ export type Produit = {
   dosage: string
   forme: string
   principeActif: string
-  /** Prix indicatif en FCFA, déclaré par les officines. */
+  /** Prix homologué en FCFA. Il ne varie pas d'une officine à l'autre. */
   prix: number
 }
 
@@ -44,7 +47,19 @@ export type Officine = {
   nom: string
   quartier: string
   distanceKm: number
-  horaires: string
+  /*
+   * Horaires en minutes depuis minuit, pas en phrase. « Ferme à 22 h » se lit
+   * bien mais ne se calcule pas : impossible de savoir si l'officine est
+   * ouverte MAINTENANT, et l'application envoyait donc des patients devant des
+   * portes closes. Une officine ouverte 24 h/24 va de 0 à 1440.
+   */
+  ouvre: number
+  ferme: number
+  /*
+   * De garde : l'officine assure la permanence de nuit, et reste donc
+   * joignable en dehors de ses horaires. C'est une rotation, pas un état
+   * permanent — l'officine la déclare depuis sa console.
+   */
   deGarde: boolean
   telephone: string
   bons: string[]
@@ -72,7 +87,8 @@ export const OFFICINES: Officine[] = [
     nom: 'Pharmacie de la Riviera',
     quartier: 'Cocody Riviera 2',
     distanceKm: 1.2,
-    horaires: 'Ouvert 24 h/24',
+    ouvre: 0,
+    ferme: 1440,
     deGarde: true,
     telephone: '+225 07 00 00 00 01',
     bons: ['CMU', 'Mutuelles', 'Assurances privées'],
@@ -89,7 +105,8 @@ export const OFFICINES: Officine[] = [
     nom: 'Pharmacie Saint-Jean',
     quartier: 'Cocody Angré',
     distanceKm: 2.4,
-    horaires: "Ferme à 22 h",
+    ouvre: 8 * 60,
+    ferme: 22 * 60,
     deGarde: false,
     telephone: '+225 07 00 00 00 02',
     bons: ['CMU', 'Mutuelles'],
@@ -105,7 +122,8 @@ export const OFFICINES: Officine[] = [
     nom: 'Pharmacie des Deux-Plateaux',
     quartier: 'Deux-Plateaux Vallon',
     distanceKm: 3.1,
-    horaires: 'Ouvert jusqu’à 20 h',
+    ouvre: 9 * 60,
+    ferme: 18 * 60,
     deGarde: false,
     telephone: '+225 07 00 00 00 03',
     bons: ['CMU'],
@@ -120,7 +138,8 @@ export const OFFICINES: Officine[] = [
     nom: 'Pharmacie de la Palmeraie',
     quartier: 'Cocody Palmeraie',
     distanceKm: 4.6,
-    horaires: 'Ouvert 24 h/24',
+    ouvre: 7 * 60 + 30,
+    ferme: 21 * 60,
     deGarde: true,
     telephone: '+225 07 00 00 00 04',
     bons: ['CMU', 'Assurances privées'],
@@ -133,6 +152,55 @@ export const OFFICINES: Officine[] = [
     },
   },
 ]
+
+/*
+ * Ouverture : la seule chose qu'un patient doit savoir avant de se déplacer.
+ *
+ * L'application classait les officines par complétude puis par distance, sans
+ * jamais regarder l'heure : à 23 h, elle pouvait recommander en tête une
+ * pharmacie fermée depuis cinq heures. Avoir le médicament ne sert à rien si
+ * la porte est close.
+ *
+ * Une officine DE GARDE assure la permanence de nuit : elle reste joignable en
+ * dehors de ses horaires. C'est une rotation hebdomadaire, déclarée par
+ * l'officine elle-même dans sa console — jamais devinée par l'application.
+ */
+export type Ouverture = {
+  ouverte: boolean
+  /** Ouverte uniquement parce qu'elle est de garde, hors de ses horaires. */
+  parGarde: boolean
+  /** Phrase à afficher : « Ouverte jusqu'à 22 h », « Fermée jusqu'à 8 h »… */
+  libelle: string
+}
+
+const hhmm = (minutes: number) => {
+  const h = Math.floor(minutes / 60) % 24
+  const m = minutes % 60
+  return m === 0 ? `${h} h` : `${h} h ${String(m).padStart(2, '0')}`
+}
+
+export function ouverture(officine: Officine, maintenant = new Date()): Ouverture {
+  const m = maintenant.getHours() * 60 + maintenant.getMinutes()
+  const continu = officine.ouvre === 0 && officine.ferme >= 1440
+  /* Une officine qui ferme à 1 h du matin a une heure de fermeture INFÉRIEURE
+     à son heure d'ouverture : la plage enjambe minuit et se teste alors par
+     réunion, pas par intervalle. Sans ce cas, elle serait déclarée fermée
+     toute la journée. */
+  const dansLesHoraires =
+    continu ||
+    (officine.ouvre < officine.ferme
+      ? m >= officine.ouvre && m < officine.ferme
+      : m >= officine.ouvre || m < officine.ferme)
+
+  if (continu) return { ouverte: true, parGarde: false, libelle: 'Ouverte 24 h/24' }
+  if (dansLesHoraires) {
+    return { ouverte: true, parGarde: false, libelle: `Ouverte jusqu'à ${hhmm(officine.ferme)}` }
+  }
+  if (officine.deGarde) {
+    return { ouverte: true, parGarde: true, libelle: 'De garde cette nuit' }
+  }
+  return { ouverte: false, parGarde: false, libelle: `Fermée jusqu'à ${hhmm(officine.ouvre)}` }
+}
 
 /** Au-delà de ce délai, une disponibilité n'est plus affirmée. */
 export const SEUIL_INCERTAIN_H = 48
@@ -204,7 +272,7 @@ export function verdict(disponibles: number, nbProduits: number): Verdict {
 }
 
 /** Officines classées par complétude, puis par distance. */
-export function classer(officines: Officine[], produits: Produit[]) {
+export function classer(officines: Officine[], produits: Produit[], maintenant = new Date()) {
   return officines
     .map((o) => {
       const etats = produits.map((p) => ({ produit: p, etat: etatDuProduit(o, p.id) }))
@@ -213,7 +281,19 @@ export function classer(officines: Officine[], produits: Produit[]) {
       const total = etats
         .filter((e) => e.etat !== 'absent')
         .reduce((s, e) => s + e.produit.prix, 0)
-      return { officine: o, etats, disponibles, incertains, total }
+      return { officine: o, etats, disponibles, incertains, total, ouverture: ouverture(o, maintenant) }
     })
-    .sort((a, b) => b.disponibles - a.disponibles || a.officine.distanceKm - b.officine.distanceKm)
+    /*
+     * L'ouverture passe AVANT la complétude. Une officine fermée qui a tout
+     * votre ordonnance ne vous sert à rien maintenant ; une officine ouverte
+     * qui en a la moitié vous sert tout de suite. Les fermées ne disparaissent
+     * pas pour autant — savoir qu'elle ouvre à 8 h vaut mieux que ne rien
+     * savoir — mais elles ne sont jamais en tête.
+     */
+    .sort(
+      (a, b) =>
+        Number(b.ouverture.ouverte) - Number(a.ouverture.ouverte) ||
+        b.disponibles - a.disponibles ||
+        a.officine.distanceKm - b.officine.distanceKm,
+    )
 }

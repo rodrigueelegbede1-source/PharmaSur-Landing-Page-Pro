@@ -24,6 +24,22 @@ export const OFFICINE = {
   telephone: '07 00 00 00 00',
 }
 
+/*
+ * Horaires déclarés par l'officine. Ils ne sont pas décoratifs : l'application
+ * patient ne classe en tête que les officines ouvertes, et affiche les autres
+ * grisées avec leur heure d'ouverture. Une officine qui ne déclare rien serait
+ * donc invisible aux heures où elle travaille.
+ *
+ * La garde est distincte des horaires parce qu'elle ne les prolonge pas : elle
+ * rouvre l'officine en dehors, pour une nuit ou un dimanche.
+ */
+export const HORAIRES = {
+  ouvre: '08:00',
+  ferme: '22:00',
+  continu: false,
+  deGarde: false,
+}
+
 export const MENU = [
   { id: 'tableau', label: 'Tableau de bord', icone: 'grille' },
   { id: 'stocks', label: 'Stocks', icone: 'boite' },

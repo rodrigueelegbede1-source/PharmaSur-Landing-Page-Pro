@@ -9,6 +9,7 @@ import {
   estEnRupture,
   etatDuProduit,
   fcfa,
+  ouverture,
   verdict,
   type Officine,
   type Produit,
@@ -492,12 +493,12 @@ function EcranResultats({
           Officines classées
         </h1>
         <p className="mt-1.5 text-[0.88rem] leading-relaxed text-body">
-          Par nombre de produits disponibles, pas par distance.
+          Les officines ouvertes d'abord, puis par nombre de produits disponibles.
         </p>
       </div>
 
       <div className="mt-5 flex flex-col gap-2.5 px-5">
-        {classement.map(({ officine, etats, disponibles, incertains, total }) => {
+        {classement.map(({ officine, etats, disponibles, incertains, total, ouverture: ouv }) => {
           /*
             « 2/3 » obligeait à ouvrir la fiche pour savoir CE QUI manque.
             Le patient veut savoir ce qu'il devra chercher ailleurs : on le
@@ -522,15 +523,22 @@ function EcranResultats({
             key={officine.id}
             type="button"
             onClick={() => onOfficine(officine.id)}
-            className="w-full rounded-2xl border border-line bg-paper p-4 text-left active:bg-green-50"
+            className={cx(
+              'w-full rounded-2xl border border-line p-4 text-left active:bg-green-50',
+              /* Une officine fermée reste consultable — on l'appelle demain —
+                 mais elle ne se présente plus comme un trajet possible. */
+              ouv.ouverte ? 'bg-paper' : 'bg-line-soft/60',
+            )}
           >
             <div className="flex items-start gap-3">
               <span
                 className={cx(
                   'grid size-11 shrink-0 place-items-center rounded-xl text-[0.82rem] font-extrabold',
-                  disponibles === nbProduits
-                    ? 'bg-green-600 text-white'
-                    : 'bg-green-50 text-green-700',
+                  !ouv.ouverte
+                    ? 'bg-paper text-body-soft'
+                    : disponibles === nbProduits
+                      ? 'bg-green-600 text-white'
+                      : 'bg-green-50 text-green-700',
                 )}
               >
                 {disponibles}/{nbProduits}
@@ -538,7 +546,10 @@ function EcranResultats({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[0.95rem] font-extrabold text-ink">{officine.nom}</p>
                 <p className="mt-0.5 text-[0.78rem] font-medium text-body-soft">
-                  {officine.distanceKm} km · {officine.horaires}
+                  {officine.distanceKm} km ·{' '}
+                  <span className={cx('font-bold', ouv.ouverte ? 'text-green-700' : 'text-alert')}>
+                    {ouv.libelle}
+                  </span>
                 </p>
                 <p
                   className={cx(
@@ -549,7 +560,7 @@ function EcranResultats({
                   {resume}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {officine.deGarde && <Puce ton="vert">De garde</Puce>}
+                  {ouv.parGarde && <Puce ton="vert">De garde</Puce>}
                   {incertains > 0 && <Puce ton="ambre">{incertains} à confirmer</Puce>}
                   {officine.bons.slice(0, 2).map((b) => (
                     <Puce key={b}>{b}</Puce>
@@ -581,6 +592,7 @@ function EcranOfficine({
   onRetour: () => void
 }) {
   const manquants = produits.filter((p) => etatDuProduit(officine, p.id) === 'absent')
+  const ouv = ouverture(officine)
 
   return (
     <>
@@ -590,9 +602,28 @@ function EcranOfficine({
           {officine.nom}
         </h1>
         <p className="mt-1.5 text-[0.88rem] text-body">
-          {officine.quartier} · {officine.distanceKm} km · {officine.horaires}
+          {officine.quartier} · {officine.distanceKm} km
+        </p>
+        <p
+          className={cx(
+            'mt-1.5 text-[0.88rem] font-bold',
+            ouv.ouverte ? 'text-green-700' : 'text-alert',
+          )}
+        >
+          {ouv.libelle}
         </p>
       </div>
+
+      {/* On barre la route avant le trajet, pas après : un déplacement pour
+          rien coûte un taxi et parfois une nuit d'attente. */}
+      {!ouv.ouverte && (
+        <div className="mt-4 px-5">
+          <p className="rounded-2xl border border-alert/30 bg-alert/8 px-4 py-3 text-[0.84rem] leading-relaxed font-semibold text-alert">
+            Cette officine est fermée en ce moment. Appelez avant de vous déplacer, ou
+            revenez à la liste : d'autres sont ouvertes.
+          </p>
+        </div>
+      )}
 
       <div className="mt-4 flex gap-2.5 px-5">
         <Bouton block href={`tel:${officine.telephone.replace(/\s/g, '')}`} variante="contour">
@@ -807,7 +838,7 @@ function EcranCarte({
       <div className="px-5 pt-5">
         <h1 className="text-[1.65rem] font-extrabold tracking-[-0.03em] text-ink">Autour de vous</h1>
         <p className="mt-1.5 text-[0.88rem] text-body">
-          La pastille dit si votre liste est servie sur place, pas la distance.
+Les officines fermées descendent en bas de la liste, grisées.
         </p>
       </div>
 
@@ -827,7 +858,7 @@ function EcranCarte({
       </div>
 
       <div className="mt-4 flex flex-col gap-2.5 px-5">
-        {classement.map(({ officine, disponibles, incertains }) => {
+        {classement.map(({ officine, disponibles, incertains, ouverture: ouv }) => {
           /*
             « 1 en stock » ne disait ni sur combien, ni ce qu'il fallait en
             conclure — et disparaissait quand l'officine n'avait rien, laissant
@@ -846,9 +877,19 @@ function EcranCarte({
               key={officine.id}
               type="button"
               onClick={() => onOfficine(officine.id)}
-              className="flex w-full items-center gap-3 rounded-2xl border border-line bg-paper p-4 text-left active:bg-green-50"
+              className={cx(
+                'flex w-full items-center gap-3 rounded-2xl border border-line p-4 text-left active:bg-green-50',
+                /* Fermée : la carte s'efface au lieu de disparaître. Le patient
+                   doit pouvoir la retrouver pour l'appeler demain matin. */
+                ouv.ouverte ? 'bg-paper' : 'bg-line-soft/60',
+              )}
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-green-50 text-green-700">
+              <span
+                className={cx(
+                  'grid size-10 shrink-0 place-items-center rounded-full',
+                  ouv.ouverte ? 'bg-green-50 text-green-700' : 'bg-paper text-body-soft',
+                )}
+              >
                 <Svg className="size-5" trait={2.2}>
                   {Icone.repere}
                 </Svg>
@@ -856,7 +897,10 @@ function EcranCarte({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[0.92rem] font-extrabold text-ink">{officine.nom}</p>
                 <p className="mt-0.5 text-[0.76rem] font-medium text-body-soft">
-                  {officine.distanceKm} km · {officine.horaires}
+                  {officine.distanceKm} km ·{' '}
+                  <span className={cx('font-bold', ouv.ouverte ? 'text-green-700' : 'text-alert')}>
+                    {ouv.libelle}
+                  </span>
                 </p>
                 {nbProduits > 0 && (
                   <p className="mt-0.5 text-[0.76rem] font-medium text-body-soft">
@@ -865,7 +909,11 @@ function EcranCarte({
                   </p>
                 )}
               </div>
-              {nbProduits > 0 && <Puce ton={puce.ton}>{puce.texte}</Puce>}
+              {/* Une pastille verte sur une officine fermée promettrait un
+                  retrait impossible : le verdict de stock passe en gris. */}
+              {nbProduits > 0 && (
+                <Puce ton={ouv.ouverte ? puce.ton : 'neutre'}>{puce.texte}</Puce>
+              )}
             </button>
           )
         })}

@@ -167,6 +167,36 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 .etapes .n { width:21px; height:21px; border-radius:999px; background:var(--trait-doux); color:var(--doux); display:grid; place-items:center; font-size:10.5px; font-weight:800; }
 .etapes .e.on .n { background:var(--vert-600); color:#fff; }
 
+/* — Horaires et garde —
+   Le seul écran de la console qui commande directement ce que voit le patient :
+   hors de ces heures, l'application cesse d'orienter vers l'officine. */
+.horaires { margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; }
+/* Plafonné : sur un écran de comptoir, un champ d'heure étiré sur 460 px
+   laissait « 08:00 » flotter au milieu du vide. */
+.horaires .champ { flex:1 1 140px; max-width:190px; }
+.horaires input[type=time] {
+  min-height:46px; width:100%; box-sizing:border-box;
+  border:1px solid var(--trait); border-radius:12px; padding:0 12px;
+  font:inherit; font-size:15px; font-weight:700; color:var(--encre); background:var(--papier);
+}
+.horaires input[type=time]:disabled { color:var(--doux); background:var(--trait-doux); }
+
+.bascule {
+  margin-top:12px; display:flex; align-items:flex-start; gap:12px;
+  border:1px solid var(--trait); border-radius:14px; padding:13px 15px; cursor:pointer;
+}
+.bascule + .bascule { margin-top:8px; }
+.bascule input { flex:none; width:22px; height:22px; margin:1px 0 0; accent-color:var(--vert-600); }
+.bascule .t { font-size:13.5px; font-weight:700; color:var(--encre); }
+.bascule .d { margin-top:2px; font-size:11.5px; line-height:1.5; font-weight:500; color:var(--doux); }
+.bascule:has(input:checked) { border-color:var(--vert-200); background:var(--vert-50); }
+
+.apercu {
+  margin-top:14px; padding-top:13px; border-top:1px solid var(--trait-doux);
+  display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+}
+.apercu .lab { font-size:11.5px; font-weight:600; color:var(--doux); }
+
 /* — Bandeaux — */
 .bandeau { display:flex; gap:10px; align-items:flex-start; background:var(--vert-50); border:1px solid var(--vert-200); border-radius:16px; padding:13px 15px; }
 .bandeau p { margin:0; font-size:12.5px; line-height:1.55; color:#2a3d35; }
@@ -363,6 +393,46 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
     <div><h1>Tableau de bord</h1><p>Pharmacie de la Riviera · Cocody</p></div>
   </header>
   <div class="contenu">
+    
+<div class="carte" data-horaires>
+  <div class="titre-bloc">Horaires et garde</div>
+  <p style="margin:8px 0 0;font-size:12.5px;line-height:1.55;color:var(--corps)">
+    PharmaSur n'oriente les patients vers vous que pendant ces heures.
+  </p>
+
+  <div class="horaires">
+    <div class="champ">
+      <label for="h-ouvre">Ouverture</label>
+      <input type="time" id="h-ouvre" data-ouvre value="08:00">
+    </div>
+    <div class="champ">
+      <label for="h-ferme">Fermeture</label>
+      <input type="time" id="h-ferme" data-ferme value="22:00">
+    </div>
+  </div>
+
+  <label class="bascule">
+    <input type="checkbox" data-continu>
+    <span>
+      <span class="t">Ouverte 24 h/24</span>
+      <span class="d">Les horaires ci-dessus ne s'appliquent plus.</span>
+    </span>
+  </label>
+
+  <label class="bascule">
+    <input type="checkbox" data-garde>
+    <span>
+      <span class="t">De garde cette nuit</span>
+      <span class="d">Vous restez visible en dehors de vos heures, tant que la garde dure. À retirer le lendemain matin&nbsp;: une garde oubliée envoie des patients devant une porte fermée.</span>
+    </span>
+  </label>
+
+  <div class="apercu">
+    <span class="lab">Ce que voit le patient&nbsp;:</span>
+    <span data-apercu></span>
+  </div>
+</div>
+
     <div class="vignettes">
       <div class="vignette">
         <div class="lab">Vues de votre fiche</div>
@@ -1080,6 +1150,76 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
   [].slice.call(document.querySelectorAll('[data-produit]')).forEach(function (v) {
     rendre(v.getAttribute('data-produit'));
   });
+
+  /*
+   * Horaires et garde.
+   *
+   * La phrase de l'aperçu est calculée par la MÊME règle que l'application
+   * patient (src/app/donnees.ts, fonction ouverture) : ouverte pendant les
+   * heures, de garde en dehors si la garde est déclarée, fermée sinon. Si les
+   * deux se mettent à diverger, le pharmacien règle une chose et le patient en
+   * voit une autre — c'est le seul endroit du produit où cette duplication
+   * existe, et elle est volontairement écrite juste à côté de son jumeau.
+   */
+  var bloc = document.querySelector('[data-horaires]');
+  if (bloc) {
+    var champOuvre = bloc.querySelector('[data-ouvre]');
+    var champFerme = bloc.querySelector('[data-ferme]');
+    var caseContinu = bloc.querySelector('[data-continu]');
+    var caseGarde = bloc.querySelector('[data-garde]');
+    var apercu = bloc.querySelector('[data-apercu]');
+
+    /* Découpage plutôt qu'expression régulière : ce script vit dans un gabarit
+       JavaScript, où « \d » perd sa barre oblique à la génération. La première
+       version l'avait perdue et lisait toute heure comme invalide — sans la
+       moindre erreur en console. */
+    function minutes(champ) {
+      var parts = (champ.value || '').split(':');
+      if (parts.length !== 2) return null;
+      var h = parseInt(parts[0], 10), mn = parseInt(parts[1], 10);
+      if (!(h >= 0 && h < 24 && mn >= 0 && mn < 60)) return null;
+      return h * 60 + mn;
+    }
+
+    function hhmm(min) {
+      var h = Math.floor(min / 60) % 24, m = min % 60;
+      return m === 0 ? h + ' h' : h + ' h ' + (m < 10 ? '0' + m : m);
+    }
+
+    function rendreHoraires() {
+      var continu = caseContinu.checked;
+      champOuvre.disabled = continu;
+      champFerme.disabled = continu;
+
+      var ouvre = minutes(champOuvre), ferme = minutes(champFerme);
+      var classe = 'stock', texte;
+
+      if (continu) {
+        texte = 'Ouverte 24 h/24';
+      } else if (ouvre === null || ferme === null) {
+        /* Une heure vide ne vaut pas « ouverte » : sans horaires déclarés,
+           l'application ne peut rien promettre au patient. */
+        classe = 'neutre';
+        texte = 'Horaires incomplets — vous n\'apparaissez pas';
+      } else {
+        var d = new Date();
+        var m = d.getHours() * 60 + d.getMinutes();
+        var dedans = ouvre < ferme ? (m >= ouvre && m < ferme) : (m >= ouvre || m < ferme);
+        if (dedans) texte = 'Ouverte jusqu\'à ' + hhmm(ferme);
+        else if (caseGarde.checked) texte = 'De garde cette nuit';
+        else { classe = 'rupture'; texte = 'Fermée jusqu\'à ' + hhmm(ouvre); }
+      }
+
+      apercu.innerHTML = '<span class="etat ' + classe + '"></span>';
+      apercu.firstChild.textContent = texte;
+    }
+
+    [champOuvre, champFerme, caseContinu, caseGarde].forEach(function (c) {
+      c.addEventListener('change', rendreHoraires);
+      c.addEventListener('input', rendreHoraires);
+    });
+    rendreHoraires();
+  }
 })();
 </script>
 </body>
