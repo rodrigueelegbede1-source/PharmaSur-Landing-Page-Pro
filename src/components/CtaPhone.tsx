@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState, type FormEvent } from 'react'
 import { cx } from '../lib/cx'
+import { APK_PATIENT, APP_FICHIER, APP_PATIENT } from '../lib/destinations'
 import { ArrowRight, Reveal } from './primitives'
 
 const phoneRegex = /^(\+225)?[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}$/
@@ -92,8 +93,84 @@ export function CtaPhone() {
                   Prêt à ne plus courir de pharmacie en pharmacie ?
                 </h2>
                 <p className="mt-4 max-w-lg text-[1.02rem]">
-                  Téléchargez PharmaSur et vérifiez vos médicaments en toute confiance.
+                  Téléchargez PharmaSur et sachez où trouver votre ordonnance, à quel prix.
                 </p>
+
+                {/*
+                  Trois routes, parce qu'aucune ne couvre tout le monde.
+                  L'APK ne s'installe que sur Android ; sur iPhone, rien ne
+                  s'installe depuis un site — Apple l'interdit, et le seul
+                  chemin est « Sur l'écran d'accueil » depuis Safari. Le
+                  fichier unique, lui, s'ouvre partout et sans réseau.
+                  Annoncer ce que chaque bouton donne évite de laisser
+                  quelqu'un télécharger l'inutile.
+                */}
+                <div className="mt-8 flex flex-col gap-2.5 sm:max-w-md">
+                  <a
+                    href={APK_PATIENT}
+                    download="pharmasur-1.0.0.apk"
+                    className="group flex items-center gap-3.5 rounded-2xl bg-green-400 px-5 py-4 text-green-950 transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="size-6 shrink-0" aria-hidden>
+                      <path d="M17.6 9.5 16 12.3M6.4 9.5 8 12.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                      <path d="M4 13.5h16a8 8 0 0 0-16 0Zm4.6-2.6a.55.55 0 1 0 0-1.1.55.55 0 0 0 0 1.1Zm6.8 0a.55.55 0 1 0 0-1.1.55.55 0 0 0 0 1.1Z" />
+                      <rect x="4" y="14.6" width="16" height="6.4" rx="1.6" />
+                    </svg>
+                    <span className="flex-1">
+                      <span className="block font-extrabold">Android — installer l'application</span>
+                      <span className="block text-[0.8rem] font-semibold text-green-950/70">
+                        APK · 1,2 Mo · téléchargement direct
+                      </span>
+                    </span>
+                    <ArrowRight />
+                  </a>
+
+                  <a
+                    href={APP_PATIENT}
+                    className="group flex items-center gap-3.5 rounded-2xl border border-white/20 bg-white/5 px-5 py-4 text-white transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="size-6 shrink-0" aria-hidden>
+                      <path d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6c1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.2-.8-2.2-3.1ZM14.4 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1Z" />
+                    </svg>
+                    <span className="flex-1">
+                      <span className="block font-extrabold">iPhone — ouvrir dans Safari</span>
+                      <span className="block text-[0.8rem] font-medium text-green-100/70">
+                        Puis Partager → « Sur l'écran d'accueil »
+                      </span>
+                    </span>
+                    <ArrowRight />
+                  </a>
+
+                  <a
+                    href={APP_FICHIER}
+                    download="pharmasur-application.html"
+                    className="group flex items-center gap-3.5 rounded-2xl border border-white/20 bg-white/5 px-5 py-4 text-white transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="size-6 shrink-0"
+                      aria-hidden
+                    >
+                      <path d="M12 4v11M8 11l4 4 4-4" />
+                      <path d="M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18" />
+                    </svg>
+                    <span className="flex-1">
+                      <span className="block font-extrabold">Version web — télécharger le fichier</span>
+                      {/* Poids arrondi : il varie à chaque build, et annoncer
+                          un chiffre au kilo-octet près le ferait mentir dès la
+                          prochaine modification de l'application. */}
+                      <span className="block text-[0.8rem] font-medium text-green-100/70">
+                        Environ 340 ko · s'ouvre dans tout navigateur, sans réseau
+                      </span>
+                    </span>
+                    <ArrowRight />
+                  </a>
+                </div>
               </div>
 
               <form onSubmit={submit} noValidate aria-busy={pending} className="w-full">

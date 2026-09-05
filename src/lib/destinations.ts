@@ -38,8 +38,24 @@ export const APK_PATIENT = '/pharmasur-1.0.0.apk'
  * Version web de l'application, pour qui n'est pas sur Android : un iPhone ou
  * un ordinateur ne fait rien d'un APK. Safari propose « Sur l'écran
  * d'accueil », Chrome « Installer l'application ».
+ *
+ * C'est la SEULE façon d'installer PharmaSur sur un iPhone. Apple n'autorise
+ * aucune installation depuis un site web : il n'existe pas de fichier iOS à
+ * télécharger, et un bouton qui le prétendrait mentirait. Un vrai .ipa
+ * demanderait macOS, Xcode, un compte développeur payant, et passerait par
+ * l'App Store ou TestFlight.
  */
 export const APP_PATIENT = '/app/'
+
+/**
+ * L'application en un seul fichier, à télécharger et ouvrir dans n'importe
+ * quel navigateur — y compris hors ligne, y compris sur iPhone.
+ *
+ * Elle ne demande aucune requête réseau : bundle, feuille de style et police
+ * sont repliés dedans. Assemblée au build par scripts/generer-app-fichier.mjs ;
+ * ne pas la modifier à la main, elle serait écrasée.
+ */
+export const APP_FICHIER = '/pharmasur-application.html'
 
 /**
  * Console pharmacie, livrée en fichier unique à télécharger : le pharmacien
