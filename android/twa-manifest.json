@@ -20,6 +20,8 @@
     "path": "C:\\Users\\HP\\.android\\debug.keystore",
     "alias": "androiddebugkey"
   },
+  "_note": "Bubblewrap ÉCRIT « appVersionName » mais RELIT « appVersion ». Les deux doivent porter la même valeur : avec le seul appVersionName, l'APK sort avec un versionName vide et Android l'affiche sans numéro de version.",
+  "appVersion": "1.0.0",
   "appVersionName": "1.0.0",
   "appVersionCode": 1,
   "shortcuts": [],
