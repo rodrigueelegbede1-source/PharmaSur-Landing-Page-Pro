@@ -64,11 +64,23 @@ export default function App() {
     window.scrollTo(0, 0)
   }
 
+  /*
+   * Deux formes, une seule application. Sous 1024 px — un téléphone — colonne
+   * unique et barre d'onglets sous le pouce. Au-dessus, l'application était une
+   * colonne de 480 px perdue au milieu d'un écran de 27 pouces : elle s'y
+   * présente maintenant dans un cadre, navigation en rail à gauche. Le contenu
+   * ne change pas — c'est la même application, pas une seconde à maintenir.
+   */
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-paper">
+    <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-paper lg:my-10 lg:h-[min(880px,calc(100dvh-5rem))] lg:min-h-0 lg:max-w-[920px] lg:overflow-hidden lg:rounded-[2rem] lg:border lg:border-line lg:shadow-lg">
       <BandeauDemo />
 
-      <main className="flex-1 pb-24">
+      <div className="flex flex-1 flex-col lg:min-h-0 lg:flex-row">
+        {vue.nom === 'onglets' && (
+          <BarreOnglets actif={onglet} onChange={setOnglet} badge={liste.ids.length} />
+        )}
+
+        <main className="flex-1 pb-24 lg:min-h-0 lg:overflow-y-auto lg:pb-8">
         {vue.nom === 'onglets' && onglet === 'recherche' && (
           <EcranRecherche liste={liste} onVoirListe={() => setOnglet('liste')} />
         )}
@@ -110,11 +122,8 @@ export default function App() {
             }}
           />
         )}
-      </main>
-
-      {vue.nom === 'onglets' && (
-        <BarreOnglets actif={onglet} onChange={setOnglet} badge={liste.ids.length} />
-      )}
+        </main>
+      </div>
     </div>
   )
 }
@@ -135,7 +144,7 @@ function BarreOnglets({
     { id: 'profil', label: 'Profil', icone: Icone.profil },
   ]
   return (
-    <nav className="fixed inset-x-0 bottom-0 mx-auto flex max-w-[480px] border-t border-line bg-paper pb-[max(env(safe-area-inset-bottom),0.5rem)]">
+    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-[480px] border-t border-line bg-paper pb-[max(env(safe-area-inset-bottom),0.5rem)] lg:static lg:w-[184px] lg:shrink-0 lg:flex-col lg:justify-start lg:gap-1 lg:border-t-0 lg:border-r lg:bg-line-soft lg:p-3 lg:pb-3">
       {onglets.map((o) => (
         <button
           key={o.id}
@@ -144,17 +153,28 @@ function BarreOnglets({
           aria-current={actif === o.id ? 'page' : undefined}
           className={cx(
             'relative flex min-h-14 flex-1 flex-col items-center justify-center gap-1 pt-2',
-            actif === o.id ? 'text-green-600' : 'text-body-soft',
+            /* Sur grand écran, le rail passe en lignes : icône à gauche,
+               libellé à droite, hauteur fixe — un bouton de navigation qui
+               s'étire sur toute la hauteur disponible ne se vise pas. */
+            'lg:min-h-11 lg:flex-none lg:flex-row lg:justify-start lg:gap-3 lg:rounded-xl lg:px-3 lg:pt-0',
+            actif === o.id
+              ? 'text-green-600 lg:bg-paper lg:shadow-sm'
+              : 'text-body-soft lg:hover:bg-paper/60',
           )}
         >
-          <Svg className="size-[1.35rem]" trait={actif === o.id ? 2.3 : 2}>
+          <Svg className="size-[1.35rem] lg:shrink-0" trait={actif === o.id ? 2.3 : 2}>
             {o.icone}
           </Svg>
-          <span className={cx('text-[0.68rem]', actif === o.id ? 'font-extrabold' : 'font-semibold')}>
+          <span
+            className={cx(
+              'text-[0.68rem] lg:text-[0.86rem]',
+              actif === o.id ? 'font-extrabold' : 'font-semibold',
+            )}
+          >
             {o.label}
           </span>
           {o.id === 'liste' && badge > 0 && (
-            <span className="absolute top-1 right-[22%] grid size-4 place-items-center rounded-full bg-green-600 text-[0.6rem] font-extrabold text-white">
+            <span className="absolute top-1 right-[22%] grid size-4 place-items-center rounded-full bg-green-600 text-[0.6rem] font-extrabold text-white lg:static lg:ml-auto lg:size-5 lg:text-[0.68rem]">
               {badge}
             </span>
           )}
@@ -289,7 +309,7 @@ function EcranRecherche({
       </div>
 
       {liste.ids.length > 0 && (
-        <div className="fixed inset-x-0 bottom-20 mx-auto max-w-[480px] px-5">
+        <div className="fixed inset-x-0 bottom-20 z-10 mx-auto max-w-[480px] px-5 lg:static lg:mt-6 lg:max-w-none lg:px-0">
           <Bouton block onClick={onVoirListe}>
             Voir ma liste ({liste.ids.length})
             <Svg className="size-4" trait={2.4}>
@@ -410,7 +430,7 @@ function EcranListe({
         </button>
       </div>
 
-      <div className="fixed inset-x-0 bottom-20 mx-auto max-w-[480px] px-5">
+      <div className="fixed inset-x-0 bottom-20 z-10 mx-auto max-w-[480px] px-5 lg:static lg:mt-6 lg:max-w-none lg:px-0">
         <Bouton block onClick={onChercherOfficines}>
           Trouver une officine
           <Svg className="size-4" trait={2.4}>

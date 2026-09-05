@@ -1,6 +1,6 @@
 import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import { type ReactNode, useRef } from 'react'
-import { APK_PATIENT, APP_PATIENT } from '../lib/destinations'
+import { APK_PATIENT, APP_FICHIER } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 /*
@@ -113,8 +113,12 @@ export function HowItWorks() {
               APK Android · 1,2 Mo · gratuit
               <br className="sm:hidden" />
               <span className="hidden sm:inline"> · </span>
-              <a href={APP_PATIENT} className="font-bold text-green-700 underline underline-offset-2">
-                iPhone ou ordinateur&nbsp;: ouvrir la version web
+              <a
+                href={APP_FICHIER}
+                download="pharmasur-application.html"
+                className="font-bold text-green-700 underline underline-offset-2"
+              >
+                iPhone ou ordinateur&nbsp;: télécharger le fichier
               </a>
             </p>
           </div>

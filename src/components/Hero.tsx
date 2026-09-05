@@ -1,7 +1,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import { cx } from '../lib/cx'
-import { APK_PATIENT, APP_PATIENT } from '../lib/destinations'
+import { APK_PATIENT, APP_FICHIER } from '../lib/destinations'
 import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Button, Counter } from './primitives'
@@ -92,17 +92,56 @@ export function Hero() {
             {/*
               Un APK ne sert à rien sur un iPhone ni sur un ordinateur. Plutôt
               que de détecter la plateforme — ce qui échoue toujours sur un
-              appareil — on annonce ce que le bouton donne et on offre l'autre
-              voie à côté.
+              appareil — chaque bouton dit pour qui il est et ce qu'il donne.
+              Les deux ci-dessous téléchargent LE MÊME fichier : l'application
+              s'adapte au téléphone comme à l'écran d'ordinateur, et livrer deux
+              copies garantirait qu'elles divergent.
             */}
-            <p
-              className="mt-3 animate-[ps-fade_0.9s_linear_both] text-[0.82rem] text-body-soft motion-reduce:animate-none"
+            <div
+              className="mt-3 flex flex-wrap gap-2.5 animate-[ps-fade_0.9s_linear_both] motion-reduce:animate-none"
               style={{ animationDelay: '0.66s' }}
             >
-              APK Android · 1,2 Mo ·{' '}
-              <a href={APP_PATIENT} className="font-bold text-green-700 underline underline-offset-2">
-                iPhone ou ordinateur&nbsp;: ouvrir la version web
+              <a
+                href={APP_FICHIER}
+                download="pharmasur-application.html"
+                className="group inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2.5 text-[0.84rem] font-bold text-green-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-green-400"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="size-4 shrink-0" aria-hidden>
+                  <path d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6c1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.2-.8-2.2-3.1ZM14.4 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1Z" />
+                </svg>
+                iPhone — télécharger
+                <ArrowRight />
               </a>
+
+              <a
+                href={APP_FICHIER}
+                download="pharmasur-application.html"
+                className="group inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2.5 text-[0.84rem] font-bold text-green-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-green-400"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="size-4 shrink-0"
+                  aria-hidden
+                >
+                  <rect x="3" y="4" width="18" height="12" rx="2" />
+                  <path d="M8 20h8M12 16v4" />
+                </svg>
+                Ordinateur — télécharger
+                <ArrowRight />
+              </a>
+            </div>
+
+            <p
+              className="mt-2.5 animate-[ps-fade_0.9s_linear_both] text-[0.78rem] text-body-soft motion-reduce:animate-none"
+              style={{ animationDelay: '0.72s' }}
+            >
+              Un fichier de moins de 500 ko, à ouvrir dans Safari, Chrome ou tout autre navigateur —
+              sans installation et sans réseau.
             </p>
 
             <ul

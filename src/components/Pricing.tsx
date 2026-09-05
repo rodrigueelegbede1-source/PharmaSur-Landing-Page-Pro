@@ -1,5 +1,5 @@
 import { cx } from '../lib/cx'
-import { APK_PATIENT, APP_PATIENT, CONSOLE_PHARMACIE } from '../lib/destinations'
+import { APK_PATIENT, APP_FICHIER, CONSOLE_PHARMACIE } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 type Offre = {
@@ -16,7 +16,7 @@ type Offre = {
   /** Nom du fichier à enregistrer, quand le bouton livre un fichier. */
   telecharge?: string
   /** Second lien, sous le bouton, pour l'action que le bouton ne fait pas. */
-  secondaire?: { label: string; href: string }
+  secondaire?: { label: string; href: string; telecharge?: string }
   featured?: boolean
   tag?: string
   features: string[]
@@ -65,7 +65,7 @@ const plans: Offre[] = [
     cta: 'Télécharger gratuitement',
     href: APK_PATIENT,
     telecharge: 'pharmasur-1.0.0.apk',
-    secondaire: { label: 'iPhone ou ordinateur : version web', href: APP_PATIENT },
+    secondaire: { label: 'iPhone ou ordinateur : télécharger le fichier', href: APP_FICHIER, telecharge: 'pharmasur-application.html' },
     variant: 'ghost' as const,
     features: [
       'Recherche de médicaments illimitée',
@@ -216,6 +216,7 @@ export function Pricing() {
                   {p.secondaire && (
                     <a
                       href={p.secondaire.href}
+                      download={p.secondaire.telecharge}
                       className={cx(
                         'text-[0.85rem] font-bold underline underline-offset-4',
                         p.featured ? 'text-green-200 hover:text-white' : 'text-green-700',
