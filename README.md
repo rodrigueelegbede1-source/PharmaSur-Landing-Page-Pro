@@ -107,28 +107,47 @@ src/
     Footer.tsx
 ```
 
-## Les deux livrables
+## Ce que les boutons livrent
 
-Les appels à l'action du site ne mènent plus à un formulaire mais à deux choses réelles, dont les
-destinations sont réunies dans `src/lib/destinations.ts`.
+Les appels à l'action ne mènent plus à un formulaire mais à des logiciels qui fonctionnent. Leurs
+destinations sont réunies dans `src/lib/destinations.ts` — le seul fichier à changer le jour où
+l'une d'elles bouge.
 
-**L'application patient**, à `/app/`. Une application web installable : sur Android, Chrome propose
-« Installer l'application » ; sur iOS, Safari propose « Sur l'écran d'accueil ». Une fois installée,
-elle s'ouvre sans réseau — un patient qui cherche une pharmacie a souvent un forfait épuisé au
-moment où il en a besoin.
+L'application patient existe sous **trois formes**, parce qu'aucune ne couvre tout le monde.
 
-Elle est aussi empaquetée en **APK Android**, voir plus bas.
+| Forme | Fichier | Pour qui |
+| --- | --- | --- |
+| APK Android | `public/pharmasur-1.0.0.apk` | Android, installation directe |
+| Application web | `/app/` | Tout le monde ; **seule voie sur iPhone** |
+| Fichier unique | `public/pharmasur-application.html` | Hors ligne, sans installation, partout |
 
-**La console pharmacie**, en un fichier unique à télécharger. Une console en ligne suppose un
-serveur, des comptes et une base de données, dont aucun n'existe. Un fichier s'envoie par WhatsApp à
-un pharmacien, s'ouvre sans compte et fonctionne sans réseau. Il est assemblé depuis les maquettes
-par `design/generer-console.mjs` — une seule source, pour que la console livrée et le canevas de
-design ne divergent jamais.
+**Sur iPhone, rien ne s'installe depuis un site web.** Apple l'interdit : il n'existe aucun fichier
+iOS à télécharger, et un bouton qui le prétendrait mentirait. Un `.ipa` demanderait macOS, Xcode et
+un compte développeur payant, puis passerait par l'App Store ou TestFlight. Le seul chemin réel est
+Safari → Partager → « Sur l'écran d'accueil », et c'est ce que le bouton iPhone propose.
 
-> Les deux fonctionnent sur des **données de démonstration** : ni catalogue de médicaments, ni
-> référentiel d'officines, ni stock réel. Chacun porte un bandeau qui le dit, et l'application est
-> en `noindex`. Ne retirez pas l'un sans l'autre : une démonstration qui ne s'annonce pas est un
-> mensonge, et sur un produit de santé un mensonge qui peut coûter cher.
+**Le fichier unique** est produit par `vite.config.fichier.ts` puis `scripts/generer-app-fichier.mjs`,
+enchaînés dans le script `build`. Un build à part est nécessaire : le build principal émet des
+modules ES qui s'importent entre eux, et ces imports échouent depuis `file://`, le navigateur les
+traitant comme des requêtes inter-origines. Le format `iife` produit un bundle unique, replié dans
+le HTML avec la feuille de style et la police.
+
+> Le générateur **fait échouer le build** si ce fichier dépasse 500 ko, la borne annoncée sur la
+> page. Le poids varie d'une machine à l'autre — 335 ko ici, 400 ko sur le serveur de build, où
+> Tailwind balaie des fichiers générés en plus. Sur une connexion facturée au volume, le poids d'un
+> téléchargement se dit avant, pas après.
+
+**La console pharmacie**, en un fichier unique elle aussi. Une console en ligne suppose un serveur,
+des comptes et une base de données, dont aucun n'existe. Un fichier s'envoie par WhatsApp à un
+pharmacien, s'ouvre sans compte et fonctionne sans réseau. Sa mise en page prend deux formes depuis
+une source unique (`design/console/`) : barre d'onglets et cartes empilées sous 900 px, barre
+latérale et tableaux au-dessus — un tableau de quatre colonnes sur 390 px se lit à la loupe ou pas
+du tout.
+
+> Tout cela fonctionne sur des **données de démonstration** : ni catalogue de médicaments, ni
+> référentiel d'officines, ni stock réel. Chaque livrable porte un bandeau qui le dit, et
+> l'application est en `noindex`. Ne retirez pas l'un sans l'autre : une démonstration qui ne
+> s'annonce pas est un mensonge, et sur un produit de santé un mensonge qui peut coûter cher.
 
 ## L'APK Android
 
