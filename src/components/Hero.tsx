@@ -4,14 +4,83 @@ import { cx } from '../lib/cx'
 import { APK_PATIENT, APP_FICHIER } from '../lib/destinations'
 import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
-import { ArrowRight, Badge, Button, Counter } from './primitives'
+import { ArrowRight, Badge, Counter } from './primitives'
+
+/*
+ * Les trois façons d'installer, dans l'ordre où elles se présentent à un
+ * visiteur ivoirien : Android d'abord, largement majoritaire.
+ *
+ * Les deux dernières livrent le MÊME fichier. Ce n'est pas une redondance :
+ * l'application s'adapte au téléphone comme à l'écran d'ordinateur, et livrer
+ * deux copies garantirait qu'elles divergent au premier changement. Le
+ * visiteur, lui, cherche son appareil dans la liste, pas un format de fichier.
+ *
+ * Sur iPhone, rien ne s'installe depuis un site — Apple l'interdit. Ce bouton
+ * livre donc le fichier, que Safari enregistre dans Fichiers et qui s'ouvre
+ * hors ligne. Ne jamais l'appeler « application App Store » : ce n'en est pas
+ * une, et aucune ne peut exister sans compte développeur ni macOS.
+ */
+const telechargements = [
+  {
+    plateforme: 'Android',
+    detail: 'APK · 1,2 Mo',
+    href: APK_PATIENT,
+    fichier: 'pharmasur-1.0.0.apk',
+    principal: true,
+    svgProps: { fill: 'currentColor' },
+    icone: (
+      <>
+        <path
+          d="M17.6 9.5 16 12.3M6.4 9.5 8 12.3"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <path d="M4 13.5h16a8 8 0 0 0-16 0Zm4.6-2.6a.55.55 0 1 0 0-1.1.55.55 0 0 0 0 1.1Zm6.8 0a.55.55 0 1 0 0-1.1.55.55 0 0 0 0 1.1Z" />
+        <rect x="4" y="14.6" width="16" height="6.4" rx="1.6" />
+      </>
+    ),
+  },
+  {
+    plateforme: 'iPhone',
+    detail: 'Fichier · 500 ko',
+    href: APP_FICHIER,
+    fichier: 'pharmasur-application.html',
+    principal: false,
+    svgProps: { fill: 'currentColor' },
+    icone: (
+      <path d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6c1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.2-.8-2.2-3.1ZM14.4 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1Z" />
+    ),
+  },
+  {
+    plateforme: 'Ordinateur',
+    detail: 'Fichier · 500 ko',
+    href: APP_FICHIER,
+    fichier: 'pharmasur-application.html',
+    principal: false,
+    svgProps: {
+      fill: 'none',
+      stroke: 'currentColor',
+      strokeWidth: 1.9,
+      strokeLinecap: 'round' as const,
+      strokeLinejoin: 'round' as const,
+    },
+    icone: (
+      <>
+        <rect x="3" y="4" width="18" height="12" rx="2" />
+        <path d="M8 20h8M12 16v4" />
+      </>
+    ),
+  },
+]
 
 /*
  * Aucun chiffre de traction ici tant que le service n'a pas d'utilisateurs.
  * Les trois valeurs ci-dessous sont vérifiables aujourd'hui : le nombre
  * d'officines du pays, la règle de fraîcheur que s'impose le service, et la
- * gratuité de l'offre Citoyen. Ne pas y remettre de « pharmacies partenaires »
- * avant d'avoir les chiffres réels.
+ * gratuité de l'offre. Ne pas y remettre de « pharmacies partenaires » avant
+ * d'avoir les chiffres réels.
  */
 const stats: { to?: number; suffix?: string; text?: string; label: string }[] = [
   { to: 1400, label: "Pharmacies en Côte d'Ivoire" },
@@ -76,73 +145,71 @@ export function Hero() {
               médicaments réellement disponibles — pas seulement selon la distance.
             </p>
 
-            <div
-              className="mt-8 flex flex-wrap gap-3 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none"
-              style={{ animationDelay: '0.54s' }}
-            >
-              <Button href={APK_PATIENT} download="pharmasur-1.0.0.apk" size="lg">
-                Télécharger l'application
-                <ArrowRight />
-              </Button>
-              <Button href="#how" variant="ghost" size="lg">
-                Voir comment ça marche
-              </Button>
-            </div>
-
             {/*
-              Un APK ne sert à rien sur un iPhone ni sur un ordinateur. Plutôt
-              que de détecter la plateforme — ce qui échoue toujours sur un
-              appareil — chaque bouton dit pour qui il est et ce qu'il donne.
-              Les deux ci-dessous téléchargent LE MÊME fichier : l'application
-              s'adapte au téléphone comme à l'écran d'ordinateur, et livrer deux
-              copies garantirait qu'elles divergent.
+              Les trois téléchargements sur UNE ligne, de même hauteur, avant
+              tout le reste : ils étaient répartis en trois blocs empilés — un
+              gros bouton, deux pastilles, une légende — et le visiteur devait
+              lire trois fois pour comprendre qu'il n'y avait qu'un choix à
+              faire, celui de son appareil.
+              Aucune détection de plateforme : elle se trompe toujours sur un
+              appareil, et un patient sait quel téléphone il tient.
             */}
             <div
-              className="mt-3 flex flex-wrap gap-2.5 animate-[ps-fade_0.9s_linear_both] motion-reduce:animate-none"
+              className="mt-8 grid gap-2.5 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none sm:grid-cols-3"
+              style={{ animationDelay: '0.54s' }}
+            >
+              {telechargements.map((t) => (
+                <a
+                  key={t.plateforme}
+                  href={t.href}
+                  download={t.fichier}
+                  className={cx(
+                    'group flex min-h-[3.75rem] items-center gap-3 rounded-2xl px-4 transition-all duration-300 ease-[var(--ease-cine)] hover:-translate-y-0.5',
+                    t.principal
+                      ? 'bg-green-600 text-white shadow-glow hover:bg-green-700 hover:shadow-lg'
+                      : 'border border-line bg-paper text-ink hover:border-green-400 hover:shadow-md',
+                  )}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className={cx('size-5 shrink-0', t.principal ? 'text-white' : 'text-green-600')}
+                    aria-hidden
+                    {...t.svgProps}
+                  >
+                    {t.icone}
+                  </svg>
+                  <span className="min-w-0 flex-1 text-left">
+                    <span className="block text-[0.92rem] leading-tight font-extrabold">
+                      {t.plateforme}
+                    </span>
+                    <span
+                      className={cx(
+                        'block text-[0.72rem] leading-tight font-semibold',
+                        t.principal ? 'text-green-100/80' : 'text-body-soft',
+                      )}
+                    >
+                      {t.detail}
+                    </span>
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            <div
+              className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 animate-[ps-fade_0.9s_linear_both] motion-reduce:animate-none"
               style={{ animationDelay: '0.66s' }}
             >
               <a
-                href={APP_FICHIER}
-                download="pharmasur-application.html"
-                className="group inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2.5 text-[0.84rem] font-bold text-green-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-green-400"
+                href="#how"
+                className="group inline-flex items-center gap-1.5 text-[0.9rem] font-bold text-green-700"
               >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="size-4 shrink-0" aria-hidden>
-                  <path d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6c1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.2-.8-2.2-3.1ZM14.4 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1Z" />
-                </svg>
-                iPhone — télécharger
+                Voir comment ça marche
                 <ArrowRight />
               </a>
-
-              <a
-                href={APP_FICHIER}
-                download="pharmasur-application.html"
-                className="group inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2.5 text-[0.84rem] font-bold text-green-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-green-400"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="size-4 shrink-0"
-                  aria-hidden
-                >
-                  <rect x="3" y="4" width="18" height="12" rx="2" />
-                  <path d="M8 20h8M12 16v4" />
-                </svg>
-                Ordinateur — télécharger
-                <ArrowRight />
-              </a>
+              <span className="text-[0.8rem] text-body-soft">
+                Gratuit, sans compte — et sans réseau une fois installé.
+              </span>
             </div>
-
-            <p
-              className="mt-2.5 animate-[ps-fade_0.9s_linear_both] text-[0.78rem] text-body-soft motion-reduce:animate-none"
-              style={{ animationDelay: '0.72s' }}
-            >
-              Un fichier de moins de 500 ko, à ouvrir dans Safari, Chrome ou tout autre navigateur —
-              sans installation et sans réseau.
-            </p>
 
             <ul
               className="mt-11 flex flex-wrap gap-x-10 gap-y-6 animate-[ps-fade_0.9s_linear_both] motion-reduce:animate-none"
