@@ -24,6 +24,15 @@ design/node_modules
 design/PlusJakartaSans.ttf
 design/package*.json
 
+# Projet Android : seul twa-manifest.json est versionné, tout le reste est
+# regénéré par « bubblewrap update ». Les APK et les clés ne le sont jamais.
+android/*
+!android/twa-manifest.json
+*.apk
+*.aab
+*.keystore
+*.jks
+
 # Variables d'environnement (seul .env.example est versionné)
 .env
 .env.*

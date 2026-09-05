@@ -1,0 +1,40 @@
+{
+  "packageId": "ci.pharmasur.app",
+  "host": "pharmasur.ci",
+  "name": "PharmaSur",
+  "launcherName": "PharmaSur",
+  "display": "standalone",
+  "themeColor": "#FFFFFF",
+  "themeColorDark": "#0B3D2C",
+  "navigationColor": "#FFFFFF",
+  "navigationColorDark": "#0B3D2C",
+  "navigationDividerColor": "#E2ECE7",
+  "navigationDividerColorDark": "#0B3D2C",
+  "backgroundColor": "#FFFFFF",
+  "enableNotifications": false,
+  "startUrl": "/app/",
+  "iconUrl": "https://pharmasur.ci/app/icone-512.png",
+  "maskableIconUrl": "https://pharmasur.ci/app/icone-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "C:\\Users\\HP\\.android\\debug.keystore",
+    "alias": "androiddebugkey"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://pharmasur.ci/app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://pharmasur.ci/app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": []
+}
