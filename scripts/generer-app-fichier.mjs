@@ -21,8 +21,9 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const RACINE = new URL('..', import.meta.url).pathname.slice(1)
+const RACINE = fileURLToPath(new URL('..', import.meta.url))
 const BUILD = join(RACINE, 'dist-fichier')
 const JS = join(BUILD, 'application.js')
 const CSS = join(BUILD, 'style.css')
@@ -82,7 +83,30 @@ const html = `<!doctype html>
 `
 
 await writeFile(SORTIE, html, 'utf8')
+
+const ko = Math.round(Buffer.byteLength(html) / 1024)
+
+/*
+ * La page annonce au visiteur « moins de 500 ko » : sur une connexion
+ * ivoirienne facturée au volume, le poids d'un téléchargement se dit avant,
+ * pas après. Le build échoue plutôt que de laisser cette phrase devenir fausse
+ * sans que personne le remarque.
+ *
+ * Le plafond n'est pas théorique : la feuille de style pèse plus lourd sur le
+ * serveur de build que sur cette machine — 111 ko contre 44 — parce que
+ * Tailwind y balaie des fichiers générés en plus. C'est ce qui a motivé
+ * d'annoncer une borne plutôt qu'un chiffre exact.
+ */
+const PLAFOND_KO = 500
+if (ko > PLAFOND_KO) {
+  console.error(
+    `pharmasur-application.html pèse ${ko} ko, au-dessus des ${PLAFOND_KO} ko annoncés sur le site.\n` +
+      "Allégez le fichier, ou corrigez la mention dans src/components/CtaPhone.tsx — mais ne laissez pas la page mentir sur le poids d'un téléchargement.",
+  )
+  process.exit(1)
+}
+
 console.log(
-  `pharmasur-application.html  ${Math.round(Buffer.byteLength(html) / 1024)} ko  ` +
+  `pharmasur-application.html  ${ko} ko sur ${PLAFOND_KO} annoncés  ` +
     '(un seul script, police intégrée, aucune ressource externe)',
 )

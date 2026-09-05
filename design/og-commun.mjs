@@ -9,6 +9,7 @@
  */
 import { Resvg } from '@resvg/resvg-js'
 import sharp from 'sharp'
+import { fileURLToPath } from 'node:url'
 
 export const L = 1200
 export const H = 630
@@ -23,8 +24,8 @@ export const V = {
   blanc: '#ffffff',
 }
 
-export const PHOTO = new URL('../public/hero-officine.jpg', import.meta.url).pathname.slice(1)
-export const FONT = new URL('./PlusJakartaSans.ttf', import.meta.url).pathname.slice(1)
+export const PHOTO = fileURLToPath(new URL('../public/hero-officine.jpg', import.meta.url))
+export const FONT = fileURLToPath(new URL('./PlusJakartaSans.ttf', import.meta.url))
 export const PHOTO_POS = { fit: 'cover', position: 'attention' }
 
 /* Zone de texte : la photo doit rester lisible sur sa droite. */

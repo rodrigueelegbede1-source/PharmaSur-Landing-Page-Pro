@@ -12,8 +12,9 @@
 import { Resvg } from '@resvg/resvg-js'
 import sharp from 'sharp'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
-const ICI = new URL('.', import.meta.url).pathname.slice(1)
+const ICI = fileURLToPath(new URL('.', import.meta.url))
 const PROJECT = `${ICI}..`
 const FONT = `${ICI}PlusJakartaSans.ttf`
 

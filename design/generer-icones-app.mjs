@@ -14,8 +14,9 @@
 import sharp from 'sharp'
 import { mkdirSync } from 'node:fs'
 import { rendre, V } from './og-commun.mjs'
+import { fileURLToPath } from 'node:url'
 
-const SORTIE = new URL('../public/app/', import.meta.url).pathname.slice(1)
+const SORTIE = fileURLToPath(new URL('../public/app/', import.meta.url))
 mkdirSync(SORTIE, { recursive: true })
 
 const repere = (cx, cy, taille, couleur) => {

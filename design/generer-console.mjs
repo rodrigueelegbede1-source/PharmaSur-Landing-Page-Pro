@@ -20,12 +20,18 @@
  * Depuis design/ :  node generer-console.mjs
  */
 import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { bons, demandes, inscription, laterale, onglets, stocks, tableau } from './console/ecrans.mjs'
 import { STYLE } from './console/style.mjs'
 
-const ICI = new URL('.', import.meta.url).pathname.slice(1)
-const SORTIE = `${ICI}../public/console-pharmasur.html`
-const POLICE = `${ICI}../public/fonts/plus-jakarta-sans.woff2`
+/* fileURLToPath et join, plutôt qu'un découpage de l'URL : sur Linux, retirer
+   le premier caractère du chemin lui ôte sa barre oblique initiale et le rend
+   relatif. Ce raccourci fonctionnait sur Windows et a fait échouer un
+   déploiement Vercel. */
+const RACINE = join(fileURLToPath(new URL('.', import.meta.url)), '..')
+const SORTIE = join(RACINE, 'public/console-pharmasur.html')
+const POLICE = join(RACINE, 'public/fonts/plus-jakarta-sans.woff2')
 
 const police = await readFile(POLICE)
 

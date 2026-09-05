@@ -161,11 +161,14 @@ export function CtaPhone() {
                     </svg>
                     <span className="flex-1">
                       <span className="block font-extrabold">Version web — télécharger le fichier</span>
-                      {/* Poids arrondi : il varie à chaque build, et annoncer
-                          un chiffre au kilo-octet près le ferait mentir dès la
-                          prochaine modification de l'application. */}
+                      {/* Une borne, pas un chiffre exact : le poids varie d'un
+                          build à l'autre — la feuille de style pèse plus lourd
+                          sur le serveur de build que sur une machine de
+                          développement. scripts/generer-app-fichier.mjs fait
+                          échouer le build si le fichier dépasse ces 500 ko,
+                          pour que cette phrase ne puisse pas devenir fausse. */}
                       <span className="block text-[0.8rem] font-medium text-green-100/70">
-                        Environ 340 ko · s'ouvre dans tout navigateur, sans réseau
+                        Moins de 500 ko · s'ouvre dans tout navigateur, sans réseau
                       </span>
                     </span>
                     <ArrowRight />

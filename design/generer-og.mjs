@@ -19,6 +19,7 @@
  */
 import sharp from 'sharp'
 import { existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import {
   disposer,
   FONT,
@@ -47,7 +48,7 @@ for (const [chemin, quoi] of [
   }
 }
 
-const SORTIE = new URL('../public/og.jpg', import.meta.url).pathname.slice(1)
+const SORTIE = fileURLToPath(new URL('../public/og.jpg', import.meta.url))
 
 const repere = (x, y, taille, couleur) => {
   const s = taille / 16

@@ -21,8 +21,9 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const RACINE = new URL('..', import.meta.url).pathname.slice(1)
+const RACINE = fileURLToPath(new URL('..', import.meta.url))
 const ANDROID = join(RACINE, 'android')
 
 const arg = (nom, defaut) => {
