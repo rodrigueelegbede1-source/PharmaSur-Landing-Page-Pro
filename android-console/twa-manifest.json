@@ -1,0 +1,43 @@
+{
+  "packageId": "ci.pharmasur.console",
+  "host": "pharmasur.ci",
+  "name": "PharmaSur Console",
+  "launcherName": "PharmaSur Pro",
+  "display": "standalone",
+  "themeColor": "#0B3D2C",
+  "themeColorDark": "#0B3D2C",
+  "navigationColor": "#0B3D2C",
+  "navigationColorDark": "#0B3D2C",
+  "navigationDividerColor": "#0B3D2C",
+  "navigationDividerColorDark": "#0B3D2C",
+  "backgroundColor": "#FFFFFF",
+  "enableNotifications": false,
+  "startUrl": "/console/",
+  "iconUrl": "https://pharmasur.ci/console/icone-512.png",
+  "maskableIconUrl": "https://pharmasur.ci/console/icone-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "C:\\Users\\HP\\.android\\debug.keystore",
+    "alias": "androiddebugkey"
+  },
+  "_note": "Bubblewrap ÉCRIT « appVersionName » mais RELIT « appVersion ». Les deux doivent porter la même valeur : avec le seul appVersionName, l'APK sort avec un versionName vide et Android l'affiche sans numéro de version.",
+  "appVersion": "1.0.0",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://pharmasur.ci/console/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://pharmasur.ci/console/",
+  "minSdkVersion": 21,
+  "_note_orientation": "« any » et non « portrait » comme l'application patient : la console se tient au comptoir, souvent sur une tablette posée à plat, et ses tableaux sont écrits pour le paysage au-dessus de 900 px.",
+  "orientation": "any",
+  "fingerprints": []
+}

@@ -97,6 +97,22 @@ export const APP_FICHIER = '/pharmasur-application.html'
 export const CONSOLE_PHARMACIE = '/console/'
 
 /**
+ * APK Android de la console. Comme celui des patients, c'est une coquille qui
+ * ouvre /console/ en plein écran : elle n'embarque aucun code, et affichera
+ * donc les officines réelles le jour où elles seront référencées, sans qu'il
+ * faille republier un APK.
+ *
+ * Elle porte son propre identifiant — ci.pharmasur.console — et sa propre
+ * icône sombre : un pharmacien peut avoir les deux applications sur le même
+ * téléphone, et deux paquets de même nom ne s'installent pas côte à côte.
+ *
+ * Signée avec la clé de débogage : installable sur un téléphone, refusée par
+ * le Play Store. Android demandera d'autoriser l'installation depuis cette
+ * source, comme pour tout APK hors magasin.
+ */
+export const APK_CONSOLE = '/pharmasur-console-1.0.0.apk'
+
+/**
  * La même console en UN fichier, à enregistrer et ouvrir depuis le disque.
  * C'est ce qui s'envoie par WhatsApp à un pharmacien, et ce qui s'ouvre là où
  * il n'y a pas de réseau du tout. Elle ne déclare ni manifeste ni service

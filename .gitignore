@@ -28,6 +28,8 @@ design/package*.json
 # regénéré par « bubblewrap update ». Les APK et les clés ne le sont jamais.
 android/*
 !android/twa-manifest.json
+android-console/*
+!android-console/twa-manifest.json
 *.apk
 *.aab
 *.keystore

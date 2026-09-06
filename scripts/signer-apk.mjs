@@ -11,8 +11,13 @@
  * pas lire les ressources directement depuis le fichier et les recopie en
  * mémoire à chaque ouverture.
  *
- * Après « cd android && gradlew.bat assembleRelease » :
- *   node scripts/signer-apk.mjs [--keystore <chemin>] [--alias <nom>]
+ * Après « cd <projet> && gradlew.bat assembleRelease » :
+ *   node scripts/signer-apk.mjs [--projet android] [--keystore <chemin>] [--alias <nom>]
+ *
+ * « --projet » existe depuis qu'il y a deux applications à emballer : celle
+ * des patients dans android/, celle des officines dans android-console/. Le
+ * nom du fichier produit vient du manifeste, pas d'une constante — deux APK
+ * nommés pareil finiraient par s'écraser.
  *
  * Le mot de passe est lu dans APK_KEYSTORE_PASSWORD / APK_KEY_PASSWORD, et
  * jamais écrit ici : la clé de release est l'identité définitive de
@@ -24,12 +29,13 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const RACINE = fileURLToPath(new URL('..', import.meta.url))
-const ANDROID = join(RACINE, 'android')
 
 const arg = (nom, defaut) => {
   const i = process.argv.indexOf(`--${nom}`)
   return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : defaut
 }
+
+const ANDROID = join(RACINE, arg('projet', 'android'))
 
 const JAVA = join(
   process.env.JAVA_HOME ?? 'C:/Program Files/Microsoft/jdk-17.0.20.101-hotspot',
@@ -49,8 +55,14 @@ const motDePasseCle = process.env.APK_KEY_PASSWORD ?? motDePasse
 const ZIPALIGN = join(SDK, `build-tools/${BUILD_TOOLS}/zipalign.exe`)
 const brut = join(ANDROID, 'app/build/outputs/apk/release/app-release-unsigned.apk')
 const entree = join(ANDROID, 'app-release-unsigned-aligned.apk')
-const version = JSON.parse(readFileSync(join(ANDROID, 'twa-manifest.json'), 'utf8')).appVersion
-const sortie = join(ANDROID, `pharmasur-${version}.apk`)
+const manifeste = JSON.parse(readFileSync(join(ANDROID, 'twa-manifest.json'), 'utf8'))
+/* « ci.pharmasur.console » donne « pharmasur-console-1.0.0.apk ». Le nom se
+   lit dans le dossier Téléchargements d'un pharmacien sans l'ouvrir. */
+const suffixe = manifeste.packageId.replace(/^ci.pharmasur.?/, '').replace(/^app$/, '')
+const sortie = join(
+  ANDROID,
+  `pharmasur${suffixe ? '-' + suffixe : ''}-${manifeste.appVersion}.apk`,
+)
 
 for (const [chemin, quoi] of [
   [JAVA, 'java'],

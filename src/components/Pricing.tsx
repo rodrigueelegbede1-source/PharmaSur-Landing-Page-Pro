@@ -1,5 +1,11 @@
 import { cx } from '../lib/cx'
-import { APK_PATIENT, APP_FICHIER, CONSOLE_FICHIER, CONSOLE_PHARMACIE } from '../lib/destinations'
+import {
+  APK_CONSOLE,
+  APK_PATIENT,
+  APP_FICHIER,
+  CONSOLE_FICHIER,
+  CONSOLE_PHARMACIE,
+} from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 type Offre = {
@@ -16,8 +22,8 @@ type Offre = {
   /** Nom du fichier à enregistrer, quand le bouton livre un fichier. */
   telecharge?: string
   /** Second lien, sous le bouton, pour l'action que le bouton ne fait pas. */
-  /* Plusieurs, depuis que la console se prend par deux chemins : on
-     l installe, ou on telecharge le fichier. */
+  /* Plusieurs : la console s'obtient par quatre chemins selon l'appareil et le
+     réseau, et le bouton n'en porte qu'un. */
   secondaires?: { label: string; href: string; telecharge?: string }[]
   featured?: boolean
   features: string[]
@@ -88,16 +94,20 @@ const plans: Offre[] = [
     desc: 'Pour les officines qui veulent être visibles.',
     price: 'Abonnement',
     unit: '',
-    cta: 'Installer la console',
-    /* Le bouton ouvre la console installable : Chrome propose « Installer
-       l'application », Safari « Sur l'écran d'accueil ». Il pointait avant sur
-       le fichier à télécharger, qui laissait l'officine avec un « file:///… »
-       dans sa barre d'adresse — sans icône, sans raccourci, sans mise à jour.
-       Le fichier reste dessous, pour qui n'a pas de réseau du tout, et le
-       courriel d'inscription avec : la console est une démonstration,
-       s'inscrire suppose encore de nous écrire. */
-    href: CONSOLE_PHARMACIE,
+    cta: 'Télécharger la console',
+    /* Le bouton livre l'APK. La plupart des pharmaciens sont sur Android, et
+       un fichier qu'on touche pour installer se comprend sans explication —
+       ce que « ouvrir cette page puis chercher Installer dans le menu de
+       Chrome » ne fait pas.
+
+       Les trois liens dessous couvrent le reste : la console web pour iPhone
+       et ordinateur, le fichier unique pour qui n'a pas de réseau du tout, et
+       le courriel d'inscription — la console est une démonstration, s'inscrire
+       suppose encore de nous écrire. */
+    href: APK_CONSOLE,
+    telecharge: 'pharmasur-console-1.0.0.apk',
     secondaires: [
+      { label: 'iPhone ou ordinateur : installer la console web', href: CONSOLE_PHARMACIE },
       { label: 'Sans réseau : télécharger le fichier', href: CONSOLE_FICHIER, telecharge: 'console-pharmasur.html' },
       { label: 'Inscrire mon officine', href: INSCRIPTION_OFFICINE },
     ],

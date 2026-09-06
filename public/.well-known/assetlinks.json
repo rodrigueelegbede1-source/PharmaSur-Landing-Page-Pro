@@ -8,5 +8,15 @@
         "7B:1B:8C:86:E5:94:CD:61:DF:BB:B9:B0:17:AD:A3:94:8D:CC:18:F0:98:BD:B3:1F:F7:80:B7:D0:67:AF:44:64"
       ]
     }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ci.pharmasur.console",
+      "sha256_cert_fingerprints": [
+        "7B:1B:8C:86:E5:94:CD:61:DF:BB:B9:B0:17:AD:A3:94:8D:CC:18:F0:98:BD:B3:1F:F7:80:B7:D0:67:AF:44:64"
+      ]
+    }
   }
 ]
