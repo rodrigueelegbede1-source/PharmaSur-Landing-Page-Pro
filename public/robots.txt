@@ -1,0 +1,20 @@
+# PharmaSur — https://pharmasur.ci
+#
+# Les pages listées ici comme interdites portent déjà un noindex dans leur
+# en-tête. Le double n'est pas redondant : un moteur qui suit robots.txt
+# n'ouvre pas la page et ne verra donc jamais la balise. Les deux se
+# complètent, ils ne se remplacent pas.
+#
+#   /app/      démonstration à données fictives, sans intérêt en résultat
+#   /console/  idem, et destinée aux officines qu'on démarche, pas au public
+#   Les pages légales restent hors index tant qu'un juriste ne les a pas relues.
+
+User-agent: *
+Allow: /
+
+Disallow: /app/
+Disallow: /console/
+Disallow: /mentions-legales/
+Disallow: /confidentialite/
+
+Sitemap: https://pharmasur.ci/sitemap.xml

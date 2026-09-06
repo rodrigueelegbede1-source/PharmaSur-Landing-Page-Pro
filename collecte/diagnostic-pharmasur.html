@@ -1,0 +1,476 @@
+<title>Diagnostic PharmaSur</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --encre: #0e1b16;
+    --corps: #46564f;
+    --doux: #75857e;
+    --trait: #dfeae4;
+    --trait-doux: #edf4f0;
+    --papier: #ffffff;
+    --fond: #f6faf8;
+    --vert: #0f7250;
+    --vert-vif: #12855d;
+    --vert-fond: #f0faf5;
+    --vert-trait: #b9e8d3;
+    --alerte: #b30f1c;
+    --alerte-fond: #fdf1f2;
+    --alerte-trait: #f2cfd3;
+    --ambre: #7d5210;
+    --ambre-fond: #fdf7ea;
+    --ambre-trait: #eeddb6;
+    color-scheme: light;
+  }
+
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --encre: #e9f3ee; --corps: #a9bcb3; --doux: #7e918a;
+      --trait: #1f302a; --trait-doux: #17251f;
+      --papier: #101c17; --fond: #0a120f;
+      --vert: #46c896; --vert-vif: #3fbf8d; --vert-fond: #10261e; --vert-trait: #1d4536;
+      --alerte: #ff9d9d; --alerte-fond: #2a1315; --alerte-trait: #4b1f23;
+      --ambre: #e8bf76; --ambre-fond: #241c0e; --ambre-trait: #43341a;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --encre: #e9f3ee; --corps: #a9bcb3; --doux: #7e918a;
+    --trait: #1f302a; --trait-doux: #17251f;
+    --papier: #101c17; --fond: #0a120f;
+    --vert: #46c896; --vert-vif: #3fbf8d; --vert-fond: #10261e; --vert-trait: #1d4536;
+    --alerte: #ff9d9d; --alerte-fond: #2a1315; --alerte-trait: #4b1f23;
+    --ambre: #e8bf76; --ambre-fond: #241c0e; --ambre-trait: #43341a;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--fond);
+    color: var(--corps);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 2.5rem 1.15rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  h1, h2, h3 { color: var(--encre); margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+  h1 { font-size: 2rem; font-weight: 800; line-height: 1.15; }
+  h2 { font-size: 1.3rem; font-weight: 800; }
+  h3 { font-size: 1rem; font-weight: 800; }
+  p { margin: 0; }
+  strong { color: var(--encre); font-weight: 700; }
+
+  .mono, code {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  code {
+    font-size: .9em;
+    background: var(--trait-doux);
+    padding: .08em .35em;
+    border-radius: 4px;
+    color: var(--corps);
+  }
+
+  .surtitre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--vert);
+  }
+
+  header.chapeau { display: flex; flex-direction: column; gap: .7rem; }
+  .meta {
+    margin-top: .4rem; display: flex; flex-wrap: wrap; gap: .4rem 1.4rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: .76rem; color: var(--doux);
+  }
+
+  section { display: flex; flex-direction: column; gap: 1rem; }
+  section > p, section > div > p { max-width: 42rem; }
+
+  /* — Le verdict en trois colonnes — */
+  .verdict { display: grid; gap: .8rem; grid-template-columns: 1fr; }
+  @media (min-width: 40rem) { .verdict { grid-template-columns: repeat(3, 1fr); } }
+  .verdict > div {
+    border-radius: 14px; padding: 1.1rem 1.2rem;
+    display: flex; flex-direction: column; gap: .3rem;
+  }
+  .verdict .n { font-family: 'IBM Plex Mono', monospace; font-size: 2rem; font-weight: 600; line-height: 1; }
+  .verdict .q { font-size: .88rem; font-weight: 700; }
+  .verdict .d { font-size: .8rem; line-height: 1.45; }
+  .bloque { background: var(--alerte-fond); border: 1px solid var(--alerte-trait); }
+  .bloque .n, .bloque .q { color: var(--alerte); }
+  .attente { background: var(--ambre-fond); border: 1px solid var(--ambre-trait); }
+  .attente .n, .attente .q { color: var(--ambre); }
+  .ok { background: var(--vert-fond); border: 1px solid var(--vert-trait); }
+  .ok .n, .ok .q { color: var(--vert); }
+
+  /* — Les constats — */
+  .constat {
+    background: var(--papier); border: 1px solid var(--trait);
+    border-radius: 14px; padding: 1.15rem 1.25rem;
+    display: flex; flex-direction: column; gap: .5rem;
+  }
+  .constat.grave { border-left: 3px solid var(--alerte); }
+  .constat.corrige { border-left: 3px solid var(--vert-vif); }
+  .constat.mineur { border-left: 3px solid var(--ambre); }
+  .constat .t { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .constat h3 { font-size: .98rem; }
+  .etiq {
+    font-family: 'IBM Plex Mono', monospace; font-size: .66rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+    padding: .2rem .5rem; border-radius: 5px;
+  }
+  .etiq.g { background: var(--alerte-fond); color: var(--alerte); }
+  .etiq.c { background: var(--vert-fond); color: var(--vert); }
+  .etiq.m { background: var(--ambre-fond); color: var(--ambre); }
+  .constat p { font-size: .92rem; line-height: 1.55; }
+  .mesure {
+    font-family: 'IBM Plex Mono', monospace; font-size: .78rem;
+    color: var(--doux); border-top: 1px dashed var(--trait); padding-top: .5rem;
+  }
+
+  /* — Tableaux — */
+  .boite { overflow-x: auto; border: 1px solid var(--trait); border-radius: 14px; background: var(--papier); }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td { text-align: left; padding: .7rem .9rem; vertical-align: top; }
+  thead th { background: var(--trait-doux); color: var(--encre); font-weight: 800; font-size: .8rem; white-space: nowrap; }
+  tbody tr + tr { border-top: 1px solid var(--trait-doux); }
+  td.num { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .oui { color: var(--vert); font-weight: 700; }
+  .non { color: var(--alerte); font-weight: 700; }
+
+  ol.etapes { margin: 0; padding-left: 1.3rem; display: flex; flex-direction: column; gap: .65rem; }
+  ol.etapes li { font-size: .94rem; line-height: 1.55; }
+  ul.puces { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .4rem; }
+  ul.puces li { font-size: .92rem; line-height: 1.5; }
+
+  .note {
+    background: var(--trait-doux); border-radius: 12px; padding: .9rem 1.1rem;
+    font-size: .87rem; line-height: 1.55;
+  }
+
+  footer.pied {
+    border-top: 1px solid var(--trait); padding-top: 1.2rem;
+    font-size: .82rem; line-height: 1.6; color: var(--doux);
+    display: flex; flex-direction: column; gap: .5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media print {
+    :root { --fond: #fff; --papier: #fff; }
+    body { font-size: 10.5pt; }
+    .page { max-width: none; padding: 0; gap: 1.4rem; }
+    .constat, .boite, .verdict > div { break-inside: avoid; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="chapeau">
+    <p class="surtitre">Audit complet · avant référencement et déploiement</p>
+    <h1>Diagnostic PharmaSur</h1>
+    <p>
+      État du produit à la veille de deux décisions : référencer les premières officines, et
+      mettre l'application entre les mains de patients. Tout ce qui suit a été
+      <strong>mesuré</strong> — liens interrogés, en-têtes lus, contrastes calculés, affirmations
+      du site confrontées au code — et non relu à l'œil.
+    </p>
+    <p class="meta">
+      <span>6 septembre 2026</span>
+      <span>pharmasur.ci</span>
+      <span>50 liens testés</span>
+      <span>7 pages auditées</span>
+    </p>
+  </header>
+
+  <section>
+    <div class="verdict">
+      <div class="bloque">
+        <span class="n">3</span>
+        <span class="q">Blocages</span>
+        <span class="d">Rien ne peut démarrer tant qu'ils tiennent. Deux ne dépendent que de vous.</span>
+      </div>
+      <div class="attente">
+        <span class="n">6</span>
+        <span class="q">À faire</span>
+        <span class="d">Sans conséquence immédiate, mais à traiter avant les vrais utilisateurs.</span>
+      </div>
+      <div class="ok">
+        <span class="n">3</span>
+        <span class="q">Corrigés ici</span>
+        <span class="d">Trouvés pendant l'audit, réparés et déployés dans la foulée.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————————————————— CE QUI BLOQUE ————————————————— -->
+  <section>
+    <h2>Ce qui bloque, et qui peut le lever</h2>
+    <p>
+      Trois obstacles empêchent aujourd'hui le démarrage. Ils ne sont pas de même nature : deux
+      relèvent de décisions et de documents qui n'appartiennent qu'à vous, le troisième d'un
+      chantier technique qui n'a pas encore commencé.
+    </p>
+
+    <div class="constat grave">
+      <div class="t">
+        <h3>1. Les pages légales ne sont pas opposables</h3>
+        <span class="etiq g">Bloque tout</span>
+      </div>
+      <p>
+        Douze mentions manquent encore, et les deux pages portent un bandeau « ne pas publier en
+        l'état » ainsi qu'un <code>noindex</code>. Ce n'est pas une formalité différée : dès la
+        première fiche de collecte, vous notez le nom et le téléphone d'un pharmacien — des
+        données personnelles. Sans base légale déclarée, la prospection elle-même est exposée.
+      </p>
+      <p class="mesure">Mesuré : 7 mentions manquantes dans les mentions légales, 5 dans la politique de confidentialité. Bandeau et noindex présents sur les deux.</p>
+    </div>
+
+    <div class="constat grave">
+      <div class="t">
+        <h3>2. Il n'y a ni serveur ni base de données</h3>
+        <span class="etiq g">Bloque le référencement</span>
+      </div>
+      <p>
+        La console ne conserve rien : ce qu'un pharmacien y déclare disparaît à la fermeture de
+        l'onglet. L'application patient lit quatre officines écrites en dur. Une officine peut
+        donc être démarchée et convaincue, mais pas encore <em>inscrite</em> : il n'existe aucun
+        endroit où poser son horaire, sa garde ou son stock.
+      </p>
+      <p class="mesure">Mesuré : un seul appel réseau dans tout le produit — l'envoi du formulaire de rappel vers Formspree. Aucun autre.</p>
+    </div>
+
+    <div class="constat grave">
+      <div class="t">
+        <h3>3. Aucune géolocalisation</h3>
+        <span class="etiq g">Bloque la promesse centrale</span>
+      </div>
+      <p>
+        Aucune version ne demande la position de qui que ce soit, et les officines n'ont pas de
+        coordonnées. Les distances affichées sont des données de démonstration. C'est pour cela
+        que la fiche de collecte relève latitude et longitude devant chaque porte : c'est le champ
+        le plus coûteux à rattraper, puisqu'il faut y retourner.
+      </p>
+      <p class="mesure">Mesuré : une seule occurrence du mot « géolocalisation » dans le code de l'application — dans le commentaire qui explique son absence.</p>
+    </div>
+  </section>
+
+  <!-- ————————————————— CORRIGÉ PENDANT L'AUDIT ————————————————— -->
+  <section>
+    <h2>Corrigé pendant cet audit</h2>
+    <p>
+      Trois défauts trouvés en confrontant les affirmations du site au code, dont un grave qui
+      avait survécu à toutes les relectures précédentes.
+    </p>
+
+    <div class="constat corrige">
+      <div class="t">
+        <h3>Les cartes d'offre promettaient huit fonctions inexistantes</h3>
+        <span class="etiq c">Corrigé</span>
+      </div>
+      <p>
+        Côté patient : « Géolocalisation des pharmacies ouvertes », « Carte interactive des
+        pharmacies de garde », « Rappels intelligents de prise », « Alertes de retour en stock ».
+        L'écran Profil de l'application affichait « Aucun » en face des deux dernières — le
+        produit contredisait sa propre page de vente. Côté officine : géolocalisation, canal de
+        contact, synchronisation temps réel, support 7j/7.
+      </p>
+      <p>
+        Les listes distinguent désormais ce qui marche de ce qui viendra, avec une pastille
+        distincte et une étiquette « bientôt ». Les lignes disponibles ont été réécrites pour dire
+        ce qui existe : « Officines ouvertes en tête, horaires et gardes » plutôt que
+        « géolocalisation ».
+      </p>
+      <p class="mesure">6 lignes disponibles et 4 annoncées côté patient · 4 et 4 côté officine</p>
+    </div>
+
+    <div class="constat corrige">
+      <div class="t">
+        <h3>La politique de confidentialité affirmait le contraire du produit</h3>
+        <span class="etiq c">Corrigé</span>
+      </div>
+      <p>
+        Elle disait : « Aucune donnée de santé n'est collectée par ce site ». Vrai à sa rédaction,
+        faux depuis que l'application existe : elle enregistre les médicaments cherchés et
+        l'organisme d'assurance — les deux sont des données de santé. Elles ne quittent pas
+        l'appareil, mais le taire laissait croire qu'il ne se passait rien. Une section les décrit
+        maintenant une par une, avec le moyen de tout effacer.
+      </p>
+      <p class="mesure">Hébergeur et prestataire de formulaire renseignés au passage, transfert hors de Côte d'Ivoire déclaré.</p>
+    </div>
+
+    <div class="constat corrige">
+      <div class="t">
+        <h3>La ligne la plus honnête était la moins lisible</h3>
+        <span class="etiq c">Corrigé</span>
+      </div>
+      <p>
+        En marquant les fonctions « bientôt », j'avais atténué leur texte. Mesuré ensuite :
+        3,58:1 sur la carte claire, sous le seuil de 4,5. L'aveu qu'une fonction manque était donc
+        le plus difficile à lire de la liste. La distinction passe désormais par la pastille, pas
+        par la pâleur.
+      </p>
+      <p class="mesure">Avant : 3,58 et 4,24 · Après : 7,20 et 8,72</p>
+    </div>
+  </section>
+
+  <!-- ————————————————— CE QUI EST SAIN ————————————————— -->
+  <section>
+    <h2>Ce qui est sain</h2>
+    <p>Mesuré, pas supposé. Ces points n'appellent aucune action.</p>
+    <div class="boite">
+      <table>
+        <thead>
+          <tr><th>Contrôle</th><th>Résultat</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Liens internes et ancres, 7 pages</td><td class="num"><span class="oui">50 en 200</span> · 11 ancres résolues · 0 cassé</td></tr>
+          <tr><td>Types TypeScript et lint</td><td class="num"><span class="oui">0 erreur</span> · 0 avertissement</td></tr>
+          <tr><td>Poids d'une première visite</td><td class="num">257 ko sur 10 fichiers, servis en brotli</td></tr>
+          <tr><td>En-têtes de sécurité</td><td class="num">5 sur 6 présents</td></tr>
+          <tr><td>Langue et structure des titres</td><td class="num"><code>lang="fr"</code> partout · un seul <code>&lt;h1&gt;</code> par page publique</td></tr>
+          <tr><td>Installation Android, patient et console</td><td class="num"><span class="oui">Digital Asset Links vérifiés</span> — plein écran, sans barre d'adresse</td></tr>
+          <tr><td>Bandeau de démonstration</td><td class="num">Présent sur les trois surfaces</td></tr>
+          <tr><td>Règles métier</td><td class="num">Seuil 48 h, équivalent par principe actif, seuil de 5 recherches : tenus partout</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ————————————————— À FAIRE ————————————————— -->
+  <section>
+    <h2>À faire avant les vrais utilisateurs</h2>
+    <p>Rien ici n'est urgent aujourd'hui. Tout le devient le jour où de vraies personnes arrivent.</p>
+    <div class="boite">
+      <table>
+        <thead>
+          <tr><th>Point</th><th>Pourquoi</th><th>Qui</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Les deux APK sont signés avec la clé de débogage</strong></td>
+            <td>Installables sur un téléphone, refusés par le Play Store. Une clé de release est définitive : la perdre interdit toute mise à jour.</td>
+            <td>Vous</td>
+          </tr>
+          <tr>
+            <td><strong>Aucun <code>robots.txt</code> ni <code>sitemap.xml</code></strong></td>
+            <td>Le site est indexable, mais rien ne guide les moteurs. Peu coûteux, utile au lancement.</td>
+            <td>Moi</td>
+          </tr>
+          <tr>
+            <td><strong><code>/aide/</code> et <code>/iphone/</code> sans aperçu de partage</strong></td>
+            <td>Ce sont les pages qu'on transmet par WhatsApp. Sans <code>og:image</code>, le lien s'affiche nu.</td>
+            <td>Moi</td>
+          </tr>
+          <tr>
+            <td><strong>Pas de <code>Content-Security-Policy</code></strong></td>
+            <td>Seul en-tête de sécurité manquant. Faible risque sur un site statique, mais gratuit à poser.</td>
+            <td>Moi</td>
+          </tr>
+          <tr>
+            <td><strong>Caches des service workers figés en <code>v1</code></strong></td>
+            <td>Sans conséquence — les noms de fichiers portent une empreinte — mais le cache d'un appareil installé grossit sans jamais être purgé.</td>
+            <td>Moi</td>
+          </tr>
+          <tr>
+            <td><strong>Numéro de téléphone et comptes sociaux fictifs</strong></td>
+            <td>Le site affiche un numéro qui ne sonne nulle part.</td>
+            <td>Vous</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ————————————————— LES DOUZE MENTIONS ————————————————— -->
+  <section>
+    <h2>Les douze mentions qui manquent</h2>
+    <p>
+      Sept figurent sur votre RCCM. Deux sont des décisions qui n'appartiennent qu'à vous. Une
+      dépend d'une démarche administrative, une du photographe.
+    </p>
+    <div class="boite">
+      <table>
+        <thead>
+          <tr><th>Document</th><th>Mentions</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mentions légales</strong><br><span class="mono" style="font-size:.75rem">7 manquantes</span></td>
+            <td>Raison sociale · forme juridique · capital en FCFA · n° RCCM · adresse du siège · directeur de la publication · titulaire des droits sur la photographie du héros</td>
+          </tr>
+          <tr>
+            <td><strong>Confidentialité</strong><br><span class="mono" style="font-size:.75rem">5 manquantes</span></td>
+            <td>Raison sociale · adresse du siège · <strong>durée de conservation des numéros</strong> · <strong>délai de réponse aux demandes de suppression</strong> · état des démarches ARTCI</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Les deux mentions en gras sont des décisions, pas des informations à recopier : combien de
+      temps vous gardez un numéro de rappel, et sous quel délai vous répondez à quelqu'un qui
+      demande sa suppression. Personne ne peut les prendre à votre place.
+    </p>
+  </section>
+
+  <!-- ————————————————— ORDRE DE MARCHE ————————————————— -->
+  <section>
+    <h2>Dans quel ordre avancer</h2>
+    <p>
+      Cet ordre n'est pas indifférent : chaque étape débloque la suivante, et deux d'entre elles
+      se font en parallèle sans se gêner.
+    </p>
+    <ol class="etapes">
+      <li>
+        <strong>Compléter les pages légales et les faire relire.</strong> C'est le seul point qui
+        bloque la <em>prospection</em>, pas seulement la mise en ligne. Tant qu'il tient, aucune
+        fiche de collecte ne devrait être remplie.
+      </li>
+      <li>
+        <strong>Lancer la collecte de terrain</strong> dès que le point 1 est levé. Vingt à trente
+        officines d'une seule commune, avec leurs coordonnées GPS. C'est le chantier le plus long
+        et il ne dépend d'aucun développement — la fiche et le vérificateur existent déjà.
+      </li>
+      <li>
+        <strong>Construire le serveur et la base</strong> pendant que la collecte avance. Comptes
+        officine, stockage des horaires, gardes, stocks et bons. C'est ce qui transforme la console
+        de démonstration en outil.
+      </li>
+      <li>
+        <strong>Brancher la géolocalisation</strong> une fois les coordonnées saisies. La promesse
+        centrale du produit devient alors vraie, et les quatre lignes « bientôt » de l'offre
+        patient peuvent passer en coche pleine.
+      </li>
+      <li>
+        <strong>Ouvrir aux patients</strong> — en retirant le bandeau de démonstration, qui doit
+        rester jusqu'à cet instant précis.
+      </li>
+    </ol>
+  </section>
+
+  <footer class="pied">
+    <p>
+      <strong>Ce que ce document n'est pas.</strong> Il ne vaut pas relecture juridique : les
+      mentions complétées pendant l'audit — hébergeur, prestataire de formulaire, transfert hors
+      du territoire — sont des constats techniques, pas une validation. Le bandeau rouge et le
+      <code>noindex</code> des deux pages légales restent en place et doivent y rester jusqu'à
+      l'avis d'un juriste ivoirien.
+    </p>
+    <p>
+      <strong>Méthode.</strong> Liens interrogés un par un en production, en-têtes HTTP lus,
+      contrastes calculés en peignant la couleur dans un canevas et en relisant le pixel — Tailwind
+      émet des couleurs <code>oklab()</code> qu'un calcul naïf lit de travers. Les affirmations du
+      site ont été confrontées au code fonction par fonction.
+    </p>
+  </footer>
+</div>
