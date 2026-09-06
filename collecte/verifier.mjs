@@ -63,6 +63,7 @@ const COLONNES = [
   ['garde_groupe', {}],
   ['bons', { liste: BONS }],
   ['logiciel_stock', { requis: true }],
+  ['titulaire_informe', { requis: true, parmi: ['oui', 'non'] }],
   ['accord', { requis: true, parmi: ['oui', 'non', 'a revoir'] }],
   ['date_visite', { requis: true, motif: /^\d{4}-\d{2}-\d{2}$/, attendu: 'AAAA-MM-JJ' }],
   ['collecte_par', { requis: true }],
@@ -113,7 +114,10 @@ const minutes = (hhmm) => {
 }
 
 const chemin = process.argv[2] ?? 'collecte/officines.csv'
-const rangs = lignes(readFileSync(chemin, 'utf8'))
+/* Excel écrit un UTF-8 avec marque d'ordre d'octets. Sans ce retrait, la
+   première colonne s'appelle « ﻿nom » et l'en-tête est rejeté — pour une
+   marque invisible que personne ne peut voir dans un tableur. */
+const rangs = lignes(readFileSync(chemin, 'utf8').replace(/^﻿/, ''))
 
 if (!rangs.length) {
   console.error(`${chemin} est vide.`)
@@ -197,6 +201,22 @@ rangs.slice(1).forEach((rang, i) => {
     if (o !== null && f !== null && o === f) {
       dire("« ouvre » et « ferme » sont identiques : l'officine n'apparaîtrait jamais.")
     }
+  }
+
+  /*
+   * La seule règle de ce fichier qui ne porte pas sur un format.
+   *
+   * Le nom d'un pharmacien et son téléphone sont des données personnelles. Si
+   * le titulaire n'a pas été informé de ce qu'on en fait, la ligne ne doit pas
+   * entrer dans la base — quel que soit son accord commercial par ailleurs.
+   * Retourner le lui dire coûte une visite ; l'importer sans le lui avoir dit
+   * n'a pas de réparation.
+   */
+  if (val('titulaire_informe') === 'non') {
+    dire(
+      "le titulaire n'a pas été informé de l'usage de ses données : cette ligne " +
+        "ne peut pas être importée. Retournez le lui dire, ou supprimez la ligne.",
+    )
   }
 
   /* Doublons : deux fiches pour la même officine, ou un champ recopié d'une
