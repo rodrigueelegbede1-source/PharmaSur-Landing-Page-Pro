@@ -23,6 +23,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { bons, demandes, inscription, laterale, onglets, stocks, tableau } from './console/ecrans.mjs'
+import { SEUIL_AFFICHAGE } from './console/donnees.mjs'
 import { STYLE } from './console/style.mjs'
 
 /* fileURLToPath et join, plutôt qu'un découpage de l'URL : sur Linux, retirer
@@ -374,6 +375,122 @@ ${STYLE}
       if (e.key === 'Enter') { e.preventDefault(); ajouterBon(); }
     });
     rendreBons();
+  }
+
+  /*
+   * Demandes locales, filtrées par assurance.
+   *
+   * Le pharmacien peut enfin poser la question qu'aucun autre écran ne permet :
+   * « que cherchent, près de moi, les porteurs d'une convention que je n'ai pas
+   * signée ». C'est une décision commerciale, pas une curiosité.
+   *
+   * DEUX RÈGLES QUI NE SE NÉGOCIENT PAS :
+   *
+   *   1. Le seuil. Croiser produit et assurance réduit les effectifs — deux
+   *      recherches d'insuline par des porteurs SUNU dans un quartier
+   *      désignent une poignée de personnes. Sous le seuil, la ligne
+   *      disparaît. C'est la même règle que pour les produits, appliquée au
+   *      croisement.
+   *
+   *   2. Dire ce qu'on masque. Retirer des lignes en silence ferait croire à
+   *      l'officine que la demande n'existe pas, alors qu'elle existe et
+   *      qu'on la protège. Le compte des lignes masquées est donc affiché.
+   *
+   * L'état « acceptez-vous cette convention » est lu sur les cases de l'écran
+   * des bons, pas recopié : les deux écrans doivent dire la même chose.
+   */
+  var filtres = document.querySelector('[data-filtres]');
+  if (filtres) {
+    var SEUIL = ${SEUIL_AFFICHAGE};
+    var convention = document.querySelector('[data-convention]');
+    var masquees = document.querySelector('[data-masquees]');
+    var demandes = [].slice.call(document.querySelectorAll('[data-demande]'));
+
+    function ventilation(ligne) {
+      try {
+        return JSON.parse(decodeURIComponent(ligne.getAttribute('data-par-assurance')));
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function accepte(nom) {
+      var c = document.querySelector('[data-bon="' + nom.replace(/"/g, '') + '"]');
+      return !!(c && c.checked);
+    }
+
+    function filtrer(nom) {
+      [].forEach.call(filtres.querySelectorAll('.filtre'), function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-assurance') === nom));
+      });
+
+      var cachees = 0;
+      var total = 0;
+
+      demandes.forEach(function (ligne) {
+        var nb = ligne.querySelector('[data-nb]');
+        var libelle = ligne.querySelector('[data-nb-libelle]');
+
+        if (!nom) {
+          ligne.hidden = false;
+          nb.textContent = nb.getAttribute('data-total') || nb.textContent;
+          libelle.textContent = 'recherches';
+          return;
+        }
+        if (!nb.getAttribute('data-total')) nb.setAttribute('data-total', nb.textContent);
+
+        var compte = ventilation(ligne)[nom] || 0;
+        if (compte < SEUIL) {
+          ligne.hidden = true;
+          if (compte > 0) cachees++;
+          return;
+        }
+        ligne.hidden = false;
+        total += compte;
+        nb.textContent = compte;
+        libelle.textContent = 'recherches ' + nom;
+      });
+
+      if (!nom) {
+        convention.hidden = true;
+        masquees.hidden = true;
+        return;
+      }
+
+      masquees.hidden = cachees === 0;
+      if (cachees) {
+        masquees.textContent =
+          cachees + (cachees > 1 ? ' produits masqués : moins de ' : ' produit masqué : moins de ') +
+          SEUIL + ' recherches. Le comptage existe, il désignerait trop peu de personnes pour être publié.';
+      }
+
+      convention.hidden = false;
+      if (accepte(nom)) {
+        convention.className = 'convention acceptee';
+        convention.innerHTML =
+          'Vous acceptez <strong>' + nom + '</strong>. Ces ' + total +
+          ' recherches peuvent vous revenir.';
+      } else {
+        convention.className = 'convention';
+        convention.innerHTML =
+          "Vous n'acceptez pas <strong>" + nom + '</strong>. Ces ' + total +
+          " recherches se font près de vous et vont ailleurs. Cochez-la sur l'écran des bons si vous signez la convention.";
+      }
+    }
+
+    filtres.addEventListener('click', function (ev) {
+      var b = ev.target.closest ? ev.target.closest('.filtre') : null;
+      if (b) filtrer(b.getAttribute('data-assurance'));
+    });
+
+    /* Cocher un bon pendant qu'un filtre est actif doit changer le verdict. */
+    document.addEventListener('change', function (ev) {
+      if (!ev.target || !ev.target.hasAttribute || !ev.target.hasAttribute('data-bon')) return;
+      var actif = filtres.querySelector('.filtre[aria-pressed="true"]');
+      if (actif) filtrer(actif.getAttribute('data-assurance'));
+    });
+
+    filtrer('');
   }
 
   /*

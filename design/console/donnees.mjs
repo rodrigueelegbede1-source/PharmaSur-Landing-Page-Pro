@@ -204,14 +204,54 @@ export const ORGANISMES = [
   },
 ]
 
+/**
+ * Seuil d'affichage des comptages, déjà appliqué aux produits et désormais au
+ * croisement avec l'assurance. En dessous, on ne montre rien : « 2 recherches
+ * d'insuline par des porteurs SUNU dans la Riviera » désigne une poignée de
+ * personnes, et ce serait les identifier par la bande.
+ */
+export const SEUIL_AFFICHAGE = 5
+
+/*
+ * `parAssurance` est une ventilation du même comptage, pas un comptage
+ * nouveau : la somme d'une ligne ne dépasse jamais `nb`. Elle est incomplète —
+ * tous les patients n'ont pas d'assurance — et c'est voulu.
+ *
+ * Plusieurs cases sont volontairement SOUS le seuil : sans elles, personne ne
+ * pourrait vérifier que le masquage fonctionne.
+ */
 export const DEMANDES = [
-  { nom: 'Amoxicilline 500 mg', detail: 'Antibiotique · boîte de 12 gélules', nb: 86, etat: 'rupture', action: "Signaler l'arrivée", alerte: true },
-  { nom: 'Ventoline 100 µg', detail: 'Bronchodilatateur · flacon pressurisé', nb: 41, etat: 'rupture', action: "Signaler l'arrivée" },
-  { nom: 'Insuline Lantus', detail: 'Chaîne du froid · stylo pré-rempli', nb: 33, etat: 'jamais', action: 'Ajouter au stock' },
-  { nom: 'Paracétamol 1 g', detail: 'Antalgique · boîte de 8 comprimés', nb: 27, etat: 'non-confirme', action: 'Confirmer' },
-  { nom: 'Bandes de contrôle glycémique', detail: 'Dispositif · boîte de 50', nb: 19, etat: 'jamais', action: 'Ajouter au stock' },
-  { nom: 'Sérum physiologique', detail: 'Hygiène · dosettes 5 ml', nb: 12, etat: 'stock', action: null },
+  { nom: 'Amoxicilline 500 mg', detail: 'Antibiotique · boîte de 12 gélules', nb: 86, etat: 'rupture', action: "Signaler l'arrivée", alerte: true,
+    parAssurance: { CMU: 38, MUGEFCI: 21, 'NSIA Assurances': 11, 'SUNU Assurances': 8 } },
+  { nom: 'Ventoline 100 µg', detail: 'Bronchodilatateur · flacon pressurisé', nb: 41, etat: 'rupture', action: "Signaler l'arrivée",
+    parAssurance: { CMU: 19, MUGEFCI: 9, 'SUNU Assurances': 6, 'NSIA Assurances': 3 } },
+  { nom: 'Insuline Lantus', detail: 'Chaîne du froid · stylo pré-rempli', nb: 33, etat: 'jamais', action: 'Ajouter au stock',
+    parAssurance: { CMU: 14, MUGEFCI: 11, 'SUNU Assurances': 5, 'NSIA Assurances': 2 } },
+  { nom: 'Paracétamol 1 g', detail: 'Antalgique · boîte de 8 comprimés', nb: 27, etat: 'non-confirme', action: 'Confirmer',
+    parAssurance: { CMU: 12, MUGEFCI: 7, 'SUNU Assurances': 4 } },
+  { nom: 'Bandes de contrôle glycémique', detail: 'Dispositif · boîte de 50', nb: 19, etat: 'jamais', action: 'Ajouter au stock',
+    parAssurance: { CMU: 8, MUGEFCI: 6, 'SUNU Assurances': 3 } },
+  { nom: 'Sérum physiologique', detail: 'Hygiène · dosettes 5 ml', nb: 12, etat: 'stock', action: null,
+    parAssurance: { CMU: 7, MUGEFCI: 3 } },
 ]
+
+/*
+ * Les assurances portées par les patients qui cherchent près de l'officine,
+ * TOUS PRODUITS CONFONDUS. C'est la seule ventilation dont les effectifs
+ * restent assez grands pour être publiés sans réserve — le croisement avec un
+ * produit précis, lui, passe par le seuil.
+ *
+ * Elle se déduit des demandes plutôt que d'être écrite à part : deux tableaux
+ * de chiffres qui devraient concorder finissent toujours par diverger.
+ */
+export const ASSURANCES_ALENTOUR = Object.entries(
+  DEMANDES.reduce((total, d) => {
+    for (const [nom, nb] of Object.entries(d.parAssurance)) total[nom] = (total[nom] ?? 0) + nb
+    return total
+  }, {}),
+)
+  .map(([nom, nb]) => ({ nom, nb }))
+  .sort((a, b) => b.nb - a.nb)
 
 export const ZONES = [
   { nom: 'Cocody Riviera 2', nb: 94 },

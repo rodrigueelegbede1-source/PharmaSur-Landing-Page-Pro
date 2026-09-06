@@ -237,6 +237,39 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 }
 .apercu-bons .aucun { background:none; color:var(--doux); font-weight:500; padding:0; }
 
+/* — Filtre par assurance, sur les demandes locales — */
+.filtres-assurance { margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+.filtre {
+  display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 14px;
+  border:1px solid var(--trait); border-radius:999px; background:var(--papier);
+  font:inherit; font-size:12.5px; font-weight:700; color:var(--corps); cursor:pointer;
+}
+.filtre .nb {
+  font-size:11px; font-weight:800; color:var(--doux); font-variant-numeric:tabular-nums;
+}
+.filtre[aria-pressed='true'] {
+  border-color:var(--vert-600); background:var(--vert-600); color:#fff;
+}
+.filtre[aria-pressed='true'] .nb { color:var(--vert-200); }
+
+/* La convention manquante : c'est le seul endroit de la console qui dise à
+   l'officine ce qu'elle perd, et il doit se voir sans se déguiser en alarme. */
+.convention {
+  margin:12px 0 0; padding:11px 13px; border-radius:12px;
+  font-size:12.5px; line-height:1.55;
+  background:var(--ambre-fond); border:1px solid var(--ambre-trait); color:#4a3a17;
+}
+.convention strong { color:var(--ambre); }
+.convention.acceptee { background:var(--vert-50); border-color:var(--vert-200); color:#2a3d35; }
+.convention.acceptee strong { color:var(--vert-700); }
+
+/* Les lignes retirées par le seuil. Les taire laisserait croire que la
+   demande n'existe pas ; c'est le contraire qu'il faut dire. */
+.masquees {
+  margin:0; padding:11px 13px; border-radius:12px;
+  background:var(--trait-doux); font-size:12px; line-height:1.5; color:var(--doux);
+}
+
 /* — Bandeaux — */
 .bandeau { display:flex; gap:10px; align-items:flex-start; background:var(--vert-50); border:1px solid var(--vert-200); border-radius:16px; padding:13px 15px; }
 .bandeau p { margin:0; font-size:12.5px; line-height:1.55; color:#2a3d35; }

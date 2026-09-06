@@ -239,6 +239,39 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 }
 .apercu-bons .aucun { background:none; color:var(--doux); font-weight:500; padding:0; }
 
+/* — Filtre par assurance, sur les demandes locales — */
+.filtres-assurance { margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+.filtre {
+  display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 14px;
+  border:1px solid var(--trait); border-radius:999px; background:var(--papier);
+  font:inherit; font-size:12.5px; font-weight:700; color:var(--corps); cursor:pointer;
+}
+.filtre .nb {
+  font-size:11px; font-weight:800; color:var(--doux); font-variant-numeric:tabular-nums;
+}
+.filtre[aria-pressed='true'] {
+  border-color:var(--vert-600); background:var(--vert-600); color:#fff;
+}
+.filtre[aria-pressed='true'] .nb { color:var(--vert-200); }
+
+/* La convention manquante : c'est le seul endroit de la console qui dise à
+   l'officine ce qu'elle perd, et il doit se voir sans se déguiser en alarme. */
+.convention {
+  margin:12px 0 0; padding:11px 13px; border-radius:12px;
+  font-size:12.5px; line-height:1.55;
+  background:var(--ambre-fond); border:1px solid var(--ambre-trait); color:#4a3a17;
+}
+.convention strong { color:var(--ambre); }
+.convention.acceptee { background:var(--vert-50); border-color:var(--vert-200); color:#2a3d35; }
+.convention.acceptee strong { color:var(--vert-700); }
+
+/* Les lignes retirées par le seuil. Les taire laisserait croire que la
+   demande n'existe pas ; c'est le contraire qu'il faut dire. */
+.masquees {
+  margin:0; padding:11px 13px; border-radius:12px;
+  background:var(--trait-doux); font-size:12px; line-height:1.5; color:var(--doux);
+}
+
 /* — Bandeaux — */
 .bandeau { display:flex; gap:10px; align-items:flex-start; background:var(--vert-50); border:1px solid var(--vert-200); border-radius:16px; padding:13px 15px; }
 .bandeau p { margin:0; font-size:12.5px; line-height:1.55; color:#2a3d35; }
@@ -974,94 +1007,122 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
   <div class="contenu">
     <div class="bandeau">
       <span style="color:var(--vert-800)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
-      <p>Ces chiffres sont des <strong>comptages agrégés</strong> de recherches faites près de vous. Aucun patient n'est identifié, aucune ordonnance ne vous est transmise. Un produit n'apparaît qu'à partir de 5 recherches.</p>
+      <p>Ces chiffres sont des <strong>comptages agrégés</strong> de recherches faites près de vous. Aucun patient n'est identifié, aucune ordonnance ne vous est transmise. Un produit n'apparaît qu'à partir de 5 recherches — filtre par assurance compris.</p>
     </div>
 
-    <div class="liste">
-      <div class="ligne alerte">
+    <!--
+      Le filtre par assurance. Il répond à une question que le pharmacien ne
+      peut poser nulle part ailleurs : « ce que cherchent, près de moi, les
+      porteurs d'une convention que je n'ai pas signée ».
+
+      Le croisement produit × assurance réduit les effectifs, et un comptage de
+      deux personnes dans un quartier n'est plus un agrégat. Les lignes qui
+      passent sous le seuil sont donc masquées, et leur nombre annoncé : les
+      cacher en silence laisserait croire que la demande n'existe pas.
+    -->
+    <div class="carte">
+      <div class="titre-bloc">Assurance des patients</div>
+      <p class="aide-groupe">Ce que cherchent les porteurs d'un organisme donné. Les conventions que vous n'acceptez pas sont signalées.</p>
+      <div class="filtres-assurance" data-filtres>
+        <button class="filtre" type="button" data-assurance="" aria-pressed="true">Toutes</button>
+        <button class="filtre" type="button" data-assurance="CMU" aria-pressed="false">
+          CMU<span class="nb">98</span>
+        </button><button class="filtre" type="button" data-assurance="MUGEFCI" aria-pressed="false">
+          MUGEFCI<span class="nb">57</span>
+        </button><button class="filtre" type="button" data-assurance="SUNU Assurances" aria-pressed="false">
+          SUNU Assurances<span class="nb">26</span>
+        </button><button class="filtre" type="button" data-assurance="NSIA Assurances" aria-pressed="false">
+          NSIA Assurances<span class="nb">16</span>
+        </button>
+      </div>
+      <p class="convention" data-convention hidden></p>
+    </div>
+
+    <div class="liste" data-liste-demandes>
+      <div class="ligne alerte" data-demande data-par-assurance="%7B%22CMU%22%3A38%2C%22MUGEFCI%22%3A21%2C%22NSIA%20Assurances%22%3A11%2C%22SUNU%20Assurances%22%3A8%7D">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Amoxicilline 500 mg</div>
             <div class="det">Antibiotique · boîte de 12 gélules</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:19px;font-weight:800;color:var(--alerte);font-variant-numeric:tabular-nums">86</div>
-            <div style="font-size:10.5px;font-weight:600;color:var(--doux)">recherches</div>
+            <div style="font-size:19px;font-weight:800;color:var(--alerte);font-variant-numeric:tabular-nums" data-nb>86</div>
+            <div style="font-size:10.5px;font-weight:600;color:var(--doux)" data-nb-libelle>recherches</div>
           </div>
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span class="etat rupture">Rupture</span>
           <button class="btn plein" type="button" style="min-height:36px;font-size:12.5px">Signaler l'arrivée</button>
         </div>
-      </div><div class="ligne">
+      </div><div class="ligne" data-demande data-par-assurance="%7B%22CMU%22%3A19%2C%22MUGEFCI%22%3A9%2C%22SUNU%20Assurances%22%3A6%2C%22NSIA%20Assurances%22%3A3%7D">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Ventoline 100 µg</div>
             <div class="det">Bronchodilatateur · flacon pressurisé</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums">41</div>
-            <div style="font-size:10.5px;font-weight:600;color:var(--doux)">recherches</div>
+            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums" data-nb>41</div>
+            <div style="font-size:10.5px;font-weight:600;color:var(--doux)" data-nb-libelle>recherches</div>
           </div>
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span class="etat rupture">Rupture</span>
           <button class="btn contour" type="button" style="min-height:36px;font-size:12.5px">Signaler l'arrivée</button>
         </div>
-      </div><div class="ligne">
+      </div><div class="ligne" data-demande data-par-assurance="%7B%22CMU%22%3A14%2C%22MUGEFCI%22%3A11%2C%22SUNU%20Assurances%22%3A5%2C%22NSIA%20Assurances%22%3A2%7D">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Insuline Lantus</div>
             <div class="det">Chaîne du froid · stylo pré-rempli</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums">33</div>
-            <div style="font-size:10.5px;font-weight:600;color:var(--doux)">recherches</div>
+            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums" data-nb>33</div>
+            <div style="font-size:10.5px;font-weight:600;color:var(--doux)" data-nb-libelle>recherches</div>
           </div>
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span class="etat neutre">Jamais référencé</span>
           <button class="btn contour" type="button" style="min-height:36px;font-size:12.5px">Ajouter au stock</button>
         </div>
-      </div><div class="ligne">
+      </div><div class="ligne" data-demande data-par-assurance="%7B%22CMU%22%3A12%2C%22MUGEFCI%22%3A7%2C%22SUNU%20Assurances%22%3A4%7D">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Paracétamol 1 g</div>
             <div class="det">Antalgique · boîte de 8 comprimés</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums">27</div>
-            <div style="font-size:10.5px;font-weight:600;color:var(--doux)">recherches</div>
+            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums" data-nb>27</div>
+            <div style="font-size:10.5px;font-weight:600;color:var(--doux)" data-nb-libelle>recherches</div>
           </div>
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span class="etat neutre">Non confirmé</span>
           <button class="btn contour" type="button" style="min-height:36px;font-size:12.5px">Confirmer</button>
         </div>
-      </div><div class="ligne">
+      </div><div class="ligne" data-demande data-par-assurance="%7B%22CMU%22%3A8%2C%22MUGEFCI%22%3A6%2C%22SUNU%20Assurances%22%3A3%7D">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Bandes de contrôle glycémique</div>
             <div class="det">Dispositif · boîte de 50</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums">19</div>
-            <div style="font-size:10.5px;font-weight:600;color:var(--doux)">recherches</div>
+            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums" data-nb>19</div>
+            <div style="font-size:10.5px;font-weight:600;color:var(--doux)" data-nb-libelle>recherches</div>
           </div>
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span class="etat neutre">Jamais référencé</span>
           <button class="btn contour" type="button" style="min-height:36px;font-size:12.5px">Ajouter au stock</button>
         </div>
-      </div><div class="ligne">
+      </div><div class="ligne" data-demande data-par-assurance="%7B%22CMU%22%3A7%2C%22MUGEFCI%22%3A3%7D">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">Sérum physiologique</div>
             <div class="det">Hygiène · dosettes 5 ml</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums">12</div>
-            <div style="font-size:10.5px;font-weight:600;color:var(--doux)">recherches</div>
+            <div style="font-size:19px;font-weight:800;color:var(--encre);font-variant-numeric:tabular-nums" data-nb>12</div>
+            <div style="font-size:10.5px;font-weight:600;color:var(--doux)" data-nb-libelle>recherches</div>
           </div>
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1069,6 +1130,7 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
           <span style="font-size:12.5px;color:var(--doux)">Rien à faire</span>
         </div>
       </div>
+      <p class="masquees" data-masquees hidden></p>
     </div>
 
     <div class="tableau">
@@ -1433,6 +1495,122 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
       if (e.key === 'Enter') { e.preventDefault(); ajouterBon(); }
     });
     rendreBons();
+  }
+
+  /*
+   * Demandes locales, filtrées par assurance.
+   *
+   * Le pharmacien peut enfin poser la question qu'aucun autre écran ne permet :
+   * « que cherchent, près de moi, les porteurs d'une convention que je n'ai pas
+   * signée ». C'est une décision commerciale, pas une curiosité.
+   *
+   * DEUX RÈGLES QUI NE SE NÉGOCIENT PAS :
+   *
+   *   1. Le seuil. Croiser produit et assurance réduit les effectifs — deux
+   *      recherches d'insuline par des porteurs SUNU dans un quartier
+   *      désignent une poignée de personnes. Sous le seuil, la ligne
+   *      disparaît. C'est la même règle que pour les produits, appliquée au
+   *      croisement.
+   *
+   *   2. Dire ce qu'on masque. Retirer des lignes en silence ferait croire à
+   *      l'officine que la demande n'existe pas, alors qu'elle existe et
+   *      qu'on la protège. Le compte des lignes masquées est donc affiché.
+   *
+   * L'état « acceptez-vous cette convention » est lu sur les cases de l'écran
+   * des bons, pas recopié : les deux écrans doivent dire la même chose.
+   */
+  var filtres = document.querySelector('[data-filtres]');
+  if (filtres) {
+    var SEUIL = 5;
+    var convention = document.querySelector('[data-convention]');
+    var masquees = document.querySelector('[data-masquees]');
+    var demandes = [].slice.call(document.querySelectorAll('[data-demande]'));
+
+    function ventilation(ligne) {
+      try {
+        return JSON.parse(decodeURIComponent(ligne.getAttribute('data-par-assurance')));
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function accepte(nom) {
+      var c = document.querySelector('[data-bon="' + nom.replace(/"/g, '') + '"]');
+      return !!(c && c.checked);
+    }
+
+    function filtrer(nom) {
+      [].forEach.call(filtres.querySelectorAll('.filtre'), function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-assurance') === nom));
+      });
+
+      var cachees = 0;
+      var total = 0;
+
+      demandes.forEach(function (ligne) {
+        var nb = ligne.querySelector('[data-nb]');
+        var libelle = ligne.querySelector('[data-nb-libelle]');
+
+        if (!nom) {
+          ligne.hidden = false;
+          nb.textContent = nb.getAttribute('data-total') || nb.textContent;
+          libelle.textContent = 'recherches';
+          return;
+        }
+        if (!nb.getAttribute('data-total')) nb.setAttribute('data-total', nb.textContent);
+
+        var compte = ventilation(ligne)[nom] || 0;
+        if (compte < SEUIL) {
+          ligne.hidden = true;
+          if (compte > 0) cachees++;
+          return;
+        }
+        ligne.hidden = false;
+        total += compte;
+        nb.textContent = compte;
+        libelle.textContent = 'recherches ' + nom;
+      });
+
+      if (!nom) {
+        convention.hidden = true;
+        masquees.hidden = true;
+        return;
+      }
+
+      masquees.hidden = cachees === 0;
+      if (cachees) {
+        masquees.textContent =
+          cachees + (cachees > 1 ? ' produits masqués : moins de ' : ' produit masqué : moins de ') +
+          SEUIL + ' recherches. Le comptage existe, il désignerait trop peu de personnes pour être publié.';
+      }
+
+      convention.hidden = false;
+      if (accepte(nom)) {
+        convention.className = 'convention acceptee';
+        convention.innerHTML =
+          'Vous acceptez <strong>' + nom + '</strong>. Ces ' + total +
+          ' recherches peuvent vous revenir.';
+      } else {
+        convention.className = 'convention';
+        convention.innerHTML =
+          "Vous n'acceptez pas <strong>" + nom + '</strong>. Ces ' + total +
+          " recherches se font près de vous et vont ailleurs. Cochez-la sur l'écran des bons si vous signez la convention.";
+      }
+    }
+
+    filtres.addEventListener('click', function (ev) {
+      var b = ev.target.closest ? ev.target.closest('.filtre') : null;
+      if (b) filtrer(b.getAttribute('data-assurance'));
+    });
+
+    /* Cocher un bon pendant qu'un filtre est actif doit changer le verdict. */
+    document.addEventListener('change', function (ev) {
+      if (!ev.target || !ev.target.hasAttribute || !ev.target.hasAttribute('data-bon')) return;
+      var actif = filtres.querySelector('.filtre[aria-pressed="true"]');
+      if (actif) filtrer(actif.getAttribute('data-assurance'));
+    });
+
+    filtrer('');
   }
 
   /*

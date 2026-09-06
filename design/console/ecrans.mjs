@@ -7,8 +7,8 @@
  * raison pour laquelle on n'écrit pas deux consoles.
  */
 import {
-  A_CONFIRMER, COMMUNES, DEMANDES, HORAIRES, MENU, OFFICINE, ORGANISMES, RECHERCHES,
-  STOCKS, VIGNETTES, ZONES,
+  A_CONFIRMER, ASSURANCES_ALENTOUR, COMMUNES, DEMANDES, HORAIRES, MENU, OFFICINE,
+  ORGANISMES, RECHERCHES, SEUIL_AFFICHAGE, STOCKS, VIGNETTES, ZONES,
 } from './donnees.mjs'
 
 const ICONES = {
@@ -439,20 +439,44 @@ export const demandes = () => `
   <div class="contenu">
     <div class="bandeau">
       <span style="color:var(--vert-800)">${svg('info', 18)}</span>
-      <p>Ces chiffres sont des <strong>comptages agrégés</strong> de recherches faites près de vous. Aucun patient n'est identifié, aucune ordonnance ne vous est transmise. Un produit n'apparaît qu'à partir de 5 recherches.</p>
+      <p>Ces chiffres sont des <strong>comptages agrégés</strong> de recherches faites près de vous. Aucun patient n'est identifié, aucune ordonnance ne vous est transmise. Un produit n'apparaît qu'à partir de ${SEUIL_AFFICHAGE} recherches — filtre par assurance compris.</p>
     </div>
 
-    <div class="liste">
+    <!--
+      Le filtre par assurance. Il répond à une question que le pharmacien ne
+      peut poser nulle part ailleurs : « ce que cherchent, près de moi, les
+      porteurs d'une convention que je n'ai pas signée ».
+
+      Le croisement produit × assurance réduit les effectifs, et un comptage de
+      deux personnes dans un quartier n'est plus un agrégat. Les lignes qui
+      passent sous le seuil sont donc masquées, et leur nombre annoncé : les
+      cacher en silence laisserait croire que la demande n'existe pas.
+    -->
+    <div class="carte">
+      <div class="titre-bloc">Assurance des patients</div>
+      <p class="aide-groupe">Ce que cherchent les porteurs d'un organisme donné. Les conventions que vous n'acceptez pas sont signalées.</p>
+      <div class="filtres-assurance" data-filtres>
+        <button class="filtre" type="button" data-assurance="" aria-pressed="true">Toutes</button>
+        ${ASSURANCES_ALENTOUR.map(
+          (a) => `<button class="filtre" type="button" data-assurance="${a.nom}" aria-pressed="false">
+          ${a.nom}<span class="nb">${a.nb}</span>
+        </button>`,
+        ).join('')}
+      </div>
+      <p class="convention" data-convention hidden></p>
+    </div>
+
+    <div class="liste" data-liste-demandes>
       ${DEMANDES.map(
-        (d) => `<div class="ligne${d.alerte ? ' alerte' : ''}">
+        (d) => `<div class="ligne${d.alerte ? ' alerte' : ''}" data-demande data-par-assurance="${encodeURIComponent(JSON.stringify(d.parAssurance))}">
         <div class="haut">
           <div style="min-width:0">
             <div class="nom">${d.nom}</div>
             <div class="det">${d.detail}</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:19px;font-weight:800;color:${d.alerte ? 'var(--alerte)' : 'var(--encre)'};font-variant-numeric:tabular-nums">${d.nb}</div>
-            <div style="font-size:10.5px;font-weight:600;color:var(--doux)">recherches</div>
+            <div style="font-size:19px;font-weight:800;color:${d.alerte ? 'var(--alerte)' : 'var(--encre)'};font-variant-numeric:tabular-nums" data-nb>${d.nb}</div>
+            <div style="font-size:10.5px;font-weight:600;color:var(--doux)" data-nb-libelle>recherches</div>
           </div>
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -461,6 +485,7 @@ export const demandes = () => `
         </div>
       </div>`,
       ).join('')}
+      <p class="masquees" data-masquees hidden></p>
     </div>
 
     <div class="tableau">
