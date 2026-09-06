@@ -10,7 +10,7 @@
     <title>Politique de confidentialité — PharmaSur</title>
     <meta
       name="description"
-      content="Comment PharmaSur collecte, utilise et protège votre numéro de téléphone."
+      content="Ce que PharmaSur reçoit — votre numéro, et rien d'autre — et ce que l'application garde sur votre appareil sans nous le transmettre."
     />
     <link
       rel="preload"
@@ -67,8 +67,9 @@
       <p class="eyebrow text-green-600">Vos données</p>
       <h1 class="mt-4 text-[2.1rem] sm:text-[2.6rem]">Politique de confidentialité</h1>
       <p class="mt-4 text-[1.02rem]">
-        Cette page explique quelles informations PharmaSur recueille sur ce site, pourquoi, combien
-        de temps elles sont conservées, et comment en obtenir la suppression.
+        Cette page explique ce que PharmaSur reçoit — votre numéro de téléphone, et rien d'autre —
+        pourquoi, combien de temps il est conservé, et comment en obtenir la suppression. Elle décrit
+        aussi ce que l'application garde sur votre appareil sans nous le transmettre.
       </p>
 
       <h2 class="mt-14 text-[1.4rem]">1. Qui est responsable de vos données</h2>
@@ -84,19 +85,80 @@
 
       <h2 class="mt-12 text-[1.4rem]">2. Ce que nous collectons, et rien d'autre</h2>
       <p class="mt-4">
-        Ce site ne recueille qu'une seule information : le
+        Une seule information nous parvient : le
         <strong class="text-ink">numéro de téléphone</strong> que vous saisissez volontairement dans
         le formulaire situé en bas de page. Aucune autre donnée n'est demandée : ni nom, ni adresse,
         ni date de naissance.
       </p>
-      <p class="mt-3">
-        <strong class="text-ink">
-          Aucune donnée de santé n'est collectée par ce site. </strong
-        >Les médicaments visibles dans l'illustration de la page sont un exemple fixe, identique
-        pour tous les visiteurs : rien de ce qui y figure ne vous concerne ni n'est transmis.
+
+      <!--
+        Cette section disait « aucune donnée de santé n'est collectée par ce
+        site », en expliquant que les médicaments affichés étaient une
+        illustration fixe. C'était vrai à sa rédaction. Ça ne l'est plus depuis
+        que l'application patient existe à /app/ — même domaine, donc même
+        politique : elle enregistre les médicaments cherchés et l'organisme
+        d'assurance, qui sont des données de santé.
+
+        Elles ne nous parviennent pas — il n'y a aucun serveur — mais elles
+        existent sur l'appareil, et le taire reviendrait à laisser croire qu'il
+        ne se passe rien.
+      -->
+      <h2 class="mt-12 text-[1.4rem]">3. Ce que l'application garde sur votre téléphone</h2>
+      <p class="mt-4">
+        L'application patient et la console pharmacie enregistrent certaines choses
+        <strong class="text-ink">sur votre appareil, et nulle part ailleurs</strong>. Ces
+        informations ne nous sont jamais transmises : PharmaSur n'a pas de serveur pour les
+        recevoir, et n'y a donc aucun accès.
+      </p>
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse text-left text-[0.93rem]">
+          <thead>
+            <tr class="border-b border-line">
+              <th class="py-2 pr-4 font-extrabold text-ink">Ce qui est gardé</th>
+              <th class="py-2 font-extrabold text-ink">Où, et jusqu'à quand</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-line-soft">
+              <td class="py-3 pr-4">
+                <strong class="text-ink">Votre liste de médicaments.</strong> Ce sont des
+                <strong class="text-ink">données de santé</strong> : elles disent ce que vous
+                cherchez à vous procurer.
+              </td>
+              <td class="py-3">
+                Dans la mémoire locale de votre navigateur, jusqu'à ce que vous vidiez la liste,
+                effaciez les données du site, ou désinstalliez l'application.
+              </td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-3 pr-4">
+                <strong class="text-ink">Votre organisme d'assurance</strong>, si vous le
+                déclarez dans votre profil pour repérer les officines qui l'acceptent.
+              </td>
+              <td class="py-3">
+                Au même endroit. Le retirer dans le profil l'efface immédiatement.
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-4">
+                <strong class="text-ink">Ce que déclare une officine</strong> dans la console —
+                horaires, garde, stocks, bons acceptés.
+              </td>
+              <td class="py-3">
+                Rien n'est enregistré : la console est une démonstration, et fermer l'onglet efface
+                tout.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4">
+        Pour tout effacer d'un coup : videz les données du site dans les réglages de votre
+        navigateur, ou désinstallez l'application. Nous n'avons rien à supprimer de notre côté,
+        puisque nous n'avons rien reçu.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">3. Pourquoi, et sur quelle base</h2>
+      <h2 class="mt-12 text-[1.4rem]">4. Pourquoi, et sur quelle base</h2>
       <p class="mt-4">
         Votre numéro sert uniquement à vous prévenir de l'ouverture du service PharmaSur. Il ne sera
         ni revendu, ni loué, ni cédé à des tiers à des fins commerciales.
@@ -107,27 +169,29 @@
         avoir à vous justifier.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">4. Combien de temps</h2>
+      <h2 class="mt-12 text-[1.4rem]">5. Combien de temps</h2>
       <p class="mt-4">
         Votre numéro est conservé jusqu'à l'ouverture du service, puis
         <mark class="rounded bg-[#fdeaec] px-1.5 py-0.5 font-bold text-alert">[durée]</mark> au
         maximum, et supprimé sans délai si vous en faites la demande.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">5. Qui d'autre y a accès</h2>
+      <h2 class="mt-12 text-[1.4rem]">6. Qui d'autre y a accès</h2>
       <p class="mt-4">
-        La collecte du formulaire est assurée par
-        <mark class="rounded bg-[#fdeaec] px-1.5 py-0.5 font-bold text-alert">
-          [prestataire de formulaire et pays d'hébergement]
-        </mark>
-        , qui agit pour notre compte et n'utilise pas ces numéros à ses propres fins.
+        La collecte du formulaire est assurée par <strong class="text-ink">Formspree</strong>,
+        société établie aux <strong class="text-ink">États-Unis</strong>, qui agit pour notre compte
+        et n'utilise pas ces numéros à ses propres fins. Le site est hébergé par
+        <strong class="text-ink">Vercel</strong>, dont les serveurs sont également situés hors de
+        Côte d'Ivoire.
       </p>
-      <p class="mt-3 text-[0.95rem] text-body-soft">
-        Si ce prestataire est établi hors de Côte d'Ivoire, le transfert doit être mentionné ici et
-        encadré : votre numéro quitte alors le territoire national.
+      <p class="mt-3">
+        <strong class="text-ink">Votre numéro quitte donc le territoire national</strong> dès son
+        envoi. Ce transfert doit être encadré par des garanties contractuelles et déclaré : c'est
+        l'un des points que la relecture juridique doit trancher avant la mise en ligne de cette
+        page.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">6. Cookies et mesure d'audience</h2>
+      <h2 class="mt-12 text-[1.4rem]">7. Cookies et mesure d'audience</h2>
       <p class="mt-4">
         <strong class="text-ink">Ce site ne dépose aucun cookie</strong> et n'utilise aucun outil de
         mesure d'audience ni de publicité. Aucun traçage de votre navigation n'est effectué, et
@@ -137,7 +201,7 @@
         Cette affirmation devra être corrigée le jour où une mesure d'audience sera installée.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">7. Vos droits</h2>
+      <h2 class="mt-12 text-[1.4rem]">8. Vos droits</h2>
       <p class="mt-4">
         Vous disposez d'un droit d'accès à vos données, de rectification, d'effacement, d'opposition
         et de retrait de votre consentement. Pour les exercer, écrivez à
@@ -150,7 +214,7 @@
         <mark class="rounded bg-[#fdeaec] px-1.5 py-0.5 font-bold text-alert">[délai]</mark>.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">8. Déclaration et réclamation</h2>
+      <h2 class="mt-12 text-[1.4rem]">9. Déclaration et réclamation</h2>
       <p class="mt-4">
         Le traitement décrit ici relève de la loi ivoirienne relative à la protection des données à
         caractère personnel. Les formalités auprès de l'Autorité de régulation des télécommunications
@@ -166,9 +230,7 @@
 
       <p class="mt-16 border-t border-line pt-6 text-[0.9rem] text-body-soft">
         Dernière mise à jour :
-        <mark class="rounded bg-[#fdeaec] px-1.5 py-0.5 font-bold text-alert">
-          [date de publication]
-        </mark>
+        <strong class="text-ink">6 septembre 2026</strong>
       </p>
     </main>
 
