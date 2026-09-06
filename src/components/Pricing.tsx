@@ -187,13 +187,13 @@ export function Pricing() {
                       <Check featured={p.featured} bientot={f.bientot} />
                       <span
                         className={cx(
-                          f.bientot
-                            ? p.featured
-                              ? 'text-green-100/55'
-                              : 'text-body-soft'
-                            : p.featured
-                              ? 'text-green-100/90'
-                              : undefined,
+                          /* Pas de texte plus pâle pour marquer « bientôt » :
+                             mesuré à 3,58:1 sur la carte claire, sous le seuil
+                             de 4,5. La ligne qui avoue qu'une fonction n'existe
+                             pas était la moins lisible de la liste. La
+                             distinction passe par la pastille et l'étiquette,
+                             qui ne coûtent rien à la lecture. */
+                          p.featured ? 'text-green-100/90' : undefined,
                         )}
                       >
                         {f.texte}
@@ -219,7 +219,7 @@ export function Pricing() {
                 <p
                   className={cx(
                     'mt-4 flex-1 text-[0.78rem] leading-relaxed',
-                    p.featured ? 'text-green-200/70' : 'text-body-soft',
+                    p.featured ? 'text-green-100/80' : 'text-body',
                   )}
                 >
                   Coche pleine : disponible aujourd'hui dans la version que vous téléchargez.
