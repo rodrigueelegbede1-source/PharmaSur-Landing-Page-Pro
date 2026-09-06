@@ -15,14 +15,21 @@ import { APK_PATIENT, APP_FICHIER, GUIDE_IPHONE } from './destinations'
  * à un défilement, avec les trois routes.
  *
  * Sur iPhone il n'y a rien à télécharger : Apple interdit l'installation
- * depuis un site. Le bouton y mène donc au mode d'emploi, et son libellé passe
- * à « Installer » plutôt que de promettre un fichier qui n'existe pas.
+ * depuis un site. Le bouton y ouvre donc les trois gestes SUR PLACE, sans
+ * quitter la page — il menait à /iphone/, ce qui obligeait à partir lire un
+ * mode d'emploi puis à revenir. « Installer » doit agir là où on le touche.
  */
 export type Telechargement = {
   href: string
   /** Absent quand la cible est une page, pas un fichier. */
   download?: string
   label: string
+  /**
+   * Vrai sur iPhone et iPad : le bouton n'est plus un lien mais une commande,
+   * qui déplie les trois gestes de Safari. `href` reste renseigné — il sert de
+   * repli quand le JavaScript ne répond pas.
+   */
+  feuilleIOS?: boolean
 }
 
 /**
@@ -36,7 +43,7 @@ export function detecter(ua: string, tactile: number, plateforme: string): Telec
   /* Un iPad récent se déclare « Macintosh » : seul le nombre de points de
      contact le trahit. Sans ce test, un iPad recevrait le fichier de bureau. */
   const iOS = /iPad|iPhone|iPod/.test(ua) || (plateforme === 'MacIntel' && tactile > 1)
-  if (iOS) return { href: GUIDE_IPHONE, label: 'Installer' }
+  if (iOS) return { href: GUIDE_IPHONE, label: 'Installer', feuilleIOS: true }
 
   if (/Android/.test(ua)) {
     return { href: APK_PATIENT, download: 'pharmasur-1.0.0.apk', label: 'Télécharger' }

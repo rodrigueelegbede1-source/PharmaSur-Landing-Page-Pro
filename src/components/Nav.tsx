@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/
 import { useEffect, useState } from 'react'
 import { cx } from '../lib/cx'
 import { PAR_DEFAUT, telechargementLocal } from '../lib/plateforme'
+import { InstallerIphone } from './InstallerIphone'
 import { ArrowRight } from './primitives'
 
 const links = [
@@ -53,7 +54,20 @@ export function Nav() {
    * s'exécute jamais — puis se règle sur l'appareil dès le montage.
    */
   const [cible, setCible] = useState(PAR_DEFAUT)
+  const [feuille, setFeuille] = useState(false)
   useEffect(() => setCible(telechargementLocal()), [])
+
+  /*
+   * Sur iPhone, le bouton n a pas de fichier a livrer : il ouvre les trois
+   * gestes sur place. Ailleurs il reste un lien, pour que le clic droit,
+   * l ouverture dans un onglet et la copie du lien continuent de marcher.
+   */
+  const surIOS = (e: React.MouseEvent) => {
+    if (!cible.feuilleIOS) return
+    e.preventDefault()
+    setFeuille(true)
+    setOpen(false)
+  }
 
   useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 8))
 
@@ -88,6 +102,7 @@ export function Nav() {
             <a
               href={cible.href}
               download={cible.download}
+              onClick={surIOS}
               className="group inline-flex items-center gap-2 rounded-full bg-green-400 px-5 py-2.5 text-[0.88rem] font-bold whitespace-nowrap text-green-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
             >
               {cible.label}
@@ -151,7 +166,10 @@ export function Nav() {
               <a
                 href={cible.href}
                 download={cible.download}
-                onClick={() => setOpen(false)}
+                onClick={(e) => {
+                  surIOS(e)
+                  setOpen(false)
+                }}
                 className="mt-4 mb-2 inline-flex items-center justify-center gap-2 rounded-full bg-green-400 px-5 py-3 font-bold text-green-950"
               >
                 {cible.label}
@@ -161,6 +179,7 @@ export function Nav() {
           </motion.div>
         )}
       </AnimatePresence>
+      <InstallerIphone ouvert={feuille} onFermer={() => setFeuille(false)} />
     </header>
   )
 }
