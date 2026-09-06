@@ -1,7 +1,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import { cx } from '../lib/cx'
-import { APK_PATIENT, APP_FICHIER } from '../lib/destinations'
+import { APK_PATIENT, APP_FICHIER, GUIDE_IPHONE } from '../lib/destinations'
 import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Counter } from './primitives'
@@ -15,10 +15,12 @@ import { ArrowRight, Badge, Counter } from './primitives'
  * deux copies garantirait qu'elles divergent au premier changement. Le
  * visiteur, lui, cherche son appareil dans la liste, pas un format de fichier.
  *
- * Sur iPhone, rien ne s'installe depuis un site — Apple l'interdit. Ce bouton
- * livre donc le fichier, que Safari enregistre dans Fichiers et qui s'ouvre
- * hors ligne. Ne jamais l'appeler « application App Store » : ce n'en est pas
- * une, et aucune ne peut exister sans compte développeur ni macOS.
+ * Sur iPhone, rien ne s'installe depuis un site — Apple l'interdit. Le bouton
+ * mène donc au mode d'emploi : Safari sait poser l'application sur l'écran
+ * d'accueil, en trois gestes que personne ne devine seul. La page y explique
+ * aussi pourquoi il n'y a pas de .ipa, et propose le fichier en second choix.
+ * Ne jamais appeler cela « application App Store » : ce n'en est pas une, et
+ * aucune ne peut exister sans compte développeur ni macOS.
  */
 const telechargements = [
   {
@@ -44,9 +46,8 @@ const telechargements = [
   },
   {
     plateforme: 'iPhone',
-    detail: 'Fichier · 500 ko',
-    href: APP_FICHIER,
-    fichier: 'pharmasur-application.html',
+    detail: 'Trois gestes, sans App Store',
+    href: GUIDE_IPHONE,
     principal: false,
     svgProps: { fill: 'currentColor' },
     icone: (

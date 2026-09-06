@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState, type FormEvent } from 'react'
 import { cx } from '../lib/cx'
-import { APK_PATIENT, APP_FICHIER, APP_PATIENT } from '../lib/destinations'
+import { APK_PATIENT, APP_FICHIER, GUIDE_IPHONE } from '../lib/destinations'
 import { ArrowRight, Reveal, SectionHead } from './primitives'
 
 const phoneRegex = /^(\+225)?[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}$/
@@ -145,7 +145,7 @@ export function CtaPhone() {
 
                 <Reveal delay={0.08}>
                   <a
-                    href={APP_PATIENT}
+                    href={GUIDE_IPHONE}
                     className="group flex h-full flex-col rounded-2xl border border-white/20 bg-white/5 p-5 text-white transition-transform duration-300 hover:-translate-y-1 hover:border-white/35"
                   >
                     <svg viewBox="0 0 24 24" fill="currentColor" className="size-7 shrink-0" aria-hidden>
@@ -153,10 +153,10 @@ export function CtaPhone() {
                     </svg>
                     <span className="mt-4 block text-[1.05rem] font-extrabold">iPhone</span>
                     <span className="mt-1.5 block text-[0.85rem] font-medium text-green-100/70">
-                      Puis Partager → « Sur l'écran d'accueil »
+                      Trois gestes depuis Safari · sans App Store
                     </span>
                     <span className="mt-auto flex items-center gap-2 pt-6 font-bold">
-                      Ouvrir dans Safari
+                      Voir comment installer
                       <ArrowRight />
                     </span>
                   </a>

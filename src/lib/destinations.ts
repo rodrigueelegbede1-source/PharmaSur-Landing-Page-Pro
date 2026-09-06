@@ -48,6 +48,18 @@ export const APK_PATIENT = '/pharmasur-1.0.0.apk'
 export const APP_PATIENT = '/app/'
 
 /**
+ * Le mode d'emploi iPhone. Le bouton menait directement à /app/ : le visiteur
+ * arrivait sur l'application dans Safari sans savoir que la suite se passe
+ * dans le menu Partager. Il découvrait une page web, pas une installation.
+ *
+ * Cette page montre les trois gestes, puis renvoie vers /app/. Elle explique
+ * aussi pourquoi il n'y a pas de .ipa à télécharger : iOS n'installe rien
+ * depuis un site, et un bouton qui le prétendrait ferait enregistrer un
+ * fichier inerte.
+ */
+export const GUIDE_IPHONE = '/iphone/'
+
+/**
  * L'application en un seul fichier, à télécharger et ouvrir dans n'importe
  * quel navigateur — y compris hors ligne, y compris sur iPhone.
  *
