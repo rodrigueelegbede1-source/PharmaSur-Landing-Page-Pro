@@ -149,19 +149,29 @@ export const STOCKS = [
 /*
  * Les organismes que l'officine peut déclarer accepter.
  *
- * TROIS PRÉCAUTIONS, dans l'ordre d'importance :
+ * PROVENANCE. Liste proposée le 6 septembre 2026, puis revue et validée le
+ * même jour par Rodrigue Elegbede, qui connaît le terrain ivoirien. Deux
+ * courtiers gestionnaires — ASCOMA et Gras Savoye — ont été retirés à cette
+ * revue : c'est le nom de l'assureur, et non du gestionnaire, qui figure sur
+ * la carte du patient. Les huit restants sont confirmés.
+ *
+ * Cette ligne n'est pas de la paperasse : le jour où quelqu'un se demandera
+ * d'où sortent ces noms, la réponse doit être dans le fichier et non dans la
+ * mémoire de quelqu'un. Toute modification ultérieure se refait valider de
+ * la même façon.
+ *
+ * TROIS RÈGLES, dans l'ordre d'importance :
  *
  *   1. AUCUN NOM N'EST INVENTÉ. Un assureur qui n'existe pas, ou dont le nom
  *      est approximatif, envoie un patient au comptoir avec une carte qui sera
- *      refusée. Cette liste ne contient que des organismes dont l'existence en
- *      Côte d'Ivoire est établie. Elle est volontairement COURTE : mieux vaut
- *      qu'un pharmacien ajoute le sien que de lui proposer un nom douteux.
+ *      refusée. Elle est volontairement COURTE : mieux vaut qu'un pharmacien
+ *      ajoute le sien que de lui proposer un nom douteux.
  *
- *   2. ELLE EST INCOMPLÈTE, ET DOIT LE RESTER TANT QU'ELLE N'EST PAS CONFIRMÉE.
- *      Le marché ivoirien compte davantage d'assureurs et de gestionnaires que
+ *   2. ELLE RESTE OUVERTE. Le marché ivoirien compte davantage d'assureurs que
  *      ceux nommés ici, et les réseaux de tiers payant changent. D'où le champ
- *      libre : c'est le pharmacien qui sait ce qu'il accepte, pas nous. Les
- *      ajouts qu'il fera sont la vraie source pour compléter cette liste.
+ *      libre : c'est le pharmacien qui sait ce qu'il accepte. Ses ajouts sont
+ *      la vraie source pour compléter cette liste — y compris pour y ramener
+ *      un gestionnaire si les cartes le portent réellement.
  *
  *   3. LES MUTUELLES D'ENTREPRISE NE S'ÉNUMÈRENT PAS. Chaque société a la
  *      sienne ; les lister toutes est impossible et en lister quelques-unes
@@ -169,7 +179,13 @@ export const STOCKS = [
  *      pharmacien nomme lui-même.
  *
  * Le nom retenu est celui que le PATIENT lit sur sa carte, pas la raison
- * sociale : c'est ce qu'il cherchera dans l'application.
+ * sociale : c'est ce qu'il cherchera dans l'application. Si une carte porte
+ * une autre graphie que celle écrite ici — « SUNU Santé » plutôt que « SUNU
+ * Assurances », par exemple — c'est la carte qui a raison, et ce fichier qu'il
+ * faut corriger.
+ *
+ * C'EST LA SEULE SOURCE. La console, la fiche de collecte, le vérificateur
+ * d'import et l'application patient en dérivent : corriger ici suffit.
  */
 export const ORGANISMES = [
   {
