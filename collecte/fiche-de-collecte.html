@@ -1,0 +1,868 @@
+<title>Fiche de collecte — officines</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --encre: #0e1b16;
+    --corps: #46564f;
+    --doux: #75857e;
+    --trait: #dfeae4;
+    --trait-doux: #edf4f0;
+    --papier: #ffffff;
+    --fond: #f6faf8;
+    --vert: #0f7250;
+    --vert-vif: #12855d;
+    --vert-fond: #f0faf5;
+    --vert-trait: #b9e8d3;
+    --alerte: #b30f1c;
+    --alerte-fond: #fdf1f2;
+    --alerte-trait: #f2cfd3;
+    --ambre: #7d5210;
+    --ambre-fond: #fdf7ea;
+    --ambre-trait: #eeddb6;
+    --ombre: 0 1px 2px rgb(11 61 44 / .05), 0 8px 24px -12px rgb(11 61 44 / .16);
+
+    --pas: 1rem;
+    --rayon: 14px;
+    color-scheme: light;
+  }
+
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --encre: #e9f3ee;
+      --corps: #a9bcb3;
+      --doux: #7e918a;
+      --trait: #1f302a;
+      --trait-doux: #17251f;
+      --papier: #101c17;
+      --fond: #0a120f;
+      --vert: #46c896;
+      --vert-vif: #3fbf8d;
+      --vert-fond: #10261e;
+      --vert-trait: #1d4536;
+      --alerte: #ff9d9d;
+      --alerte-fond: #2a1315;
+      --alerte-trait: #4b1f23;
+      --ambre: #e8bf76;
+      --ambre-fond: #241c0e;
+      --ambre-trait: #43341a;
+      --ombre: 0 1px 2px rgb(0 0 0 / .4), 0 8px 24px -12px rgb(0 0 0 / .7);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --encre: #e9f3ee;
+    --corps: #a9bcb3;
+    --doux: #7e918a;
+    --trait: #1f302a;
+    --trait-doux: #17251f;
+    --papier: #101c17;
+    --fond: #0a120f;
+    --vert: #46c896;
+    --vert-vif: #3fbf8d;
+    --vert-fond: #10261e;
+    --vert-trait: #1d4536;
+    --alerte: #ff9d9d;
+    --alerte-fond: #2a1315;
+    --alerte-trait: #4b1f23;
+    --ambre: #e8bf76;
+    --ambre-fond: #241c0e;
+    --ambre-trait: #43341a;
+    --ombre: 0 1px 2px rgb(0 0 0 / .4), 0 8px 24px -12px rgb(0 0 0 / .7);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--fond);
+    color: var(--corps);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .page {
+    max-width: 40rem;
+    margin-inline: auto;
+    padding: 2rem 1.15rem 8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  h1, h2, h3 { color: var(--encre); margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+  h1 { font-size: 1.75rem; font-weight: 800; line-height: 1.2; }
+  h2 { font-size: 1.08rem; font-weight: 800; }
+  p { margin: 0; }
+
+  .surtitre {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--vert);
+  }
+
+  /* — En-tête — */
+  .chapeau { display: flex; flex-direction: column; gap: .6rem; }
+  .chapeau p { font-size: 1rem; }
+
+  .compteur {
+    margin-top: .35rem;
+    display: inline-flex;
+    align-items: baseline;
+    gap: .5rem;
+    align-self: flex-start;
+    padding: .45rem .85rem;
+    border-radius: 999px;
+    background: var(--vert-fond);
+    border: 1px solid var(--vert-trait);
+    color: var(--vert);
+    font-size: .85rem;
+    font-weight: 700;
+  }
+  .compteur b { font-family: 'IBM Plex Mono', monospace; font-size: 1.05rem; font-weight: 600; }
+
+  /* — Consigne : le seul bloc que la personne doit lire avant d'entrer — */
+  .consigne {
+    background: var(--ambre-fond);
+    border: 1px solid var(--ambre-trait);
+    border-radius: var(--rayon);
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+  }
+  .consigne h2 { color: var(--ambre); font-size: .95rem; }
+  .consigne ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+  .consigne li { font-size: .92rem; line-height: 1.55; }
+  .consigne strong { color: var(--encre); font-weight: 700; }
+
+  /* — Blocs de questions —
+     Numérotés parce que c'est l'ordre de la conversation au comptoir : on ne
+     demande pas un numéro d'agrément avant d'avoir dit bonjour. */
+  .bloc {
+    background: var(--papier);
+    border: 1px solid var(--trait);
+    border-radius: var(--rayon);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .bloc > header { display: flex; align-items: flex-start; gap: .8rem; }
+  .num {
+    flex: none;
+    width: 1.7rem; height: 1.7rem;
+    display: grid; place-items: center;
+    border-radius: 8px;
+    background: var(--vert-fond);
+    color: var(--vert);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .82rem;
+    font-weight: 600;
+  }
+  .bloc > header div { display: flex; flex-direction: column; gap: .2rem; }
+  .dire {
+    font-size: .88rem;
+    font-style: italic;
+    color: var(--doux);
+    line-height: 1.5;
+  }
+
+  .champs { display: flex; flex-direction: column; gap: .9rem; }
+  .paire { display: grid; grid-template-columns: 1fr; gap: .9rem; }
+  @media (min-width: 30rem) { .paire { grid-template-columns: 1fr 1fr; } }
+
+  .champ { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+  .champ > label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .6rem;
+    font-size: .84rem;
+    font-weight: 700;
+    color: var(--encre);
+  }
+  .cle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .68rem;
+    font-weight: 500;
+    color: var(--doux);
+    letter-spacing: .01em;
+  }
+  .champ input, .champ select, .champ textarea {
+    font: inherit;
+    font-size: 1rem;
+    width: 100%;
+    min-height: 2.9rem;
+    padding: .5rem .75rem;
+    border: 1px solid var(--trait);
+    border-radius: 10px;
+    background: var(--fond);
+    color: var(--encre);
+    transition: border-color .15s, background .15s;
+  }
+  .champ textarea { min-height: 4.5rem; resize: vertical; line-height: 1.5; }
+  .champ input:focus-visible, .champ select:focus-visible, .champ textarea:focus-visible,
+  button:focus-visible, .lien:focus-visible {
+    outline: 2px solid var(--vert-vif);
+    outline-offset: 2px;
+  }
+  .champ input:focus, .champ select:focus, .champ textarea:focus {
+    border-color: var(--vert-vif);
+    background: var(--papier);
+  }
+  .champ input.mono { font-family: 'IBM Plex Mono', monospace; font-size: .95rem; }
+  .aide { font-size: .76rem; color: var(--doux); line-height: 1.45; }
+  .aide code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .95em;
+    color: var(--corps);
+    background: var(--trait-doux);
+    padding: .05em .3em;
+    border-radius: 4px;
+  }
+  .champ[data-invalide="oui"] input,
+  .champ[data-invalide="oui"] select { border-color: var(--alerte); }
+  .erreur { font-size: .78rem; font-weight: 600; color: var(--alerte); }
+  .erreur:empty { display: none; }
+
+  /* Cases à cocher des bons : trois valeurs fermées, pas un champ libre. */
+  .cases { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .cases label {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 2.75rem;
+    padding: 0 .85rem;
+    border: 1px solid var(--trait);
+    border-radius: 999px;
+    background: var(--fond);
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--corps);
+    cursor: pointer;
+  }
+  .cases input { accent-color: var(--vert-vif); width: 1.05rem; height: 1.05rem; }
+  .cases label:has(input:checked) {
+    border-color: var(--vert-trait);
+    background: var(--vert-fond);
+    color: var(--vert);
+  }
+
+  /* — Barre d'action — */
+  .actions {
+    position: sticky;
+    bottom: 0;
+    margin: 0 -1.15rem -8rem;
+    padding: .85rem 1.15rem calc(.85rem + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--fond) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--trait);
+    display: flex;
+    gap: .6rem;
+    align-items: center;
+  }
+  button {
+    font: inherit;
+    font-weight: 700;
+    min-height: 2.9rem;
+    padding: 0 1.1rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .primaire { background: var(--vert-vif); color: #fff; flex: 1; }
+  .primaire:hover { background: var(--vert); }
+  .secondaire { background: var(--papier); border-color: var(--trait); color: var(--corps); }
+  .secondaire:hover { border-color: var(--doux); color: var(--encre); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+
+  .bilan { font-size: .82rem; font-weight: 600; }
+  .bilan[data-ton="alerte"] { color: var(--alerte); }
+  .bilan[data-ton="ok"] { color: var(--vert); }
+
+  /* — Officines enregistrées — */
+  .recoltees { display: flex; flex-direction: column; gap: .75rem; }
+  .liste { display: flex; flex-direction: column; gap: .4rem; }
+  .item {
+    display: flex;
+    align-items: baseline;
+    gap: .7rem;
+    padding: .7rem .85rem;
+    background: var(--papier);
+    border: 1px solid var(--trait);
+    border-radius: 10px;
+    font-size: .9rem;
+  }
+  .item .nom { font-weight: 700; color: var(--encre); flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .item .coord { font-family: 'IBM Plex Mono', monospace; font-size: .74rem; color: var(--doux); }
+  .item button {
+    min-height: 2rem; padding: 0 .55rem; font-size: .76rem; font-weight: 600;
+    background: none; border: none; color: var(--alerte); text-decoration: underline;
+  }
+  .vide {
+    padding: 1.1rem;
+    border: 1px dashed var(--trait);
+    border-radius: 10px;
+    font-size: .88rem;
+    color: var(--doux);
+    text-align: center;
+  }
+
+  .pied {
+    border-top: 1px solid var(--trait);
+    padding-top: 1.25rem;
+    font-size: .8rem;
+    line-height: 1.6;
+    color: var(--doux);
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+  }
+  .pied strong { color: var(--corps); font-weight: 700; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  /* Imprimée, la fiche redevient un formulaire papier : la barre d'action et
+     la liste ne servent à rien sur du papier, les champs oui. */
+  @media print {
+    :root { --fond: #fff; --papier: #fff; }
+    body { font-size: 11pt; }
+    .page { max-width: none; padding: 0; gap: 1rem; }
+    .actions, .recoltees, .compteur { display: none; }
+    .bloc { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="chapeau">
+    <p class="surtitre">PharmaSur · référencement</p>
+    <h1>Fiche de collecte d'une officine</h1>
+    <p>
+      Les vingt et une colonnes ci-dessous sont celles de <code
+      style="font-family:'IBM Plex Mono',monospace;font-size:.9em">collecte/officines.csv</code>,
+      dans l'ordre. Ce qui est saisi ici s'exporte tel quel : aucune ressaisie,
+      donc aucune erreur de recopie.
+    </p>
+    <span class="compteur"><b id="compte">0</b> officine enregistrée</span>
+  </header>
+
+  <section class="consigne">
+    <h2>À dire au comptoir — et à ne pas promettre</h2>
+    <ul>
+      <li>
+        <strong>Ce que vous proposez :</strong> figurer dans une application qui
+        dit aux patients du quartier si un médicament est chez vous, et si vous
+        êtes ouverte. Vous montrez la console — le fichier s'ouvre sans compte.
+      </li>
+      <li>
+        <strong>Ce que vous ne promettez pas :</strong> ni date de mise en ligne,
+        ni tarif, ni référencement immédiat. Rien n'est en service : la fiche
+        d'une officine n'existe pas encore, et aucun paiement n'est demandé.
+      </li>
+      <li>
+        <strong>Ce que vous devez dire avant de noter quoi que ce soit :</strong>
+        que ces informations restent sur ce téléphone, servent à préparer le
+        référencement, et que l'officine peut demander leur suppression à tout
+        moment.
+      </li>
+    </ul>
+  </section>
+
+  <form id="fiche" novalidate>
+
+    <div class="bloc">
+      <header>
+        <span class="num">1</span>
+        <div>
+          <h2>L'officine</h2>
+          <p class="dire">« Quel est le nom exact sur l'enseigne ? »</p>
+        </div>
+      </header>
+      <div class="champs">
+        <div class="champ" data-champ="nom">
+          <label for="nom">Nom de l'officine <span class="cle">nom</span></label>
+          <input id="nom" name="nom" autocomplete="off" placeholder="Pharmacie de la Riviera">
+          <p class="erreur"></p>
+        </div>
+        <div class="paire">
+          <div class="champ" data-champ="commune">
+            <label for="commune">Commune <span class="cle">commune</span></label>
+            <input id="commune" name="commune" autocomplete="off" placeholder="Cocody">
+            <p class="erreur"></p>
+          </div>
+          <div class="champ" data-champ="quartier">
+            <label for="quartier">Quartier <span class="cle">quartier</span></label>
+            <input id="quartier" name="quartier" autocomplete="off" placeholder="Riviera 2">
+            <p class="erreur"></p>
+          </div>
+        </div>
+        <div class="champ" data-champ="adresse">
+          <label for="adresse">Repère d'adresse <span class="cle">adresse</span></label>
+          <input id="adresse" name="adresse" autocomplete="off" placeholder="Carrefour Riviera 2, face station Total">
+          <p class="aide">Un repère que tout chauffeur connaît vaut mieux qu'un nom de rue.</p>
+          <p class="erreur"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <header>
+        <span class="num">2</span>
+        <div>
+          <h2>Le point exact</h2>
+          <p class="dire">Relevé devant la porte, pas depuis le taxi.</p>
+        </div>
+      </header>
+      <div class="champs">
+        <div class="paire">
+          <div class="champ" data-champ="latitude">
+            <label for="latitude">Latitude <span class="cle">latitude</span></label>
+            <input id="latitude" name="latitude" class="mono" inputmode="decimal" autocomplete="off" placeholder="5.356120">
+            <p class="erreur"></p>
+          </div>
+          <div class="champ" data-champ="longitude">
+            <label for="longitude">Longitude <span class="cle">longitude</span></label>
+            <input id="longitude" name="longitude" class="mono" inputmode="decimal" autocomplete="off" placeholder="-3.984410">
+            <p class="erreur"></p>
+          </div>
+        </div>
+        <p class="aide">
+          Dans Google Maps, appui long sur le point : les coordonnées s'affichent
+          en bas et se copient d'un appui. Six décimales, séparateur point.
+          En Côte d'Ivoire la longitude est <strong>négative</strong> — c'est
+          l'erreur de saisie la plus fréquente.
+        </p>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <header>
+        <span class="num">3</span>
+        <div>
+          <h2>Le titulaire</h2>
+          <p class="dire">« Qui est le pharmacien titulaire, et quel numéro d'agrément figure sur l'autorisation ? »</p>
+        </div>
+      </header>
+      <div class="champs">
+        <div class="champ" data-champ="pharmacien">
+          <label for="pharmacien">Pharmacien titulaire <span class="cle">pharmacien</span></label>
+          <input id="pharmacien" name="pharmacien" autocomplete="off" placeholder="Dr Kouassi Aya">
+          <p class="erreur"></p>
+        </div>
+        <div class="paire">
+          <div class="champ" data-champ="agrement">
+            <label for="agrement">Numéro d'agrément <span class="cle">agrement</span></label>
+            <input id="agrement" name="agrement" class="mono" autocomplete="off" placeholder="CI-PH-2019-0847">
+            <p class="aide">Format <code>CI-PH-AAAA-0000</code></p>
+            <p class="erreur"></p>
+          </div>
+          <div class="champ" data-champ="telephone">
+            <label for="telephone">Téléphone <span class="cle">telephone</span></label>
+            <input id="telephone" name="telephone" class="mono" inputmode="tel" autocomplete="off" placeholder="+225 07 00 00 00 01">
+            <p class="aide">Le numéro du comptoir, pas un portable personnel.</p>
+            <p class="erreur"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <header>
+        <span class="num">4</span>
+        <div>
+          <h2>Horaires et garde</h2>
+          <p class="dire">« À quelle heure ouvrez-vous, à quelle heure fermez-vous ? Faites-vous les gardes ? »</p>
+        </div>
+      </header>
+      <div class="champs">
+        <div class="paire">
+          <div class="champ" data-champ="ouvre">
+            <label for="ouvre">Ouverture <span class="cle">ouvre</span></label>
+            <input id="ouvre" name="ouvre" type="time" class="mono">
+            <p class="erreur"></p>
+          </div>
+          <div class="champ" data-champ="ferme">
+            <label for="ferme">Fermeture <span class="cle">ferme</span></label>
+            <input id="ferme" name="ferme" type="time" class="mono">
+            <p class="erreur"></p>
+          </div>
+        </div>
+        <div class="paire">
+          <div class="champ" data-champ="ouvert_24h">
+            <label for="ouvert_24h">Ouverte 24 h/24 <span class="cle">ouvert_24h</span></label>
+            <select id="ouvert_24h" name="ouvert_24h">
+              <option value="non">non</option>
+              <option value="oui">oui</option>
+            </select>
+            <p class="erreur"></p>
+          </div>
+          <div class="champ" data-champ="garde_participe">
+            <label for="garde_participe">Fait les gardes <span class="cle">garde_participe</span></label>
+            <select id="garde_participe" name="garde_participe">
+              <option value="">— à renseigner —</option>
+              <option value="oui">oui</option>
+              <option value="non">non</option>
+              <option value="inconnu">inconnu</option>
+            </select>
+            <p class="erreur"></p>
+          </div>
+        </div>
+        <div class="champ" data-champ="garde_groupe">
+          <label for="garde_groupe">Tour de garde <span class="cle">garde_groupe</span></label>
+          <input id="garde_groupe" name="garde_groupe" autocomplete="off" placeholder="Tour B — Cocody Est">
+          <p class="aide">
+            Le tour dont elle relève, si le titulaire le connaît. La garde du jour
+            n'est pas notée ici : elle bascule le samedi après-midi, et l'officine
+            la déclarera elle-même depuis sa console.
+          </p>
+          <p class="erreur"></p>
+        </div>
+        <div class="champ" data-champ="horaires_remarques">
+          <label for="horaires_remarques">Variantes d'horaires <span class="cle">horaires_remarques</span></label>
+          <input id="horaires_remarques" name="horaires_remarques" autocomplete="off" placeholder="Ferme à 13 h le dimanche">
+          <p class="aide">
+            Le modèle ne retient aujourd'hui qu'une ouverture et une fermeture pour
+            tous les jours. Notez ici ce qu'il ne sait pas encore stocker plutôt
+            que de le perdre.
+          </p>
+          <p class="erreur"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <header>
+        <span class="num">5</span>
+        <div>
+          <h2>Bons et logiciel</h2>
+          <p class="dire">« Quels bons acceptez-vous ? Tenez-vous votre stock sur un logiciel ? »</p>
+        </div>
+      </header>
+      <div class="champs">
+        <div class="champ" data-champ="bons">
+          <label>Bons acceptés <span class="cle">bons</span></label>
+          <div class="cases">
+            <label><input type="checkbox" name="bons" value="CMU"> CMU</label>
+            <label><input type="checkbox" name="bons" value="Mutuelles"> Mutuelles</label>
+            <label><input type="checkbox" name="bons" value="Assurances privées"> Assurances privées</label>
+          </div>
+          <p class="aide">
+            Trois valeurs fermées, jamais du texte libre : « CMU », « C.M.U. » et
+            « cmu » deviendraient trois bons différents dans le filtre patient.
+          </p>
+          <p class="erreur"></p>
+        </div>
+        <div class="champ" data-champ="logiciel_stock">
+          <label for="logiciel_stock">Logiciel de gestion de stock <span class="cle">logiciel_stock</span></label>
+          <input id="logiciel_stock" name="logiciel_stock" autocomplete="off" placeholder="aucun">
+          <p class="aide">
+            Le nom, ou <code>aucun</code>. C'est lui qui décide de la suite : sans
+            logiciel, l'officine confirmera ses disponibilités à la main.
+          </p>
+          <p class="erreur"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <header>
+        <span class="num">6</span>
+        <div>
+          <h2>La visite</h2>
+          <p class="dire">Rempli par vous, après l'entretien.</p>
+        </div>
+      </header>
+      <div class="champs">
+        <div class="paire">
+          <div class="champ" data-champ="accord">
+            <label for="accord">Accord de principe <span class="cle">accord</span></label>
+            <select id="accord" name="accord">
+              <option value="">— à renseigner —</option>
+              <option value="oui">oui</option>
+              <option value="a revoir">à revoir</option>
+              <option value="non">non</option>
+            </select>
+            <p class="erreur"></p>
+          </div>
+          <div class="champ" data-champ="date_visite">
+            <label for="date_visite">Date de visite <span class="cle">date_visite</span></label>
+            <input id="date_visite" name="date_visite" type="date" class="mono">
+            <p class="erreur"></p>
+          </div>
+        </div>
+        <div class="champ" data-champ="collecte_par">
+          <label for="collecte_par">Relevé par <span class="cle">collecte_par</span></label>
+          <input id="collecte_par" name="collecte_par" autocomplete="off" placeholder="Rodrigue">
+          <p class="erreur"></p>
+        </div>
+        <div class="champ" data-champ="remarques">
+          <label for="remarques">Remarques <span class="cle">remarques</span></label>
+          <textarea id="remarques" name="remarques" placeholder="Titulaire absent, revenir mardi. Intéressée par les demandes locales."></textarea>
+          <p class="erreur"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="primaire">Enregistrer l'officine</button>
+      <button type="button" class="secondaire" id="vider">Vider</button>
+      <p class="bilan" id="bilan" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <section class="recoltees">
+    <h2>Officines relevées</h2>
+    <div class="liste" id="liste"></div>
+    <div class="vide" id="vide">Rien de relevé sur cet appareil pour l'instant.</div>
+    <button type="button" class="secondaire" id="exporter" disabled>Télécharger officines.csv</button>
+    <p class="bilan" id="bilanExport" role="status" aria-live="polite"></p>
+  </section>
+
+  <footer class="pied">
+    <p>
+      <strong>Où vont ces données.</strong> Elles restent dans le navigateur de
+      cet appareil et n'en sortent que par le fichier que vous téléchargez. Rien
+      n'est envoyé à un serveur : PharmaSur n'en a pas, et la politique de
+      confidentialité n'est pas encore validée. C'est aussi pourquoi la fiche
+      demande de prévenir le titulaire avant toute prise de notes.
+    </p>
+    <p>
+      <strong>Avant l'import.</strong> Le fichier téléchargé passe par
+      <code style="font-family:'IBM Plex Mono',monospace">node collecte/verifier.mjs</code>,
+      qui applique les mêmes contrôles que cette page — plus la détection des
+      doublons entre officines.
+    </p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Les colonnes, dans l'ordre du CSV. Cet ordre est le contrat : le fichier
+     produit ici doit s'ouvrir à côté de collecte/officines.csv sans qu'on ait
+     à déplacer une seule colonne. */
+  var COLONNES = ['nom','commune','quartier','adresse','latitude','longitude','pharmacien',
+    'agrement','telephone','ouvre','ferme','ouvert_24h','horaires_remarques',
+    'garde_participe','garde_groupe','bons','logiciel_stock','accord','date_visite',
+    'collecte_par','remarques'];
+
+  var REQUIS = ['nom','commune','quartier','adresse','latitude','longitude','pharmacien',
+    'agrement','telephone','ouvert_24h','garde_participe','logiciel_stock','accord',
+    'date_visite','collecte_par'];
+
+  /* Bornes de la Côte d'Ivoire, arrondies vers l'extérieur : elles n'attrapent
+     pas une erreur de 200 m, elles attrapent la latitude et la longitude
+     inversées et la décimale oubliée. Identiques à celles du vérificateur. */
+  var BORNES = { latitude: [4.2, 10.8], longitude: [-8.7, -2.4] };
+
+  var CLE = 'pharmasur.collecte.v1';
+  var form = document.getElementById('fiche');
+  var bilan = document.getElementById('bilan');
+  var bilanExport = document.getElementById('bilanExport');
+  var liste = document.getElementById('liste');
+  var vide = document.getElementById('vide');
+  var compte = document.getElementById('compte');
+  var exporter = document.getElementById('exporter');
+
+  function lire() {
+    try { return JSON.parse(localStorage.getItem(CLE) || '[]'); } catch (e) { return []; }
+  }
+  function ecrire(rows) {
+    try { localStorage.setItem(CLE, JSON.stringify(rows)); }
+    catch (e) { bilan.textContent = "Enregistrement local impossible sur cet appareil — exportez après chaque officine."; }
+  }
+
+  var releves = lire();
+
+  function valeurs() {
+    var d = {};
+    COLONNES.forEach(function (c) {
+      if (c === 'bons') {
+        d[c] = [].slice.call(form.querySelectorAll('input[name=bons]:checked'))
+          .map(function (i) { return i.value; }).join('|');
+      } else {
+        var el = form.elements[c];
+        d[c] = el ? String(el.value).trim() : '';
+      }
+    });
+    return d;
+  }
+
+  function controler(d) {
+    var e = {};
+    var vingtQuatre = d.ouvert_24h === 'oui';
+
+    REQUIS.forEach(function (c) { if (!d[c]) e[c] = 'À renseigner.'; });
+
+    if (!vingtQuatre) {
+      if (!d.ouvre) e.ouvre = 'À renseigner, ou cochez « ouverte 24 h/24 ».';
+      if (!d.ferme) e.ferme = 'À renseigner, ou cochez « ouverte 24 h/24 ».';
+      if (d.ouvre && d.ouvre === d.ferme) {
+        e.ferme = "Identique à l'ouverture : l'officine n'apparaîtrait jamais.";
+      }
+    }
+
+    if (d.agrement && !/^CI-PH-\d{4}-\d{4}$/.test(d.agrement)) {
+      e.agrement = 'Format attendu : CI-PH-AAAA-0000.';
+    }
+    if (d.telephone && !/^\+225 \d{2} \d{2} \d{2} \d{2} \d{2}$/.test(d.telephone)) {
+      e.telephone = 'Format attendu : +225 07 00 00 00 00.';
+    }
+
+    ['latitude', 'longitude'].forEach(function (c) {
+      if (!d[c]) return;
+      var brut = d[c].replace(',', '.');
+      var x = Number(brut);
+      if (!isFinite(x)) { e[c] = "Ce n'est pas un nombre."; return; }
+      if (x < BORNES[c][0] || x > BORNES[c][1]) {
+        e[c] = 'Hors de la Côte d’Ivoire (' + BORNES[c][0] + ' à ' + BORNES[c][1] +
+          '). Latitude et longitude sont-elles inversées ?';
+        return;
+      }
+      if (brut.indexOf('.') === -1) e[c] = 'Sans décimale, le point tombe à des kilomètres.';
+    });
+
+    /* Doublons contre ce qui est déjà relevé sur cet appareil : au comptoir, on
+       peut encore poser la question ; à l'import, il est trop tard. */
+    releves.forEach(function (r, i) {
+      if (d.agrement && r.agrement === d.agrement) e.agrement = 'Déjà relevé (' + (i + 1) + ' · ' + r.nom + ').';
+      if (d.telephone && r.telephone === d.telephone) e.telephone = 'Déjà relevé (' + (i + 1) + ' · ' + r.nom + ').';
+      if (d.latitude && r.latitude === d.latitude && r.longitude === d.longitude) {
+        e.latitude = 'Point déjà relevé pour ' + r.nom + '.';
+      }
+    });
+
+    return e;
+  }
+
+  function afficher(e) {
+    COLONNES.forEach(function (c) {
+      var bloc = form.querySelector('[data-champ="' + c + '"]');
+      if (!bloc) return;
+      var p = bloc.querySelector('.erreur');
+      if (e[c]) { bloc.setAttribute('data-invalide', 'oui'); p.textContent = e[c]; }
+      else { bloc.removeAttribute('data-invalide'); p.textContent = ''; }
+    });
+  }
+
+  function rendre() {
+    compte.textContent = releves.length;
+    compte.parentNode.lastChild.nodeValue = releves.length > 1
+      ? ' officines enregistrées' : ' officine enregistrée';
+    vide.hidden = releves.length > 0;
+    exporter.disabled = releves.length === 0;
+    liste.textContent = '';
+
+    releves.forEach(function (r, i) {
+      var el = document.createElement('div');
+      el.className = 'item';
+      var nom = document.createElement('span');
+      nom.className = 'nom';
+      nom.textContent = (i + 1) + '. ' + r.nom;
+      var coord = document.createElement('span');
+      coord.className = 'coord';
+      coord.textContent = r.agrement;
+      var sup = document.createElement('button');
+      sup.type = 'button';
+      sup.textContent = 'retirer';
+      sup.addEventListener('click', function () {
+        releves.splice(i, 1); ecrire(releves); rendre();
+      });
+      el.appendChild(nom); el.appendChild(coord); el.appendChild(sup);
+      liste.appendChild(el);
+    });
+  }
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var d = valeurs();
+    var e = controler(d);
+    afficher(e);
+
+    var n = Object.keys(e).length;
+    if (n) {
+      bilan.dataset.ton = 'alerte';
+      bilan.textContent = n + (n > 1 ? ' champs à corriger' : ' champ à corriger');
+      var premier = form.querySelector('[data-invalide] input, [data-invalide] select');
+      if (premier) premier.focus();
+      return;
+    }
+
+    releves.push(d);
+    ecrire(releves);
+    rendre();
+
+    /* On garde le releveur et la date : la personne enchaîne les officines dans
+       la même journée, et les ressaisir vingt fois invite à la faute de frappe. */
+    var garder = { collecte_par: d.collecte_par, date_visite: d.date_visite };
+    form.reset();
+    form.elements.collecte_par.value = garder.collecte_par;
+    form.elements.date_visite.value = garder.date_visite;
+
+    bilan.dataset.ton = 'ok';
+    bilan.textContent = d.nom + ' enregistrée.';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('vider').addEventListener('click', function () {
+    var garder = {
+      collecte_par: form.elements.collecte_par.value,
+      date_visite: form.elements.date_visite.value
+    };
+    form.reset();
+    form.elements.collecte_par.value = garder.collecte_par;
+    form.elements.date_visite.value = garder.date_visite;
+    afficher({});
+    bilan.textContent = '';
+  });
+
+  function csv() {
+    var lignes = [COLONNES.join(';')];
+    releves.forEach(function (r) {
+      lignes.push(COLONNES.map(function (c) {
+        var v = r[c] || '';
+        return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+      }).join(';'));
+    });
+    return lignes.join('\n') + '\n';
+  }
+
+  exporter.addEventListener('click', function () {
+    claude.use('downloads').then(function (dl) {
+      if (!dl) {
+        bilanExport.dataset.ton = 'alerte';
+        bilanExport.textContent = "Téléchargement indisponible dans cette vue.";
+        return;
+      }
+      return dl.save({ filename: 'officines.csv', data: csv() }).then(function () {
+        bilanExport.dataset.ton = 'ok';
+        bilanExport.textContent = releves.length + ' officine(s) exportée(s). Passez le fichier au vérificateur avant l’import.';
+      });
+    }).catch(function (err) {
+      bilanExport.dataset.ton = 'alerte';
+      bilanExport.textContent = (err && err.code === 'declined')
+        ? 'Téléchargement annulé.'
+        : "Téléchargement impossible pour le moment.";
+    });
+  });
+
+  /* La date du jour, pré-remplie : c'est presque toujours la bonne, et une date
+     au mauvais format est l'erreur d'import la plus banale. */
+  var d = new Date();
+  form.elements.date_visite.value = d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+
+  rendre();
+})();
+</script>
