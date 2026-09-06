@@ -594,9 +594,18 @@ function EcranResultats({
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {ouv.parGarde && <Puce ton="vert">De garde</Puce>}
                   {incertains > 0 && <Puce ton="ambre">{incertains} à confirmer</Puce>}
+                  {/*
+                    Deux noms, puis un compte. La liste était simplement coupée
+                    à deux : tant qu'elle portait des catégories, en cacher une
+                    ne trompait personne. Depuis qu'elle nomme les organismes,
+                    un assuré chez le troisième conclurait qu'il n'est pas
+                    accepté — et irait ailleurs. Le « +N » dit qu'il faut ouvrir
+                    la fiche, où ils figurent tous.
+                  */}
                   {officine.bons.slice(0, 2).map((b) => (
                     <Puce key={b}>{b}</Puce>
                   ))}
+                  {officine.bons.length > 2 && <Puce>+{officine.bons.length - 2}</Puce>}
                 </div>
               </div>
               <span className="shrink-0 text-[0.88rem] font-extrabold text-ink">{fcfa(total)}</span>

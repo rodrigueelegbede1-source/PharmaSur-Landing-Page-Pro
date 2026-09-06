@@ -62,6 +62,18 @@ export type Officine = {
    */
   deGarde: boolean
   telephone: string
+  /*
+   * Les organismes acceptés en tiers payant, NOMMÉS. Ce champ portait des
+   * catégories — « CMU », « Mutuelles », « Assurances privées » — qui ne
+   * répondaient à personne : un assuré chez NSIA ne cherche pas « assurances
+   * privées », il cherche NSIA, et « Mutuelles » ne lui dit pas si la sienne
+   * est acceptée.
+   *
+   * Le vocabulaire est celui que l'officine coche dans sa console
+   * (design/console/donnees.mjs, ORGANISMES), plus ce qu'elle y ajoute
+   * elle-même. Y écrire un nom absent de ce vocabulaire ferait apparaître un
+   * organisme que personne ne pourra jamais déclarer.
+   */
   bons: string[]
   /** Produits confirmés en stock, par identifiant de produit. */
   stock: Record<string, { confirmeIlYaHeures: number }>
@@ -91,7 +103,7 @@ export const OFFICINES: Officine[] = [
     ferme: 1440,
     deGarde: true,
     telephone: '+225 07 00 00 00 01',
-    bons: ['CMU', 'Mutuelles', 'Assurances privées'],
+    bons: ['CMU', 'MUGEFCI', 'NSIA Assurances', 'ASCOMA'],
     stock: {
       para1000: { confirmeIlYaHeures: 3 },
       doli1000: { confirmeIlYaHeures: 3 },
@@ -109,7 +121,7 @@ export const OFFICINES: Officine[] = [
     ferme: 22 * 60,
     deGarde: false,
     telephone: '+225 07 00 00 00 02',
-    bons: ['CMU', 'Mutuelles'],
+    bons: ['CMU', 'MUGEFCI'],
     stock: {
       para1000: { confirmeIlYaHeures: 9 },
       ibu400: { confirmeIlYaHeures: 12 },
@@ -142,7 +154,7 @@ export const OFFICINES: Officine[] = [
     ferme: 21 * 60,
     deGarde: true,
     telephone: '+225 07 00 00 00 04',
-    bons: ['CMU', 'Assurances privées'],
+    bons: ['CMU', 'SUNU Assurances'],
     stock: {
       amox500: { confirmeIlYaHeures: 60 },
       vent100: { confirmeIlYaHeures: 5 },
