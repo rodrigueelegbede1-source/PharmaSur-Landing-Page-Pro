@@ -66,6 +66,17 @@ export const GUIDE_IPHONE = '/iphone/'
  * Elle ne demande aucune requête réseau : bundle, feuille de style et police
  * sont repliés dedans. Assemblée au build par scripts/generer-app-fichier.mjs ;
  * ne pas la modifier à la main, elle serait écrasée.
+ *
+ * ELLE ET console-pharmasur.html SONT SERVIES EN « Content-Disposition:
+ * attachment », réglé dans vercel.json. Sans cet en-tête, un fichier .html
+ * s'OUVRE dans le navigateur au lieu de s'enregistrer : l'attribut download
+ * des boutons du site l'évite, mais pas quand le lien est copié, partagé par
+ * WhatsApp, ou ouvert par un navigateur qui ignore l'attribut.
+ *
+ * Ne pas étendre cet en-tête à /console/ ni à /app/ : ce sont des pages, elles
+ * doivent s'afficher. vercel.json étant du JSON, il ne peut pas porter ce
+ * commentaire — d'où sa place ici. Une tentative de l'y écrire sous une clé
+ * « // » a fait échouer un déploiement : le schéma refuse les clés inconnues.
  */
 export const APP_FICHIER = '/pharmasur-application.html'
 
