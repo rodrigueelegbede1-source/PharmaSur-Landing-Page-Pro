@@ -364,9 +364,14 @@ const fichier = page('<meta name="theme-color" content="#ffffff">')
 await writeFile(FICHIER, fichier, 'utf8')
 
 /* La console installable : manifeste, couleur de barre système, et le service
-   worker qui la rend consultable sans réseau. L'enregistrement échoue en
-   silence depuis file:// — d'où la garde sur le protocole, qui évite une
-   erreur en console si quelqu'un ouvre cette copie-là depuis son disque. */
+   worker qui la rend consultable sans réseau.
+
+   La garde est « isSecureContext », et non une comparaison de protocole : c'est
+   le critère du navigateur lui-même. Un test sur « https: » écartait
+   http://localhost, que le navigateur tient pourtant pour sûr — la console
+   construite n'enregistrait donc aucun service worker en préversion locale, et
+   il n'y avait aucun moyen de vérifier l'installation avant de déployer.
+   Depuis file://, isSecureContext est faux : le fichier unique reste épargné. */
 const installable = page(
   `<meta name="theme-color" content="#0b3d2c">
 <link rel="manifest" href="/console/manifest.webmanifest">
@@ -376,7 +381,7 @@ const installable = page(
 <meta name="apple-mobile-web-app-title" content="PharmaSur Pro">
 <meta name="robots" content="noindex">
 <script>
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
+if ('serviceWorker' in navigator && isSecureContext) {
   addEventListener('load', function () {
     navigator.serviceWorker.register('/console/sw.js', { scope: '/console/' }).catch(function () {});
   });

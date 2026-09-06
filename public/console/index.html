@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="PharmaSur Pro">
 <meta name="robots" content="noindex">
 <script>
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
+if ('serviceWorker' in navigator && isSecureContext) {
   addEventListener('load', function () {
     navigator.serviceWorker.register('/console/sw.js', { scope: '/console/' }).catch(function () {});
   });
