@@ -1,11 +1,5 @@
 import { cx } from '../lib/cx'
-import {
-  APK_CONSOLE,
-  APK_PATIENT,
-  APP_FICHIER,
-  CONSOLE_FICHIER,
-  CONSOLE_PHARMACIE,
-} from '../lib/destinations'
+import { APK_PATIENT } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 type Offre = {
@@ -21,10 +15,6 @@ type Offre = {
   id?: string
   /** Nom du fichier à enregistrer, quand le bouton livre un fichier. */
   telecharge?: string
-  /** Second lien, sous le bouton, pour l'action que le bouton ne fait pas. */
-  /* Plusieurs : la console s'obtient par quatre chemins selon l'appareil et le
-     réseau, et le bouton n'en porte qu'un. */
-  secondaires?: { label: string; href: string; telecharge?: string }[]
   featured?: boolean
   features: string[]
 }
@@ -72,9 +62,6 @@ const plans: Offre[] = [
     cta: 'Télécharger gratuitement',
     href: APK_PATIENT,
     telecharge: 'pharmasur-1.0.0.apk',
-    secondaires: [
-      { label: 'iPhone ou ordinateur : télécharger le fichier', href: APP_FICHIER, telecharge: 'pharmasur-application.html' },
-    ],
     variant: 'ghost' as const,
     features: [
       'Recherche de médicaments illimitée',
@@ -94,23 +81,20 @@ const plans: Offre[] = [
     desc: 'Pour les officines qui veulent être visibles.',
     price: 'Abonnement',
     unit: '',
-    cta: 'Télécharger la console',
-    /* Le bouton livre l'APK. La plupart des pharmaciens sont sur Android, et
-       un fichier qu'on touche pour installer se comprend sans explication —
-       ce que « ouvrir cette page puis chercher Installer dans le menu de
-       Chrome » ne fait pas.
-
-       Les trois liens dessous couvrent le reste : la console web pour iPhone
-       et ordinateur, le fichier unique pour qui n'a pas de réseau du tout, et
-       le courriel d'inscription — la console est une démonstration, s'inscrire
-       suppose encore de nous écrire. */
-    href: APK_CONSOLE,
-    telecharge: 'pharmasur-console-1.0.0.apk',
-    secondaires: [
-      { label: 'iPhone ou ordinateur : installer la console web', href: CONSOLE_PHARMACIE },
-      { label: 'Sans réseau : télécharger le fichier', href: CONSOLE_FICHIER, telecharge: 'console-pharmasur.html' },
-      { label: 'Inscrire mon officine', href: INSCRIPTION_OFFICINE },
-    ],
+    cta: 'Inscrire mon officine',
+    /*
+     * Le bouton ouvre le courriel d'inscription, et ne livre plus la console.
+     *
+     * Il donnait l'APK, sous trois liens qui offraient aussi la console web,
+     * le fichier unique et l'inscription — quatre chemins pour une carte. Une
+     * officine qui veut être trouvée doit d'abord se faire connaître : la
+     * console lui sera remise après, quand son agrément aura été vérifié.
+     *
+     * Conséquence assumée : la console n'est plus téléchargeable depuis le
+     * site. Elle reste servie à /console/ et en fichier, pour l'envoyer
+     * directement à une officine.
+     */
+    href: INSCRIPTION_OFFICINE,
     /* Cible du lien « Espace pharmaciens » du pied de page. */
     id: 'pharmacie-pro',
     variant: 'primary' as const,
@@ -226,19 +210,6 @@ export function Pricing() {
                     </Button>
                   )}
 
-                  {p.secondaires?.map((s) => (
-                    <a
-                      key={s.href}
-                      href={s.href}
-                      download={s.telecharge}
-                      className={cx(
-                        'text-center text-[0.85rem] font-bold underline underline-offset-4',
-                        p.featured ? 'text-green-200 hover:text-white' : 'text-green-700',
-                      )}
-                    >
-                      {s.label}
-                    </a>
-                  ))}
                 </div>
               </article>
             </Reveal>

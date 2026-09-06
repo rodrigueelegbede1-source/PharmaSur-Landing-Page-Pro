@@ -1,19 +1,19 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import { cx } from '../lib/cx'
-import { APK_PATIENT, APP_FICHIER, GUIDE_IPHONE } from '../lib/destinations'
+import { APK_PATIENT, GUIDE_IPHONE } from '../lib/destinations'
 import { HeroBackdrop } from './HeroBackdrop'
 import { PhoneMock } from './PhoneMock'
 import { ArrowRight, Badge, Counter } from './primitives'
 
 /*
- * Les trois façons d'installer, dans l'ordre où elles se présentent à un
+ * Les deux façons d'installer, dans l'ordre où elles se présentent à un
  * visiteur ivoirien : Android d'abord, largement majoritaire.
  *
- * Les deux dernières livrent le MÊME fichier. Ce n'est pas une redondance :
- * l'application s'adapte au téléphone comme à l'écran d'ordinateur, et livrer
- * deux copies garantirait qu'elles divergent au premier changement. Le
- * visiteur, lui, cherche son appareil dans la liste, pas un format de fichier.
+ * Une troisième pastille menait au fichier unique sous l'étiquette
+ * « Ordinateur ». Elle a été retirée : le héros s'adresse à quelqu'un qui a
+ * son téléphone en main, et le fichier reste offert plus bas, dans la section
+ * de téléchargement, où il y a la place d'expliquer à quoi il sert.
  *
  * Sur iPhone, rien ne s'installe depuis un site — Apple l'interdit. Le bouton
  * mène donc au mode d'emploi : Safari sait poser l'application sur l'écran
@@ -52,26 +52,6 @@ const telechargements = [
     svgProps: { fill: 'currentColor' },
     icone: (
       <path d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6c1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.2-.8-2.2-3.1ZM14.4 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.8.5-2.4 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.4 2.4-1.1Z" />
-    ),
-  },
-  {
-    plateforme: 'Ordinateur',
-    detail: 'Fichier · 500 ko',
-    href: APP_FICHIER,
-    fichier: 'pharmasur-application.html',
-    principal: false,
-    svgProps: {
-      fill: 'none',
-      stroke: 'currentColor',
-      strokeWidth: 1.9,
-      strokeLinecap: 'round' as const,
-      strokeLinejoin: 'round' as const,
-    },
-    icone: (
-      <>
-        <rect x="3" y="4" width="18" height="12" rx="2" />
-        <path d="M8 20h8M12 16v4" />
-      </>
     ),
   },
 ]
@@ -147,16 +127,16 @@ export function Hero() {
             </p>
 
             {/*
-              Les trois téléchargements sur UNE ligne, de même hauteur, avant
-              tout le reste : ils étaient répartis en trois blocs empilés — un
-              gros bouton, deux pastilles, une légende — et le visiteur devait
-              lire trois fois pour comprendre qu'il n'y avait qu'un choix à
-              faire, celui de son appareil.
+              Les deux installations sur UNE ligne, de même hauteur, avant tout
+              le reste : elles étaient réparties en blocs empilés — un gros
+              bouton, deux pastilles, une légende — et le visiteur devait lire
+              trois fois pour comprendre qu'il n'y avait qu'un choix à faire,
+              celui de son appareil.
               Aucune détection de plateforme : elle se trompe toujours sur un
               appareil, et un patient sait quel téléphone il tient.
             */}
             <div
-              className="mt-8 grid gap-2.5 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none sm:grid-cols-3"
+              className="mt-8 grid gap-2.5 animate-[ps-rise_0.9s_var(--ease-cine)_both] motion-reduce:animate-none sm:grid-cols-2"
               style={{ animationDelay: '0.54s' }}
             >
               {telechargements.map((t) => (
