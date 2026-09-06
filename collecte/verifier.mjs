@@ -18,13 +18,26 @@
  * avec lui.
  */
 import { readFileSync } from 'node:fs'
+import { ORGANISMES } from '../design/console/donnees.mjs'
 
 const SEPARATEUR = ';'
 
-/* Les trois seuls bons que la console propose aujourd'hui. Un intitulé libre
-   rendrait le filtre patient inutilisable : « CMU », « C.M.U. » et « cmu »
-   deviendraient trois bons différents. */
-const BONS = ['CMU', 'Mutuelles', 'Assurances privées']
+/*
+ * Le vocabulaire des organismes vient de la console, pas d'une copie : les
+ * deux ont déjà divergé une fois — la console nommait NSIA pendant que cette
+ * fiche ne connaissait que « Assurances privées ».
+ *
+ * La liste n'est PAS fermée. Elle est courte à dessein, et une officine peut
+ * légitimement accepter un organisme que nous n'avons pas nommé : refuser sa
+ * ligne serait refuser la réalité du terrain.
+ *
+ * Ce qui est refusé, c'est la FRAGMENTATION : « CMU », « C.M.U. » et « cmu »
+ * deviendraient trois bons différents dans le filtre patient, et personne ne
+ * s'en apercevrait avant qu'un assuré cherche en vain. Un nom qui ne diffère
+ * d'un nom connu que par la casse ou la ponctuation est donc signalé.
+ */
+const BONS_CONNUS = ORGANISMES.flatMap((g) => g.entrees.map((e) => e.nom))
+const reduire = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
 
 /* Bornes de la Côte d'Ivoire, arrondies vers l'extérieur. Elles n'attrapent pas
    une erreur de 200 m — elles attrapent la latitude et la longitude inversées,
@@ -61,7 +74,7 @@ const COLONNES = [
   ['horaires_remarques', {}],
   ['garde_participe', { requis: true, parmi: ['oui', 'non', 'inconnu'] }],
   ['garde_groupe', {}],
-  ['bons', { liste: BONS }],
+  ['bons', { liste: BONS_CONNUS }],
   ['logiciel_stock', { requis: true }],
   ['titulaire_informe', { requis: true, parmi: ['oui', 'non'] }],
   ['accord', { requis: true, parmi: ['oui', 'non', 'a revoir'] }],
@@ -187,10 +200,25 @@ rangs.slice(1).forEach((rang, i) => {
       }
     }
     if (regle.liste) {
-      for (const item of v.split('|').map((s) => s.trim()).filter(Boolean)) {
-        if (!regle.liste.includes(item)) {
-          dire(`bon « ${item} » inconnu ; valeurs admises : ${regle.liste.join(', ')} (séparées par |).`)
+      const items = v.split('|').map((s) => s.trim()).filter(Boolean)
+
+      for (const item of items) {
+        if (regle.liste.includes(item)) continue
+
+        /* Un nom qui se réduit au même que celui d'un organisme connu est une
+           variante d'écriture, pas un nouvel organisme. */
+        const jumeau = regle.liste.find((connu) => reduire(connu) === reduire(item))
+        if (jumeau) {
+          dire(`bon « ${item} » : écrivez-le « ${jumeau} », sinon il compte pour un organisme différent.`)
         }
+      }
+
+      /* Deux fois le même bon sur une ligne, à l'écriture près. */
+      const vus = new Map()
+      for (const item of items) {
+        const cle = reduire(item)
+        if (vus.has(cle)) dire(`bon « ${item} » répété (déjà « ${vus.get(cle)} »).`)
+        else vus.set(cle, item)
       }
     }
   }

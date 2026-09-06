@@ -211,6 +211,34 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 }
 .apercu .lab { font-size:11.5px; font-weight:600; color:var(--doux); }
 
+/* — Organismes acceptés —
+   Des cases à cocher, et non des lignes à supprimer : le pharmacien voit d'un
+   coup ce qu'il accepte ET ce qu'il n'accepte pas, ce qu'une liste des seuls
+   acceptés ne montre jamais. */
+.aide-groupe { margin:6px 0 0; font-size:12px; line-height:1.5; color:var(--doux); }
+.organismes { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.organisme {
+  display:flex; align-items:flex-start; gap:12px;
+  border:1px solid var(--trait); border-radius:12px; padding:11px 13px; cursor:pointer;
+}
+.organisme input { flex:none; width:20px; height:20px; margin:1px 0 0; accent-color:var(--vert-600); }
+.organisme .t { display:block; font-size:13.5px; font-weight:700; color:var(--encre); }
+.organisme .d { display:block; margin-top:2px; font-size:11.5px; line-height:1.45; color:var(--doux); }
+.organisme:has(input:checked) { border-color:var(--vert-200); background:var(--vert-50); }
+
+.ajout-bon { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+.ajout-bon .saisie { flex:1 1 190px; min-width:0; }
+.ajout-bon .btn { flex:none; }
+
+/* Les pastilles de l'aperçu patient. Vide, le bloc dit pourquoi il l'est :
+   une officine sans bon déclaré n'est pas une officine sans information. */
+.apercu-bons { margin-top:9px; display:flex; flex-wrap:wrap; gap:6px; }
+.apercu-bons span {
+  background:#fff; color:var(--vert-700); font-size:11px; font-weight:700;
+  padding:4px 10px; border-radius:7px;
+}
+.apercu-bons .aucun { background:none; color:var(--doux); font-weight:500; padding:0; }
+
 /* — Bandeaux — */
 .bandeau { display:flex; gap:10px; align-items:flex-start; background:var(--vert-50); border:1px solid var(--vert-200); border-radius:16px; padding:13px 15px; }
 .bandeau p { margin:0; font-size:12.5px; line-height:1.55; color:#2a3d35; }
@@ -821,51 +849,107 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 <section class="ecran" id="ecran-bons">
   <header class="entete">
     <div><h1>Bons d'assurance</h1><p>Ce que vous acceptez en caisse</p></div>
-    <button class="btn plein" type="button" style="min-height:38px;font-size:12.5px">Ajouter</button>
   </header>
   <div class="contenu">
     <p style="margin:0;font-size:13px;line-height:1.55;color:var(--corps)">
-      Les bons que vous acceptez sont affichés aux patients sur votre fiche. Retirez-en un dès que vous cessez de l'accepter : une liste périmée renvoie le patient au problème que le service résout.
+      Ce que vous cochez ici s'affiche aux patients sur votre fiche. Décochez dès que vous cessez d'accepter un organisme&nbsp;: une liste périmée renvoie le patient au problème que le service résout.
     </p>
 
-    <div class="liste">
-      <div class="ligne">
-        <div class="haut">
-          <div style="min-width:0">
-            <div class="nom">CMU</div>
-            <div class="det">Couverture Maladie Universelle</div>
-            <div class="det">ajoutée le 12 août</div>
-          </div>
-          <button class="btn danger" type="button" style="min-height:36px;font-size:12.5px">Retirer</button>
-        </div>
-      </div><div class="ligne">
-        <div class="haut">
-          <div style="min-width:0">
-            <div class="nom">Mutuelles</div>
-            <div class="det">Mutuelles de fonctionnaires et d'entreprise</div>
-            <div class="det">ajoutée le 12 août</div>
-          </div>
-          <button class="btn danger" type="button" style="min-height:36px;font-size:12.5px">Retirer</button>
-        </div>
-      </div><div class="ligne">
-        <div class="haut">
-          <div style="min-width:0">
-            <div class="nom">Assurances privées</div>
-            <div class="det">Contrats individuels et collectifs</div>
-            <div class="det">ajoutée le 3 septembre</div>
-          </div>
-          <button class="btn danger" type="button" style="min-height:36px;font-size:12.5px">Retirer</button>
-        </div>
+    <div class="carte">
+      <div class="titre-bloc">Régime obligatoire</div>
+      <p class="aide-groupe">Le régime public. Toute officine conventionnée l'accepte.</p>
+      <div class="organismes">
+        <label class="organisme">
+          <input type="checkbox" data-bon="CMU" checked>
+          <span>
+            <span class="t">CMU</span>
+            <span class="d">Couverture Maladie Universelle · CNAM</span>
+          </span>
+        </label>
       </div>
+    </div><div class="carte">
+      <div class="titre-bloc">Mutuelles</div>
+      <p class="aide-groupe">Les mutuelles d'entreprise portent le nom de la société : ajoutez-les au champ libre.</p>
+      <div class="organismes">
+        <label class="organisme">
+          <input type="checkbox" data-bon="MUGEFCI" checked>
+          <span>
+            <span class="t">MUGEFCI</span>
+            <span class="d">Mutuelle Générale des Fonctionnaires et Agents de l'État</span>
+          </span>
+        </label><label class="organisme">
+          <input type="checkbox" data-bon="Mutuelle d'entreprise">
+          <span>
+            <span class="t">Mutuelle d'entreprise</span>
+            <span class="d">À nommer dans vos remarques</span>
+          </span>
+        </label>
+      </div>
+    </div><div class="carte">
+      <div class="titre-bloc">Assurances et gestionnaires</div>
+      <p class="aide-groupe">Cochez ce que vous acceptez réellement en tiers payant, pas ce que vous pourriez accepter.</p>
+      <div class="organismes">
+        <label class="organisme">
+          <input type="checkbox" data-bon="NSIA Assurances" checked>
+          <span>
+            <span class="t">NSIA Assurances</span>
+            <span class="d">Santé individuelle et collective</span>
+          </span>
+        </label><label class="organisme">
+          <input type="checkbox" data-bon="SUNU Assurances">
+          <span>
+            <span class="t">SUNU Assurances</span>
+            <span class="d">Santé individuelle et collective</span>
+          </span>
+        </label><label class="organisme">
+          <input type="checkbox" data-bon="Allianz Côte d’Ivoire">
+          <span>
+            <span class="t">Allianz Côte d’Ivoire</span>
+            <span class="d">Santé collective</span>
+          </span>
+        </label><label class="organisme">
+          <input type="checkbox" data-bon="Sanlam">
+          <span>
+            <span class="t">Sanlam</span>
+            <span class="d">Anciennement SAHAM · Colina</span>
+          </span>
+        </label><label class="organisme">
+          <input type="checkbox" data-bon="Atlantique Assurances">
+          <span>
+            <span class="t">Atlantique Assurances</span>
+            <span class="d">Santé collective</span>
+          </span>
+        </label><label class="organisme">
+          <input type="checkbox" data-bon="ASCOMA">
+          <span>
+            <span class="t">ASCOMA</span>
+            <span class="d">Courtier gestionnaire de tiers payant</span>
+          </span>
+        </label><label class="organisme">
+          <input type="checkbox" data-bon="Gras Savoye">
+          <span>
+            <span class="t">Gras Savoye</span>
+            <span class="d">Courtier gestionnaire de tiers payant</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="carte">
+      <div class="titre-bloc">Un organisme absent de la liste</div>
+      <p class="aide-groupe">Elle est volontairement courte&nbsp;: nous n'y mettons que des noms dont nous sommes sûrs. Ajoutez le vôtre tel qu'il figure sur la carte du patient.</p>
+      <div class="ajout-bon">
+        <input class="saisie" type="text" data-nouveau-bon placeholder="Nom de l'organisme" autocomplete="off">
+        <button class="btn plein" type="button" data-ajouter-bon>Ajouter</button>
+      </div>
+      <p class="msg" data-msg-bon></p>
     </div>
 
     <div class="carte">
       <div class="titre-bloc">Ce que voit le patient</div>
       <div style="margin-top:12px;border:1px solid var(--vert-200);background:var(--vert-50);border-radius:14px;padding:14px">
         <div style="font-size:13.5px;font-weight:800;color:var(--encre)" data-echo="nom">Pharmacie de la Riviera</div>
-        <div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:6px">
-          <span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">CMU</span><span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">Mutuelles</span><span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">Assurances privées</span>
-        </div>
+        <div class="apercu-bons" data-apercu-bons></div>
         <div style="margin-top:9px;font-size:11px;font-weight:500;color:var(--doux)">Déclarés par l'officine · vérifié il y a 2 jours</div>
       </div>
     </div>
@@ -1253,6 +1337,102 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
         montrer('tableau');
       });
     }
+  }
+
+  /*
+   * Bons d'assurance : ce que l'officine accepte, et ce que le patient verra.
+   *
+   * L'aperçu se met à jour à chaque case cochée. C'est la même raison que pour
+   * les horaires : un réglage dont on ne voit pas l'effet se règle de travers,
+   * et ici l'effet est une pastille sur la fiche d'un patient qui décidera de
+   * se déplacer ou non.
+   *
+   * Le champ libre existe parce que notre liste est courte à dessein — nous
+   * n'y mettons que des organismes dont le nom est sûr. Ce qu'un pharmacien
+   * ajoute vaut mieux qu'un nom que nous aurions deviné.
+   */
+  var apercuBons = document.querySelector('[data-apercu-bons]');
+  if (apercuBons) {
+    var champNouveau = document.querySelector('[data-nouveau-bon]');
+    var boutonAjout = document.querySelector('[data-ajouter-bon]');
+    var msgBon = document.querySelector('[data-msg-bon]');
+
+    function rendreBons() {
+      var choisis = [].slice
+        .call(document.querySelectorAll('[data-bon]'))
+        .filter(function (c) { return c.checked; })
+        .map(function (c) { return c.getAttribute('data-bon'); });
+
+      apercuBons.textContent = '';
+      if (!choisis.length) {
+        var vide = document.createElement('span');
+        vide.className = 'aucun';
+        vide.textContent = 'Aucun bon déclaré — les patients assurés vous chercheront ailleurs.';
+        apercuBons.appendChild(vide);
+        return;
+      }
+      choisis.forEach(function (nom) {
+        var s = document.createElement('span');
+        s.textContent = nom;
+        apercuBons.appendChild(s);
+      });
+    }
+
+    document.addEventListener('change', function (ev) {
+      if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute('data-bon')) rendreBons();
+    });
+
+    function ajouterBon() {
+      var nom = (champNouveau.value || '').trim();
+      if (!nom) {
+        msgBon.textContent = "Écrivez le nom de l'organisme avant d'ajouter.";
+        champNouveau.focus();
+        return;
+      }
+      /* Comparaison insensible à la casse : « nsia » et « NSIA » sont le même
+         organisme, et deux pastilles pour un seul assureur brouillent la
+         fiche du patient. */
+      var existe = [].slice.call(document.querySelectorAll('[data-bon]')).filter(function (c) {
+        return c.getAttribute('data-bon').toLowerCase() === nom.toLowerCase();
+      })[0];
+      if (existe) {
+        existe.checked = true;
+        msgBon.textContent = nom + ' était déjà dans la liste : il est maintenant coché.';
+        champNouveau.value = '';
+        rendreBons();
+        return;
+      }
+
+      var groupe = document.querySelectorAll('.organismes')[2] || document.querySelector('.organismes');
+      var label = document.createElement('label');
+      label.className = 'organisme';
+      var boite = document.createElement('input');
+      boite.type = 'checkbox';
+      boite.checked = true;
+      boite.setAttribute('data-bon', nom);
+      var texte = document.createElement('span');
+      var t = document.createElement('span');
+      t.className = 't';
+      t.textContent = nom;
+      var d = document.createElement('span');
+      d.className = 'd';
+      d.textContent = 'Ajouté par votre officine';
+      texte.appendChild(t);
+      texte.appendChild(d);
+      label.appendChild(boite);
+      label.appendChild(texte);
+      groupe.appendChild(label);
+
+      champNouveau.value = '';
+      msgBon.textContent = '';
+      rendreBons();
+    }
+
+    boutonAjout.addEventListener('click', ajouterBon);
+    champNouveau.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); ajouterBon(); }
+    });
+    rendreBons();
   }
 
   /*

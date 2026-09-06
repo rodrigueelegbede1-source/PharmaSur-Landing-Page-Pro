@@ -556,16 +556,46 @@
         </div>
       </header>
       <div class="champs">
+        <!--
+          Les noms ci-dessous sont ceux de la console (design/console/donnees.mjs,
+          ORGANISMES). Les deux listes doivent bouger ensemble : elles ont déjà
+          divergé une fois, la console nommant NSIA pendant que cette fiche ne
+          connaissait que « Assurances privées ».
+        -->
         <div class="champ" data-champ="bons">
           <label>Bons acceptés <span class="cle">bons</span></label>
           <div class="cases">
             <label><input type="checkbox" name="bons" value="CMU"> CMU</label>
-            <label><input type="checkbox" name="bons" value="Mutuelles"> Mutuelles</label>
-            <label><input type="checkbox" name="bons" value="Assurances privées"> Assurances privées</label>
+            <label><input type="checkbox" name="bons" value="MUGEFCI"> MUGEFCI</label>
+            <label><input type="checkbox" name="bons" value="Mutuelle d'entreprise"> Mutuelle d'entreprise</label>
+            <label><input type="checkbox" name="bons" value="NSIA Assurances"> NSIA Assurances</label>
+            <label><input type="checkbox" name="bons" value="SUNU Assurances"> SUNU Assurances</label>
+            <label><input type="checkbox" name="bons" value="Allianz Côte d’Ivoire"> Allianz Côte d’Ivoire</label>
+            <label><input type="checkbox" name="bons" value="Sanlam"> Sanlam</label>
+            <label><input type="checkbox" name="bons" value="Atlantique Assurances"> Atlantique Assurances</label>
+            <label><input type="checkbox" name="bons" value="ASCOMA"> ASCOMA</label>
+            <label><input type="checkbox" name="bons" value="Gras Savoye"> Gras Savoye</label>
           </div>
           <p class="aide">
-            Trois valeurs fermées, jamais du texte libre : « CMU », « C.M.U. » et
-            « cmu » deviendraient trois bons différents dans le filtre patient.
+            Cochez ce que l'officine accepte <strong>réellement</strong> en tiers payant,
+            pas ce qu'elle pourrait accepter.
+          </p>
+          <p class="erreur"></p>
+        </div>
+
+        <div class="champ" data-champ="bons_autres">
+          <label for="bons_autres">Autres organismes</label>
+          <input
+            id="bons_autres"
+            name="bons_autres"
+            autocomplete="off"
+            placeholder="Mutuelle des agents de la SIR | Serenity"
+          >
+          <p class="aide">
+            La liste ci-dessus est courte à dessein : elle ne contient que des noms
+            sûrs. Séparez par <code>|</code>, et écrivez le nom tel qu'il figure sur
+            la carte du patient — une variante d'orthographe compte pour un
+            organisme différent.
           </p>
           <p class="erreur"></p>
         </div>
@@ -712,8 +742,14 @@
     var d = {};
     COLONNES.forEach(function (c) {
       if (c === 'bons') {
-        d[c] = [].slice.call(form.querySelectorAll('input[name=bons]:checked'))
-          .map(function (i) { return i.value; }).join('|');
+        /* Les cases, puis ce que le relevé a écrit à la main. Le champ libre
+           n'est pas une colonne du CSV : il se fond dans « bons », parce que
+           la base ne distingue pas un organisme listé d'un organisme ajouté. */
+        var coches = [].slice.call(form.querySelectorAll('input[name=bons]:checked'))
+          .map(function (i) { return i.value; });
+        var libres = (form.elements.bons_autres.value || '')
+          .split('|').map(function (s) { return s.trim(); }).filter(Boolean);
+        d[c] = coches.concat(libres).join('|');
       } else {
         var el = form.elements[c];
         d[c] = el ? String(el.value).trim() : '';

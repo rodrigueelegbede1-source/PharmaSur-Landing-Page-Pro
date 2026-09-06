@@ -7,8 +7,8 @@
  * raison pour laquelle on n'écrit pas deux consoles.
  */
 import {
-  A_CONFIRMER, BONS, COMMUNES, DEMANDES, HORAIRES, MENU, OFFICINE, RECHERCHES, STOCKS,
-  VIGNETTES, ZONES,
+  A_CONFIRMER, COMMUNES, DEMANDES, HORAIRES, MENU, OFFICINE, ORGANISMES, RECHERCHES,
+  STOCKS, VIGNETTES, ZONES,
 } from './donnees.mjs'
 
 const ICONES = {
@@ -356,40 +356,63 @@ export const stocks = () => `
   </div>
 </section>`
 
-/* — 4. Bons d'assurance — */
+/* — 4. Bons d'assurance —
+ *
+ * L'écran listait trois catégories figées — CMU, Mutuelles, Assurances privées
+ * — sous un bouton « Ajouter » qui ne faisait rien. Or un patient assuré chez
+ * NSIA ne cherche pas « assurances privées » : il cherche NSIA. Et le
+ * pharmacien n'avait aucun moyen de déclarer ce qu'il accepte vraiment.
+ *
+ * Il coche donc maintenant les organismes, et nomme lui-même ceux que la liste
+ * ignore. Ce champ libre n'est pas un pis-aller : la liste amorcée dans
+ * donnees.mjs est courte à dessein — on n'y met que des noms sûrs — et ce que
+ * les officines y ajouteront est la seule source fiable pour la compléter.
+ */
 export const bons = () => `
 <section class="ecran" id="ecran-bons">
   <header class="entete">
     <div><h1>Bons d'assurance</h1><p>Ce que vous acceptez en caisse</p></div>
-    <button class="btn plein" type="button" style="min-height:38px;font-size:12.5px">Ajouter</button>
   </header>
   <div class="contenu">
     <p style="margin:0;font-size:13px;line-height:1.55;color:var(--corps)">
-      Les bons que vous acceptez sont affichés aux patients sur votre fiche. Retirez-en un dès que vous cessez de l'accepter : une liste périmée renvoie le patient au problème que le service résout.
+      Ce que vous cochez ici s'affiche aux patients sur votre fiche. Décochez dès que vous cessez d'accepter un organisme&nbsp;: une liste périmée renvoie le patient au problème que le service résout.
     </p>
 
-    <div class="liste">
-      ${BONS.map(
-        (b) => `<div class="ligne">
-        <div class="haut">
-          <div style="min-width:0">
-            <div class="nom">${b.nom}</div>
-            <div class="det">${b.detail}</div>
-            <div class="det">${b.ajout}</div>
-          </div>
-          <button class="btn danger" type="button" style="min-height:36px;font-size:12.5px">Retirer</button>
-        </div>
-      </div>`,
-      ).join('')}
+    ${ORGANISMES.map(
+      (g) => `<div class="carte">
+      <div class="titre-bloc">${g.categorie}</div>
+      <p class="aide-groupe">${g.aide}</p>
+      <div class="organismes">
+        ${g.entrees
+          .map(
+            (e) => `<label class="organisme">
+          <input type="checkbox" data-bon="${e.nom}"${e.coche ? ' checked' : ''}>
+          <span>
+            <span class="t">${e.nom}</span>
+            <span class="d">${e.detail}</span>
+          </span>
+        </label>`,
+          )
+          .join('')}
+      </div>
+    </div>`,
+    ).join('')}
+
+    <div class="carte">
+      <div class="titre-bloc">Un organisme absent de la liste</div>
+      <p class="aide-groupe">Elle est volontairement courte&nbsp;: nous n'y mettons que des noms dont nous sommes sûrs. Ajoutez le vôtre tel qu'il figure sur la carte du patient.</p>
+      <div class="ajout-bon">
+        <input class="saisie" type="text" data-nouveau-bon placeholder="Nom de l'organisme" autocomplete="off">
+        <button class="btn plein" type="button" data-ajouter-bon>Ajouter</button>
+      </div>
+      <p class="msg" data-msg-bon></p>
     </div>
 
     <div class="carte">
       <div class="titre-bloc">Ce que voit le patient</div>
       <div style="margin-top:12px;border:1px solid var(--vert-200);background:var(--vert-50);border-radius:14px;padding:14px">
         <div style="font-size:13.5px;font-weight:800;color:var(--encre)" data-echo="nom">${OFFICINE.nom}</div>
-        <div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:6px">
-          ${BONS.map((b) => `<span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">${b.nom}</span>`).join('')}
-        </div>
+        <div class="apercu-bons" data-apercu-bons></div>
         <div style="margin-top:9px;font-size:11px;font-weight:500;color:var(--doux)">Déclarés par l'officine · vérifié il y a 2 jours</div>
       </div>
     </div>

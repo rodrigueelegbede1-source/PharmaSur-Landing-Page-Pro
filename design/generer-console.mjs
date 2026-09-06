@@ -281,6 +281,102 @@ ${STYLE}
   }
 
   /*
+   * Bons d'assurance : ce que l'officine accepte, et ce que le patient verra.
+   *
+   * L'aperçu se met à jour à chaque case cochée. C'est la même raison que pour
+   * les horaires : un réglage dont on ne voit pas l'effet se règle de travers,
+   * et ici l'effet est une pastille sur la fiche d'un patient qui décidera de
+   * se déplacer ou non.
+   *
+   * Le champ libre existe parce que notre liste est courte à dessein — nous
+   * n'y mettons que des organismes dont le nom est sûr. Ce qu'un pharmacien
+   * ajoute vaut mieux qu'un nom que nous aurions deviné.
+   */
+  var apercuBons = document.querySelector('[data-apercu-bons]');
+  if (apercuBons) {
+    var champNouveau = document.querySelector('[data-nouveau-bon]');
+    var boutonAjout = document.querySelector('[data-ajouter-bon]');
+    var msgBon = document.querySelector('[data-msg-bon]');
+
+    function rendreBons() {
+      var choisis = [].slice
+        .call(document.querySelectorAll('[data-bon]'))
+        .filter(function (c) { return c.checked; })
+        .map(function (c) { return c.getAttribute('data-bon'); });
+
+      apercuBons.textContent = '';
+      if (!choisis.length) {
+        var vide = document.createElement('span');
+        vide.className = 'aucun';
+        vide.textContent = 'Aucun bon déclaré — les patients assurés vous chercheront ailleurs.';
+        apercuBons.appendChild(vide);
+        return;
+      }
+      choisis.forEach(function (nom) {
+        var s = document.createElement('span');
+        s.textContent = nom;
+        apercuBons.appendChild(s);
+      });
+    }
+
+    document.addEventListener('change', function (ev) {
+      if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute('data-bon')) rendreBons();
+    });
+
+    function ajouterBon() {
+      var nom = (champNouveau.value || '').trim();
+      if (!nom) {
+        msgBon.textContent = "Écrivez le nom de l'organisme avant d'ajouter.";
+        champNouveau.focus();
+        return;
+      }
+      /* Comparaison insensible à la casse : « nsia » et « NSIA » sont le même
+         organisme, et deux pastilles pour un seul assureur brouillent la
+         fiche du patient. */
+      var existe = [].slice.call(document.querySelectorAll('[data-bon]')).filter(function (c) {
+        return c.getAttribute('data-bon').toLowerCase() === nom.toLowerCase();
+      })[0];
+      if (existe) {
+        existe.checked = true;
+        msgBon.textContent = nom + ' était déjà dans la liste : il est maintenant coché.';
+        champNouveau.value = '';
+        rendreBons();
+        return;
+      }
+
+      var groupe = document.querySelectorAll('.organismes')[2] || document.querySelector('.organismes');
+      var label = document.createElement('label');
+      label.className = 'organisme';
+      var boite = document.createElement('input');
+      boite.type = 'checkbox';
+      boite.checked = true;
+      boite.setAttribute('data-bon', nom);
+      var texte = document.createElement('span');
+      var t = document.createElement('span');
+      t.className = 't';
+      t.textContent = nom;
+      var d = document.createElement('span');
+      d.className = 'd';
+      d.textContent = 'Ajouté par votre officine';
+      texte.appendChild(t);
+      texte.appendChild(d);
+      label.appendChild(boite);
+      label.appendChild(texte);
+      groupe.appendChild(label);
+
+      champNouveau.value = '';
+      msgBon.textContent = '';
+      rendreBons();
+    }
+
+    boutonAjout.addEventListener('click', ajouterBon);
+    champNouveau.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); ajouterBon(); }
+    });
+    rendreBons();
+  }
+
+  /*
    * Horaires et garde.
    *
    * La phrase de l'aperçu est calculée par la MÊME règle que l'application

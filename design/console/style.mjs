@@ -209,6 +209,34 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 }
 .apercu .lab { font-size:11.5px; font-weight:600; color:var(--doux); }
 
+/* — Organismes acceptés —
+   Des cases à cocher, et non des lignes à supprimer : le pharmacien voit d'un
+   coup ce qu'il accepte ET ce qu'il n'accepte pas, ce qu'une liste des seuls
+   acceptés ne montre jamais. */
+.aide-groupe { margin:6px 0 0; font-size:12px; line-height:1.5; color:var(--doux); }
+.organismes { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.organisme {
+  display:flex; align-items:flex-start; gap:12px;
+  border:1px solid var(--trait); border-radius:12px; padding:11px 13px; cursor:pointer;
+}
+.organisme input { flex:none; width:20px; height:20px; margin:1px 0 0; accent-color:var(--vert-600); }
+.organisme .t { display:block; font-size:13.5px; font-weight:700; color:var(--encre); }
+.organisme .d { display:block; margin-top:2px; font-size:11.5px; line-height:1.45; color:var(--doux); }
+.organisme:has(input:checked) { border-color:var(--vert-200); background:var(--vert-50); }
+
+.ajout-bon { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+.ajout-bon .saisie { flex:1 1 190px; min-width:0; }
+.ajout-bon .btn { flex:none; }
+
+/* Les pastilles de l'aperçu patient. Vide, le bloc dit pourquoi il l'est :
+   une officine sans bon déclaré n'est pas une officine sans information. */
+.apercu-bons { margin-top:9px; display:flex; flex-wrap:wrap; gap:6px; }
+.apercu-bons span {
+  background:#fff; color:var(--vert-700); font-size:11px; font-weight:700;
+  padding:4px 10px; border-radius:7px;
+}
+.apercu-bons .aucun { background:none; color:var(--doux); font-weight:500; padding:0; }
+
 /* — Bandeaux — */
 .bandeau { display:flex; gap:10px; align-items:flex-start; background:var(--vert-50); border:1px solid var(--vert-200); border-radius:16px; padding:13px 15px; }
 .bandeau p { margin:0; font-size:12.5px; line-height:1.55; color:#2a3d35; }

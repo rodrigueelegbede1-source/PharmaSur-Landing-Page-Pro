@@ -146,10 +146,62 @@ export const STOCKS = [
   },
 ]
 
-export const BONS = [
-  { nom: 'CMU', detail: 'Couverture Maladie Universelle', ajout: 'ajoutée le 12 août' },
-  { nom: 'Mutuelles', detail: "Mutuelles de fonctionnaires et d'entreprise", ajout: 'ajoutée le 12 août' },
-  { nom: 'Assurances privées', detail: 'Contrats individuels et collectifs', ajout: 'ajoutée le 3 septembre' },
+/*
+ * Les organismes que l'officine peut déclarer accepter.
+ *
+ * TROIS PRÉCAUTIONS, dans l'ordre d'importance :
+ *
+ *   1. AUCUN NOM N'EST INVENTÉ. Un assureur qui n'existe pas, ou dont le nom
+ *      est approximatif, envoie un patient au comptoir avec une carte qui sera
+ *      refusée. Cette liste ne contient que des organismes dont l'existence en
+ *      Côte d'Ivoire est établie. Elle est volontairement COURTE : mieux vaut
+ *      qu'un pharmacien ajoute le sien que de lui proposer un nom douteux.
+ *
+ *   2. ELLE EST INCOMPLÈTE, ET DOIT LE RESTER TANT QU'ELLE N'EST PAS CONFIRMÉE.
+ *      Le marché ivoirien compte davantage d'assureurs et de gestionnaires que
+ *      ceux nommés ici, et les réseaux de tiers payant changent. D'où le champ
+ *      libre : c'est le pharmacien qui sait ce qu'il accepte, pas nous. Les
+ *      ajouts qu'il fera sont la vraie source pour compléter cette liste.
+ *
+ *   3. LES MUTUELLES D'ENTREPRISE NE S'ÉNUMÈRENT PAS. Chaque société a la
+ *      sienne ; les lister toutes est impossible et en lister quelques-unes
+ *      serait arbitraire. Elles passent donc par une entrée générique que le
+ *      pharmacien nomme lui-même.
+ *
+ * Le nom retenu est celui que le PATIENT lit sur sa carte, pas la raison
+ * sociale : c'est ce qu'il cherchera dans l'application.
+ */
+export const ORGANISMES = [
+  {
+    categorie: 'Régime obligatoire',
+    aide: "Le régime public. Toute officine conventionnée l'accepte.",
+    entrees: [{ nom: 'CMU', detail: 'Couverture Maladie Universelle · CNAM', coche: true }],
+  },
+  {
+    categorie: 'Mutuelles',
+    aide: "Les mutuelles d'entreprise portent le nom de la société : ajoutez-les au champ libre.",
+    entrees: [
+      {
+        nom: 'MUGEFCI',
+        detail: "Mutuelle Générale des Fonctionnaires et Agents de l'État",
+        coche: true,
+      },
+      { nom: "Mutuelle d'entreprise", detail: 'À nommer dans vos remarques', coche: false },
+    ],
+  },
+  {
+    categorie: 'Assurances et gestionnaires',
+    aide: 'Cochez ce que vous acceptez réellement en tiers payant, pas ce que vous pourriez accepter.',
+    entrees: [
+      { nom: 'NSIA Assurances', detail: 'Santé individuelle et collective', coche: true },
+      { nom: 'SUNU Assurances', detail: 'Santé individuelle et collective', coche: false },
+      { nom: 'Allianz Côte d’Ivoire', detail: 'Santé collective', coche: false },
+      { nom: 'Sanlam', detail: 'Anciennement SAHAM · Colina', coche: false },
+      { nom: 'Atlantique Assurances', detail: 'Santé collective', coche: false },
+      { nom: 'ASCOMA', detail: 'Courtier gestionnaire de tiers payant', coche: false },
+      { nom: 'Gras Savoye', detail: 'Courtier gestionnaire de tiers payant', coche: false },
+    ],
+  },
 ]
 
 export const DEMANDES = [
