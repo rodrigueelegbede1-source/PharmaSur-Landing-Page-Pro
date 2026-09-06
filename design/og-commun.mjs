@@ -24,11 +24,34 @@ export const V = {
   blanc: '#ffffff',
 }
 
-export const PHOTO = fileURLToPath(new URL('../public/hero-officine.jpg', import.meta.url))
-export const FONT = fileURLToPath(new URL('./PlusJakartaSans.ttf', import.meta.url))
-export const PHOTO_POS = { fit: 'cover', position: 'attention' }
+/*
+ * La carte de partage n'a plus de photographie sous son voile.
+ *
+ * Elle reposait sur hero-officine.jpg, dont les droits n'étaient pas établis
+ * — c'était l'une des deux dernières mentions manquantes — et qui mettait en
+ * scène des personnes inexistantes. Le fond est désormais dessiné : la croix
+ * de pharmacie à l'échelle d'une enseigne et les cercles de recherche, le
+ * même motif que le héros du site. Le lien partagé sur WhatsApp montre donc
+ * ce que montre la page qu'il ouvre.
+ *
+ * Le voile est conservé tel quel : c'est lui qui garantit le contraste du
+ * titre, mesuré par mesurer-og.mjs, et le changer relancerait ce calcul.
+ */
+export const FOND = (L, H) => `
+  <rect width="${L}" height="${H}" fill="${V.vert900}"/>
+  <g fill="${V.vert500}" opacity="0.30">
+    <rect x="${L * 0.72 - H * 0.12}" y="${H * 0.06}" width="${H * 0.24}" height="${H * 0.88}" rx="${H * 0.03}"/>
+    <rect x="${L * 0.72 - H * 0.44}" y="${H * 0.38}" width="${H * 0.88}" height="${H * 0.24}" rx="${H * 0.03}"/>
+  </g>
+  <g fill="none" stroke="${V.vert400}" stroke-width="2" stroke-dasharray="4 12" opacity="0.45">
+    <circle cx="${L * 0.72}" cy="${H * 0.5}" r="${H * 0.22}"/>
+    <circle cx="${L * 0.72}" cy="${H * 0.5}" r="${H * 0.36}"/>
+    <circle cx="${L * 0.72}" cy="${H * 0.5}" r="${H * 0.5}"/>
+  </g>`
 
-/* Zone de texte : la photo doit rester lisible sur sa droite. */
+export const FONT = fileURLToPath(new URL('./PlusJakartaSans.ttf', import.meta.url))
+
+/* Zone de texte : le motif doit rester lisible sur sa droite. */
 export const MARGE = 72
 export const ZONE = 760
 

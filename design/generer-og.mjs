@@ -28,8 +28,7 @@ import {
   L,
   MARGE,
   PASTILLE,
-  PHOTO,
-  PHOTO_POS,
+  FOND,
   rendre,
   SOUS_TITRE,
   TITRE,
@@ -40,7 +39,6 @@ import {
 
 for (const [chemin, quoi] of [
   [FONT, 'Police absente'],
-  [PHOTO, 'Photo du héros absente'],
 ]) {
   if (!existsSync(chemin)) {
     console.error(`${quoi} : ${chemin}\nVoir les instructions en tête de ce fichier.`)
@@ -110,7 +108,8 @@ const calque = `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${H
     font-size="${g.CORPS_PASTILLE}" fill="${V.blanc}">${PASTILLE}</text>
 </svg>`
 
-const fond = await sharp(PHOTO).resize(L, H, PHOTO_POS).toBuffer()
+/* Le fond est dessiné, plus photographié : voir FOND dans og-commun.mjs. */
+const fond = rendre(`<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${H}" viewBox="0 0 ${L} ${H}">${FOND(L, H)}</svg>`, L)
 
 const info = await sharp(fond)
   .composite([{ input: rendre(calque, L), top: 0, left: 0 }])

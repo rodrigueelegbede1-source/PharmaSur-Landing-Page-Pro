@@ -13,13 +13,13 @@
  *   node mesurer-og.mjs
  */
 import sharp from 'sharp'
-import { disposer, H, L, PHOTO, PHOTO_POS, rendre, VOILE } from './og-commun.mjs'
+import { disposer, FOND, H, L, rendre, VOILE } from './og-commun.mjs'
 
 const voile = `<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${H}">
   <defs>${VOILE}</defs>
   <rect width="${L}" height="${H}" fill="url(#voile)"/></svg>`
 
-const fond = await sharp(PHOTO).resize(L, H, PHOTO_POS).toBuffer()
+const fond = rendre(`<svg xmlns="http://www.w3.org/2000/svg" width="${L}" height="${H}" viewBox="0 0 ${L} ${H}">${FOND(L, H)}</svg>`, L)
 const { data, info } = await sharp(fond)
   .composite([{ input: rendre(voile, L), top: 0, left: 0 }])
   .raw()
