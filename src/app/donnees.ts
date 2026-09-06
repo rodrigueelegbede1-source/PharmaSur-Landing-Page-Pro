@@ -166,6 +166,22 @@ export const OFFICINES: Officine[] = [
 ]
 
 /*
+ * Les organismes qu'un patient peut déclarer comme étant le sien.
+ *
+ * Ils sont DÉDUITS des officines référencées, et non écrits à part : proposer
+ * un assureur qu'aucune officine n'accepte donnerait un filtre qui ne renvoie
+ * jamais rien, sans que le patient comprenne pourquoi. La liste grandira donc
+ * d'elle-même à mesure que les officines déclarent ce qu'elles acceptent.
+ */
+export const ORGANISMES_DECLARES = [...new Set(OFFICINES.flatMap((o) => o.bons))].sort((a, b) =>
+  a.localeCompare(b, 'fr'),
+)
+
+/** Vrai si l'officine accepte l'organisme du patient. Faux s'il n'en a aucun. */
+export const accepte = (officine: Officine, organisme: string | null) =>
+  organisme !== null && officine.bons.includes(organisme)
+
+/*
  * Ouverture : la seule chose qu'un patient doit savoir avant de se déplacer.
  *
  * L'application classait les officines par complétude puis par distance, sans

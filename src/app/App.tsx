@@ -3,6 +3,8 @@ import { cx } from '../lib/cx'
 import {
   CATALOGUE,
   OFFICINES,
+  ORGANISMES_DECLARES,
+  accepte,
   chercher,
   classer,
   equivalentsDe,
@@ -56,10 +58,43 @@ function useListe() {
   }
 }
 
+const CLE_ASSURANCE = 'pharmasur.assurance'
+
+/*
+ * L'organisme du patient. Il se déclare UNE fois, dans le profil, et sert
+ * ensuite partout : c'est une propriété de la personne, pas un critère qu'on
+ * ressaisit à chaque recherche.
+ *
+ * Il ne quitte pas l'appareil, comme la liste de médicaments — savoir de quoi
+ * quelqu'un est assuré en dit long sur lui, et rien ici n'a de serveur pour
+ * l'envoyer où que ce soit.
+ */
+function useAssurance() {
+  const [nom, setNom] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(CLE_ASSURANCE)
+    } catch {
+      return null
+    }
+  })
+
+  useEffect(() => {
+    try {
+      if (nom) localStorage.setItem(CLE_ASSURANCE, nom)
+      else localStorage.removeItem(CLE_ASSURANCE)
+    } catch {
+      /* Navigation privée : le choix vaut pour la session, pas au-delà. */
+    }
+  }, [nom])
+
+  return { nom, choisir: setNom }
+}
+
 export default function App() {
   const [onglet, setOnglet] = useState<Onglet>('recherche')
   const [vue, setVue] = useState<Vue>({ nom: 'onglets' })
   const liste = useListe()
+  const assurance = useAssurance()
   const classement = useMemo(() => classer(OFFICINES, liste.produits), [liste.produits])
 
   const allerA = (v: Vue) => {
@@ -99,15 +134,19 @@ export default function App() {
           <EcranCarte
             classement={classement}
             nbProduits={liste.produits.length}
+            assurance={assurance.nom}
             onOfficine={(id) => allerA({ nom: 'officine', id })}
           />
         )}
-        {vue.nom === 'onglets' && onglet === 'profil' && <EcranProfil nbProduits={liste.ids.length} />}
+        {vue.nom === 'onglets' && onglet === 'profil' && (
+          <EcranProfil nbProduits={liste.ids.length} assurance={assurance} />
+        )}
 
         {vue.nom === 'resultats' && (
           <EcranResultats
             classement={classement}
             nbProduits={liste.produits.length}
+            assurance={assurance.nom}
             onRetour={() => allerA({ nom: 'onglets' })}
             onOfficine={(id) => allerA({ nom: 'officine', id })}
           />
@@ -116,6 +155,7 @@ export default function App() {
           <EcranOfficine
             officine={OFFICINES.find((o) => o.id === vue.id)!}
             produits={liste.produits}
+            assurance={assurance.nom}
             onRetour={() => allerA({ nom: 'resultats' })}
           />
         )}
@@ -509,14 +549,31 @@ function EcranListe({
 function EcranResultats({
   classement,
   nbProduits,
+  assurance,
   onRetour,
   onOfficine,
 }: {
   classement: ReturnType<typeof classer>
   nbProduits: number
+  assurance: string | null
   onRetour: () => void
   onOfficine: (id: string) => void
 }) {
+  /*
+   * Le filtre est FERMÉ par défaut, et il annonce ce qu'il cache.
+   *
+   * Masquer d'office les officines qui ne prennent pas votre assurance
+   * serait une erreur : à 23 h, avec une ordonnance urgente, la seule
+   * pharmacie ouverte compte plus que le tiers payant — on paie comptant et
+   * on se fait rembourser. Le patient décide, et sait combien il écarte.
+   */
+  const [filtrer, setFiltrer] = useState(false)
+  const retenues = assurance
+    ? classement.filter((c) => accepte(c.officine, assurance))
+    : classement
+  const visibles = filtrer ? retenues : classement
+  const ecartees = classement.length - retenues.length
+
   return (
     <>
       <div className="px-5 pt-4">
@@ -529,8 +586,51 @@ function EcranResultats({
         </p>
       </div>
 
+      {assurance && (
+        <div className="mt-4 px-5">
+          <button
+            type="button"
+            onClick={() => setFiltrer((v) => !v)}
+            aria-pressed={filtrer}
+            className={cx(
+              'flex w-full min-h-12 items-center gap-3 rounded-2xl border px-4 text-left',
+              filtrer ? 'border-green-600 bg-green-50' : 'border-line bg-paper',
+            )}
+          >
+            <span
+              className={cx(
+                'grid size-5 shrink-0 place-items-center rounded-md border-2',
+                filtrer ? 'border-green-600 bg-green-600 text-white' : 'border-line-soft bg-paper',
+              )}
+            >
+              {filtrer && (
+                <Svg className="size-3" trait={3.4}>
+                  {Icone.coche}
+                </Svg>
+              )}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[0.88rem] font-bold text-ink">
+                Seulement celles qui prennent {assurance}
+              </span>
+              <span className="mt-0.5 block text-[0.78rem] font-medium text-body-soft">
+                {retenues.length} sur {classement.length}
+                {ecartees > 0 && ` · ${ecartees} écartée${ecartees > 1 ? 's' : ''}`}
+              </span>
+            </span>
+          </button>
+        </div>
+      )}
+
       <div className="mt-5 flex flex-col gap-2.5 px-5">
-        {classement.map(({ officine, etats, disponibles, incertains, total, ouverture: ouv }) => {
+        {filtrer && visibles.length === 0 && (
+          <p className="rounded-2xl border border-line bg-line-soft px-5 py-6 text-center text-[0.88rem] leading-relaxed text-body">
+            Aucune officine de cette liste ne prend {assurance}. Décochez le filtre pour les voir
+            toutes : vous pouvez payer comptant et vous faire rembourser ensuite.
+          </p>
+        )}
+
+        {visibles.map(({ officine, etats, disponibles, incertains, total, ouverture: ouv }) => {
           /*
             « 2/3 » obligeait à ouvrir la fiche pour savoir CE QUI manque.
             Le patient veut savoir ce qu'il devra chercher ailleurs : on le
@@ -601,10 +701,19 @@ function EcranResultats({
                     un assuré chez le troisième conclurait qu'il n'est pas
                     accepté — et irait ailleurs. Le « +N » dit qu'il faut ouvrir
                     la fiche, où ils figurent tous.
+
+                    L'organisme du patient passe en tête, et en vert : c'est la
+                    seule ligne qu'il cherche, et la troncature ne doit jamais
+                    l'emporter.
                   */}
-                  {officine.bons.slice(0, 2).map((b) => (
-                    <Puce key={b}>{b}</Puce>
-                  ))}
+                  {[...officine.bons]
+                    .sort((a, b) => Number(b === assurance) - Number(a === assurance))
+                    .slice(0, 2)
+                    .map((b) => (
+                      <Puce key={b} ton={b === assurance ? 'vert' : 'neutre'}>
+                        {b}
+                      </Puce>
+                    ))}
                   {officine.bons.length > 2 && <Puce>+{officine.bons.length - 2}</Puce>}
                 </div>
               </div>
@@ -626,10 +735,12 @@ function EcranResultats({
 function EcranOfficine({
   officine,
   produits,
+  assurance,
   onRetour,
 }: {
   officine: Officine
   produits: Produit[]
+  assurance: string | null
   onRetour: () => void
 }) {
   const manquants = produits.filter((p) => etatDuProduit(officine, p.id) === 'absent')
@@ -755,10 +866,18 @@ function EcranOfficine({
           Bons d'assurance acceptés
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {officine.bons.map((b) => (
+          {/* Celui du patient d'abord : c'est la seule ligne qu'il cherche. */}
+          {[...officine.bons]
+            .sort((a, b) => Number(b === assurance) - Number(a === assurance))
+            .map((b) => (
             <span
               key={b}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-green-200 bg-green-50 px-3 py-2 text-[0.8rem] font-bold text-green-800"
+              className={cx(
+                'inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[0.8rem] font-bold',
+                b === assurance
+                  ? 'border-green-600 bg-green-600 text-white'
+                  : 'border-green-200 bg-green-50 text-green-800',
+              )}
             >
               <Svg className="size-3.5" trait={2.4}>
                 {Icone.bouclier}
@@ -868,10 +987,12 @@ function EcranEquivalent({
 function EcranCarte({
   classement,
   nbProduits,
+  assurance,
   onOfficine,
 }: {
   classement: ReturnType<typeof classer>
   nbProduits: number
+  assurance: string | null
   onOfficine: (id: string) => void
 }) {
   return (
@@ -952,9 +1073,12 @@ Les officines fermées descendent en bas de la liste, grisées.
               </div>
               {/* Une pastille verte sur une officine fermée promettrait un
                   retrait impossible : le verdict de stock passe en gris. */}
-              {nbProduits > 0 && (
-                <Puce ton={ouv.ouverte ? puce.ton : 'neutre'}>{puce.texte}</Puce>
-              )}
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                {nbProduits > 0 && (
+                  <Puce ton={ouv.ouverte ? puce.ton : 'neutre'}>{puce.texte}</Puce>
+                )}
+                {accepte(officine, assurance) && <Puce ton="vert">{assurance}</Puce>}
+              </div>
             </button>
           )
         })}
@@ -963,7 +1087,13 @@ Les officines fermées descendent en bas de la liste, grisées.
   )
 }
 
-function EcranProfil({ nbProduits }: { nbProduits: number }) {
+function EcranProfil({
+  nbProduits,
+  assurance,
+}: {
+  nbProduits: number
+  assurance: ReturnType<typeof useAssurance>
+}) {
   return (
     <>
       <div className="px-5 pt-5">
@@ -990,7 +1120,65 @@ function EcranProfil({ nbProduits }: { nbProduits: number }) {
         </div>
       </div>
 
+      {/*
+        Déclaré une fois, utilisé partout. C'est une propriété de la personne,
+        pas un critère à ressaisir à chaque recherche — et cela reste sur
+        l'appareil : ce dont quelqu'un est assuré en dit long sur lui.
+
+        La liste vient des officines référencées : proposer un assureur
+        qu'aucune n'accepte donnerait un filtre qui ne renvoie jamais rien.
+      */}
       <div className="mt-5 px-5">
+        <p className="text-[0.72rem] font-extrabold tracking-[0.09em] text-body-soft uppercase">
+          Mon assurance
+        </p>
+        <p className="mt-2 text-[0.83rem] leading-relaxed text-body">
+          Pour repérer d'un coup d'œil les officines qui la prennent. Rien n'est envoyé : ce choix
+          reste sur cet appareil.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {/*
+            Le choix mémorisé est ajouté à la liste s'il n'y figure plus : une
+            officine peut cesser d'accepter un organisme, et le patient se
+            retrouverait alors avec un filtre actif qu'aucune pastille ne
+            montre — donc impossible à retirer.
+          */}
+          {(assurance.nom && !ORGANISMES_DECLARES.includes(assurance.nom)
+            ? [...ORGANISMES_DECLARES, assurance.nom]
+            : ORGANISMES_DECLARES
+          ).map((o) => {
+            const actif = assurance.nom === o
+            return (
+              <button
+                key={o}
+                type="button"
+                aria-pressed={actif}
+                onClick={() => assurance.choisir(actif ? null : o)}
+                className={cx(
+                  'inline-flex min-h-11 items-center gap-1.5 rounded-xl border px-3.5 text-[0.83rem] font-bold',
+                  actif
+                    ? 'border-green-600 bg-green-600 text-white'
+                    : 'border-line bg-paper text-ink',
+                )}
+              >
+                {actif && (
+                  <Svg className="size-3.5" trait={3}>
+                    {Icone.coche}
+                  </Svg>
+                )}
+                {o}
+              </button>
+            )
+          })}
+        </div>
+        <p className="mt-2.5 text-[0.78rem] leading-relaxed text-body-soft">
+          {assurance.nom
+            ? 'Touchez-la de nouveau pour ne plus filtrer.'
+            : "Aucune sélectionnée : les officines s'affichent toutes, sans distinction."}
+        </p>
+      </div>
+
+      <div className="mt-6 px-5">
         <p className="text-[0.72rem] font-extrabold tracking-[0.09em] text-body-soft uppercase">
           Mon dossier
         </p>

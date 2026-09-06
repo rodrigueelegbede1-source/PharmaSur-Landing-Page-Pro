@@ -41,6 +41,7 @@ export const Icone = {
   itineraire: <path d="M3 11 21 3l-8 18-2-7-8-3Z" />,
   plus: <path d="M12 5v14M5 12h14" />,
   croix: <path d="m6 6 12 12M18 6 6 18" />,
+  coche: <path d="m4 12.5 5 5L20 6.5" />,
   horloge: (
     <>
       <circle cx="12" cy="12" r="9" />
