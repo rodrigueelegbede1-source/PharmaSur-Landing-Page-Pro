@@ -109,17 +109,23 @@ export function Footer() {
             <h4 className="text-[0.95rem] text-white">Contact</h4>
             <ul className="mt-5 flex flex-col gap-3 text-[0.92rem]">
               {/*
-                Le numéro affiché ici, +225 27 22 00 00 00, était un
-                remplissage : personne ne décrochait. Un numéro faux sur un
-                service de santé est pire que pas de numéro du tout. Remettez
-                la ligne dès que la ligne réelle existe.
+                Le numéro affiché ici était un remplissage : +225 27 22 00 00 00,
+                personne ne décrochait. Un numéro faux sur un service de santé
+                est pire que pas de numéro du tout, et il avait donc été retiré.
+                Celui-ci est la ligne réelle de l'éditeur, fournie le
+                6 septembre 2026 — il doit sonner quelque part.
               */}
               <li>
                 <a href="mailto:contact@pharmasur.ci" className="transition-colors hover:text-green-400">
                   contact@pharmasur.ci
                 </a>
               </li>
-              <li>Abidjan, Côte d'Ivoire</li>
+              <li>
+                <a href="tel:+2250706303030" className="transition-colors hover:text-green-400">
+                  +225 07 06 30 30 30
+                </a>
+              </li>
+              <li>Avenue Philippe Mangou, Abidjan</li>
             </ul>
           </div>
         </div>
