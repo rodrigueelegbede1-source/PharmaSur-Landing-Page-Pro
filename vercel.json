@@ -12,6 +12,25 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "geolocation=(), camera=(), microphone=()" }
       ]
+    },
+    {
+      "//": "Ces deux fichiers sont des téléchargements, pas des pages. Servis en text/html avec « Content-Disposition: inline », un navigateur les OUVRE : l'attribut download des boutons du site suffit à l'éviter, mais pas quand le lien est copié, partagé par WhatsApp, ou ouvert par un navigateur qui ignore l'attribut. L'en-tête, lui, vaut partout. Ne pas l'étendre à /console/, qui doit s'afficher.",
+      "source": "/pharmasur-application.html",
+      "headers": [
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"pharmasur-application.html\""
+        }
+      ]
+    },
+    {
+      "source": "/console-pharmasur.html",
+      "headers": [
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"console-pharmasur.html\""
+        }
+      ]
     }
   ]
 }
