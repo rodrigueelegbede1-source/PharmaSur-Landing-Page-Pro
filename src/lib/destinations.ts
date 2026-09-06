@@ -58,12 +58,28 @@ export const APP_PATIENT = '/app/'
 export const APP_FICHIER = '/pharmasur-application.html'
 
 /**
- * Console pharmacie, livrée en fichier unique à télécharger : le pharmacien
- * l'enregistre et l'ouvre dans son navigateur, sans installation ni compte.
- * Elle non plus n'a pas de serveur — c'est une démonstration hors ligne.
- * La mise en page s'adapte du téléphone au grand écran.
+ * Console pharmacie INSTALLABLE, servie à /console/ : manifeste, icône propre
+ * et service worker. Chrome propose « Installer l'application », Safari « Sur
+ * l'écran d'accueil », et elle s'ouvre ensuite sans réseau — ce qui compte au
+ * comptoir un jour de coupure.
+ *
+ * Le bouton pointait auparavant sur le fichier à télécharger : l'officine se
+ * retrouvait avec « file:///C:/Users/… » dans sa barre d'adresse, sans icône,
+ * sans raccourci et sans mise à jour. Le fichier reste disponible, mais comme
+ * second choix et sous son vrai nom.
+ *
+ * Elle n'a pas plus de serveur que le reste : la démonstration est hors ligne
+ * et le bandeau du haut le dit.
  */
-export const CONSOLE_PHARMACIE = '/console-pharmasur.html'
+export const CONSOLE_PHARMACIE = '/console/'
+
+/**
+ * La même console en UN fichier, à enregistrer et ouvrir depuis le disque.
+ * C'est ce qui s'envoie par WhatsApp à un pharmacien, et ce qui s'ouvre là où
+ * il n'y a pas de réseau du tout. Elle ne déclare ni manifeste ni service
+ * worker : depuis file://, le navigateur refuse les deux.
+ */
+export const CONSOLE_FICHIER = '/console-pharmasur.html'
 
 /**
  * Formulaire de rappel, seule action qui engage réellement quelqu'un

@@ -19,7 +19,7 @@
  *
  * Depuis design/ :  node generer-console.mjs
  */
-import { readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { bons, demandes, inscription, laterale, onglets, stocks, tableau } from './console/ecrans.mjs'
@@ -30,18 +30,34 @@ import { STYLE } from './console/style.mjs'
    relatif. Ce raccourci fonctionnait sur Windows et a fait échouer un
    déploiement Vercel. */
 const RACINE = join(fileURLToPath(new URL('.', import.meta.url)), '..')
-const SORTIE = join(RACINE, 'public/console-pharmasur.html')
+const FICHIER = join(RACINE, 'public/console-pharmasur.html')
+const INSTALLABLE = join(RACINE, 'public/console/index.html')
 const POLICE = join(RACINE, 'public/fonts/plus-jakarta-sans.woff2')
 
 const police = await readFile(POLICE)
 
-const fichier = `<!doctype html>
+/*
+ * DEUX SORTIES, une seule source.
+ *
+ * /console/ est la console INSTALLABLE : servie en HTTPS, elle déclare un
+ * manifeste et un service worker, et le pharmacien l'ajoute à son écran
+ * d'accueil comme n'importe quelle application — c'est ce que « Installer la
+ * console » doit donner. Auparavant le bouton ne proposait que le fichier, et
+ * l'officine se retrouvait avec un « file:///C:/Users/… » dans sa barre
+ * d'adresse : ni icône, ni raccourci, ni mise à jour.
+ *
+ * console-pharmasur.html reste le fichier UNIQUE, à télécharger et à envoyer
+ * par WhatsApp. Il ne déclare NI manifeste NI service worker : depuis file://
+ * l'un et l'autre sont refusés par le navigateur, et le fichier doit pouvoir
+ * s'ouvrir sans réseau ni serveur. C'est la seule différence entre les deux.
+ */
+const page = (tete) => `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
 <title>PharmaSur — Console pharmacie (démonstration)</title>
+${tete}
 <style>
 @font-face {
   font-family:'Plus Jakarta Sans';
@@ -339,5 +355,36 @@ ${STYLE}
 </html>
 `
 
-await writeFile(SORTIE, fichier, 'utf8')
-console.log(`console-pharmasur.html  5 écrans  ${Math.round(Buffer.byteLength(fichier) / 1024)} ko`)
+const ko = (s) => `${Math.round(Buffer.byteLength(s) / 1024)} ko`
+
+/* Le fichier unique : rien d'externe, rien à installer, il s'ouvre depuis le
+   disque. Sa balise theme-color reste blanche — il n'a pas de barre système
+   à teinter puisqu'il s'affiche dans un onglet ordinaire. */
+const fichier = page('<meta name="theme-color" content="#ffffff">')
+await writeFile(FICHIER, fichier, 'utf8')
+
+/* La console installable : manifeste, couleur de barre système, et le service
+   worker qui la rend consultable sans réseau. L'enregistrement échoue en
+   silence depuis file:// — d'où la garde sur le protocole, qui évite une
+   erreur en console si quelqu'un ouvre cette copie-là depuis son disque. */
+const installable = page(
+  `<meta name="theme-color" content="#0b3d2c">
+<link rel="manifest" href="/console/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="/console/icone-192.png">
+<link rel="apple-touch-icon" href="/console/icone-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PharmaSur Pro">
+<meta name="robots" content="noindex">
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('/console/sw.js', { scope: '/console/' }).catch(function () {});
+  });
+}
+</script>`,
+)
+await mkdir(join(RACINE, 'public/console'), { recursive: true })
+await writeFile(INSTALLABLE, installable, 'utf8')
+
+console.log(`console-pharmasur.html  5 écrans  ${ko(fichier)}  (fichier unique, hors ligne)`)
+console.log(`console/index.html      5 écrans  ${ko(installable)}  (installable, manifeste + service worker)`)

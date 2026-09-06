@@ -1,5 +1,5 @@
 import { cx } from '../lib/cx'
-import { APK_PATIENT, APP_FICHIER, CONSOLE_PHARMACIE } from '../lib/destinations'
+import { APK_PATIENT, APP_FICHIER, CONSOLE_FICHIER, CONSOLE_PHARMACIE } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 type Offre = {
@@ -16,7 +16,9 @@ type Offre = {
   /** Nom du fichier à enregistrer, quand le bouton livre un fichier. */
   telecharge?: string
   /** Second lien, sous le bouton, pour l'action que le bouton ne fait pas. */
-  secondaire?: { label: string; href: string; telecharge?: string }
+  /* Plusieurs, depuis que la console se prend par deux chemins : on
+     l installe, ou on telecharge le fichier. */
+  secondaires?: { label: string; href: string; telecharge?: string }[]
   featured?: boolean
   features: string[]
 }
@@ -64,7 +66,9 @@ const plans: Offre[] = [
     cta: 'Télécharger gratuitement',
     href: APK_PATIENT,
     telecharge: 'pharmasur-1.0.0.apk',
-    secondaire: { label: 'iPhone ou ordinateur : télécharger le fichier', href: APP_FICHIER, telecharge: 'pharmasur-application.html' },
+    secondaires: [
+      { label: 'iPhone ou ordinateur : télécharger le fichier', href: APP_FICHIER, telecharge: 'pharmasur-application.html' },
+    ],
     variant: 'ghost' as const,
     features: [
       'Recherche de médicaments illimitée',
@@ -84,14 +88,19 @@ const plans: Offre[] = [
     desc: 'Pour les officines qui veulent être visibles.',
     price: 'Abonnement',
     unit: '',
-    cta: 'Télécharger la console',
-    /* Le bouton livre la console : un fichier unique que le pharmacien ouvre
-       dans son navigateur, sans compte ni installation. Le courriel
-       d'inscription pré-rempli reste accessible sous la carte — la console est
-       une démonstration, s'inscrire suppose encore de nous écrire. */
+    cta: 'Installer la console',
+    /* Le bouton ouvre la console installable : Chrome propose « Installer
+       l'application », Safari « Sur l'écran d'accueil ». Il pointait avant sur
+       le fichier à télécharger, qui laissait l'officine avec un « file:///… »
+       dans sa barre d'adresse — sans icône, sans raccourci, sans mise à jour.
+       Le fichier reste dessous, pour qui n'a pas de réseau du tout, et le
+       courriel d'inscription avec : la console est une démonstration,
+       s'inscrire suppose encore de nous écrire. */
     href: CONSOLE_PHARMACIE,
-    telecharge: 'console-pharmasur.html',
-    secondaire: { label: 'Inscrire mon officine', href: INSCRIPTION_OFFICINE },
+    secondaires: [
+      { label: 'Sans réseau : télécharger le fichier', href: CONSOLE_FICHIER, telecharge: 'console-pharmasur.html' },
+      { label: 'Inscrire mon officine', href: INSCRIPTION_OFFICINE },
+    ],
     /* Cible du lien « Espace pharmaciens » du pied de page. */
     id: 'pharmacie-pro',
     variant: 'primary' as const,
@@ -207,18 +216,19 @@ export function Pricing() {
                     </Button>
                   )}
 
-                  {p.secondaire && (
+                  {p.secondaires?.map((s) => (
                     <a
-                      href={p.secondaire.href}
-                      download={p.secondaire.telecharge}
+                      key={s.href}
+                      href={s.href}
+                      download={s.telecharge}
                       className={cx(
-                        'text-[0.85rem] font-bold underline underline-offset-4',
+                        'text-center text-[0.85rem] font-bold underline underline-offset-4',
                         p.featured ? 'text-green-200 hover:text-white' : 'text-green-700',
                       )}
                     >
-                      {p.secondaire.label}
+                      {s.label}
                     </a>
-                  )}
+                  ))}
                 </div>
               </article>
             </Reveal>

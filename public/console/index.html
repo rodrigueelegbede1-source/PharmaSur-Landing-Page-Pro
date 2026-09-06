@@ -4,7 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PharmaSur — Console pharmacie (démonstration)</title>
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0b3d2c">
+<link rel="manifest" href="/console/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="/console/icone-192.png">
+<link rel="apple-touch-icon" href="/console/icone-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PharmaSur Pro">
+<meta name="robots" content="noindex">
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('/console/sw.js', { scope: '/console/' }).catch(function () {});
+  });
+}
+</script>
 <style>
 @font-face {
   font-family:'Plus Jakarta Sans';
