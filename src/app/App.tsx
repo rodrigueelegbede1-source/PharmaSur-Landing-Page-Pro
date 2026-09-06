@@ -214,19 +214,51 @@ function EcranRecherche({
   onVoirListe: () => void
 }) {
   const [requete, setRequete] = useState('')
+  const [zoneOuverte, setZoneOuverte] = useState(false)
   const resultats = chercher(requete)
 
   return (
     <>
       <div className="flex items-center justify-between px-5 pt-5">
         <Logo />
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3.5 py-2 text-[0.75rem] font-bold text-green-700">
+        {/*
+          La pastille avait l'allure d'un bouton sans en être un — et pire, un
+          repère de carte à côté d'un nom de commune se lit « nous vous avons
+          localisé ». L'application ne demande la position de personne. Elle
+          s'ouvre donc, et dit ce qu'il en est.
+        */}
+        <button
+          type="button"
+          onClick={() => setZoneOuverte((v) => !v)}
+          aria-expanded={zoneOuverte}
+          aria-controls="zone-details"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-green-50 px-3.5 text-[0.75rem] font-bold text-green-700 active:bg-green-100"
+        >
           <Svg className="size-3.5" trait={2.4}>
             <path d="M12 21s-7-4.8-7-10a7 7 0 1 1 14 0c0 5.2-7 10-7 10Z" />
           </Svg>
           Abidjan, Cocody
-        </span>
+          <Svg className={cx('size-3.5 transition-transform', zoneOuverte && 'rotate-180')} trait={2.6}>
+            <path d="m6 9 6 6 6-6" />
+          </Svg>
+        </button>
       </div>
+
+      {zoneOuverte && (
+        <div id="zone-details" className="mt-3 px-5">
+          <div className="rounded-2xl border border-line bg-line-soft px-4 py-3.5">
+            <p className="text-[0.88rem] font-extrabold text-ink">Où PharmaSur cherche</p>
+            <p className="mt-1.5 text-[0.83rem] leading-relaxed text-body">
+              L'application ne connaît pas votre position : aucune version ne la demande. Elle
+              cherche dans les quatre officines de démonstration, toutes à Cocody.
+            </p>
+            <p className="mt-2 text-[0.83rem] leading-relaxed text-body">
+              Le choix de la commune arrivera avec les premières pharmacies référencées, à Abidjan
+              d'abord. Une officine n'apparaîtra qu'après vérification de son agrément.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="px-5 pt-6">
         <h1 className="text-[1.75rem] leading-[1.15] font-extrabold tracking-[-0.03em] text-ink">
