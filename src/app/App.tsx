@@ -1114,8 +1114,8 @@ function EcranProfil({
             </span>
           </div>
           <p className="mt-3 text-[0.8rem] leading-relaxed text-green-200">
-            Recherche, prix, équivalent générique, rappels de prise et alertes de retour en stock :
-            sans limite et sans compte payant. Il n'y a pas d'offre payante pour les patients.
+            Recherche, prix, équivalent générique en cas de rupture, horaires et gardes : sans
+            limite et sans compte payant. Il n'y a pas d'offre payante pour les patients.
           </p>
         </div>
       </div>
@@ -1184,9 +1184,12 @@ function EcranProfil({
         </p>
         <div className="mt-3 overflow-hidden rounded-2xl border border-line">
           {[
+            /* « Aucun » se lisait comme un compteur à zéro : le patient croyait
+               pouvoir en créer. Ces deux fonctions n'existent pas encore, et
+               c'est cela qu'il faut lire. */
             { label: 'Produits dans ma liste', valeur: String(nbProduits) },
-            { label: 'Rappels de prise', valeur: 'Aucun' },
-            { label: 'Alertes de retour en stock', valeur: 'Aucune' },
+            { label: 'Rappels de prise', valeur: 'Bientôt' },
+            { label: 'Alertes de retour en stock', valeur: 'Bientôt' },
           ].map((l, i) => (
             <div
               key={l.label}

@@ -16,7 +16,14 @@ type Offre = {
   /** Nom du fichier à enregistrer, quand le bouton livre un fichier. */
   telecharge?: string
   featured?: boolean
-  features: string[]
+  /*
+   * « bientot » n'est pas une nuance commerciale : la carte promettait des
+   * rappels de prise et des alertes de retour en stock que l'application
+   * n'a pas — son propre écran Profil affiche « Aucun » en face. Un patient
+   * qui télécharge sur la foi de cette liste découvre le contraire en trois
+   * écrans. Ce qui n'existe pas se dit.
+   */
+  features: { texte: string; bientot?: boolean }[]
 }
 
 /*
@@ -40,16 +47,16 @@ const plans: Offre[] = [
     telecharge: 'pharmasur-1.0.0.apk',
     variant: 'ghost' as const,
     features: [
-      'Recherche de médicaments illimitée',
-      "Prix des médicaments et coût total de l'ordonnance",
-      'Équivalent générique signalé en cas de rupture',
-      "Bons d'assurance acceptés, affichés par officine",
-      'Géolocalisation des pharmacies ouvertes',
-      'Contacter la pharmacie',
-      'Rappels intelligents de prise',
-      'Alertes de retour en stock à la demande',
-      'Carte interactive des pharmacies de garde',
-      "Itinéraire GPS et horaires d'ouverture",
+      { texte: 'Recherche de médicaments illimitée' },
+      { texte: "Prix des médicaments et coût total de l'ordonnance" },
+      { texte: 'Équivalent générique signalé en cas de rupture' },
+      { texte: "Bons d'assurance acceptés, et filtre sur le vôtre" },
+      { texte: "Officines ouvertes en tête, horaires et gardes" },
+      { texte: "Appeler l'officine et ouvrir l'itinéraire" },
+      { texte: 'Pharmacies proches de vous, par géolocalisation', bientot: true },
+      { texte: 'Carte interactive des officines de garde', bientot: true },
+      { texte: 'Rappels de prise', bientot: true },
+      { texte: 'Alertes de retour en stock', bientot: true },
     ],
   },
   {
@@ -78,29 +85,44 @@ const plans: Offre[] = [
        « Le plus choisi » : aucune officine n'est encore inscrite. */
     featured: true,
     features: [
-      "Géolocalisation de l'officine",
-      "Bons d'assurance acceptés : ajout et retrait à tout moment",
-      'Mise en avant pendant les gardes',
-      'Tableau de bord analytique de visibilité locale',
-      'Canal direct de contact avec les patients',
-      'Synchronisation des stocks en temps réel, facultative',
-      'Tableau de bord des demandes locales',
-      'Support prioritaire 7j/7',
+      { texte: "Horaires et garde déclarés par vous, suivis par l'application" },
+      { texte: "Bons d'assurance acceptés : ajout et retrait à tout moment" },
+      { texte: 'Disponibilités confirmées en un clic, équivalent proposé en rupture' },
+      { texte: "Demandes locales : ce qu'on cherche près de vous et que vous n'avez pas" },
+      { texte: "Fiche de l'officine visible des patients", bientot: true },
+      { texte: 'Synchronisation avec votre logiciel de gestion, facultative', bientot: true },
+      { texte: 'Canal de contact direct avec les patients', bientot: true },
+      { texte: 'Support prioritaire', bientot: true },
     ],
   },
 ]
 
-function Check({ featured }: { featured?: boolean }) {
+/*
+ * Deux pastilles, et la différence doit se voir sans lire : une coche pleine
+ * pour ce qui marche aujourd'hui, un cercle vide pour ce qui viendra. Une
+ * liste où tout porte la même coche ne distingue rien, et c'était le problème.
+ */
+function Check({ featured, bientot }: { featured?: boolean; bientot?: boolean }) {
   return (
     <span
       className={cx(
         'mt-0.5 grid size-4.5 shrink-0 place-items-center rounded-full',
-        featured ? 'bg-green-400/20 text-green-400' : 'bg-green-100 text-green-600',
+        bientot
+          ? featured
+            ? 'border border-dashed border-green-200/50 text-green-200/60'
+            : 'border border-dashed border-body-soft/50 text-body-soft'
+          : featured
+            ? 'bg-green-400/20 text-green-400'
+            : 'bg-green-100 text-green-600',
       )}
     >
-      <svg viewBox="0 0 12 12" fill="none" className="size-2.5" aria-hidden>
-        <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      {bientot ? (
+        <span className="size-1 rounded-full bg-current" />
+      ) : (
+        <svg viewBox="0 0 12 12" fill="none" className="size-2.5" aria-hidden>
+          <path d="m2 6.3 2.4 2.4L10 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
     </span>
   )
 }
@@ -159,14 +181,50 @@ export function Pricing() {
                   )}
                 />
 
-                <ul className="mt-6 flex flex-1 flex-col gap-3">
+                <ul className="mt-6 flex flex-col gap-3">
                   {p.features.map((f) => (
-                    <li key={f} className="flex gap-3 text-[0.93rem] leading-snug">
-                      <Check featured={p.featured} />
-                      <span className={p.featured ? 'text-green-100/90' : undefined}>{f}</span>
+                    <li key={f.texte} className="flex gap-3 text-[0.93rem] leading-snug">
+                      <Check featured={p.featured} bientot={f.bientot} />
+                      <span
+                        className={cx(
+                          f.bientot
+                            ? p.featured
+                              ? 'text-green-100/55'
+                              : 'text-body-soft'
+                            : p.featured
+                              ? 'text-green-100/90'
+                              : undefined,
+                        )}
+                      >
+                        {f.texte}
+                        {f.bientot && (
+                          <span
+                            className={cx(
+                              'ml-2 rounded px-1.5 py-0.5 align-middle text-[0.68rem] font-extrabold tracking-wide uppercase',
+                              p.featured
+                                ? 'bg-white/10 text-green-200/80'
+                                : 'bg-line-soft text-body-soft',
+                            )}
+                          >
+                            Bientôt
+                          </span>
+                        )}
+                      </span>
                     </li>
                   ))}
                 </ul>
+
+                {/* La convention se lit une fois, sous la liste : sans elle, le
+                    cercle vide passerait pour une coche ratée. */}
+                <p
+                  className={cx(
+                    'mt-4 flex-1 text-[0.78rem] leading-relaxed',
+                    p.featured ? 'text-green-200/70' : 'text-body-soft',
+                  )}
+                >
+                  Coche pleine : disponible aujourd'hui dans la version que vous téléchargez.
+                  Cercle&nbsp;: annoncé, pas encore livré.
+                </p>
 
                 <div className="mt-8 flex flex-col items-center gap-3">
                   {p.featured ? (
