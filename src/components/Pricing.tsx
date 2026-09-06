@@ -1,5 +1,5 @@
 import { cx } from '../lib/cx'
-import { APK_PATIENT } from '../lib/destinations'
+import { APK_CONSOLE, APK_PATIENT } from '../lib/destinations'
 import { ArrowRight, Button, Reveal, SectionHead } from './primitives'
 
 type Offre = {
@@ -18,30 +18,6 @@ type Offre = {
   featured?: boolean
   features: string[]
 }
-
-/*
- * Un mailto sans corps ouvre une fenêtre vide : le pharmacien doit deviner ce
- * qu'on attend de lui, et le message arrive incomplet. Le corps reprend les
- * cinq informations de l'inscription — nom, commune, pharmacien, agrément,
- * téléphone — pour que le premier échange serve à quelque chose.
- */
-const INSCRIPTION_OFFICINE = `mailto:contact@pharmasur.ci?subject=${encodeURIComponent(
-  'Inscription de mon officine',
-)}&body=${encodeURIComponent(
-  [
-    'Bonjour,',
-    '',
-    'Je souhaite inscrire mon officine sur PharmaSur.',
-    '',
-    "Nom de l'officine :",
-    'Commune :',
-    'Pharmacien titulaire :',
-    "Numéro d'agrément :",
-    'Téléphone :',
-    '',
-    'Merci de me préciser la suite de la démarche.',
-  ].join('\n'),
-)}`
 
 /*
  * Deux offres, et non plus trois. L'offre Santé Famille à 2 500 FCFA / an a été
@@ -81,20 +57,19 @@ const plans: Offre[] = [
     desc: 'Pour les officines qui veulent être visibles.',
     price: 'Abonnement',
     unit: '',
-    cta: 'Inscrire mon officine',
+    cta: 'Télécharger la console',
     /*
-     * Le bouton ouvre le courriel d'inscription, et ne livre plus la console.
+     * Le bouton livre l'APK de la console. Un seul lien, sans rien dessous :
+     * les trois liens secondaires — console web, fichier hors réseau,
+     * inscription par courriel — ont été retirés, et le courriel avec.
      *
-     * Il donnait l'APK, sous trois liens qui offraient aussi la console web,
-     * le fichier unique et l'inscription — quatre chemins pour une carte. Une
-     * officine qui veut être trouvée doit d'abord se faire connaître : la
-     * console lui sera remise après, quand son agrément aura été vérifié.
-     *
-     * Conséquence assumée : la console n'est plus téléchargeable depuis le
-     * site. Elle reste servie à /console/ et en fichier, pour l'envoyer
-     * directement à une officine.
+     * L'APK ne s'installe que sur Android. C'est le cas de la plupart des
+     * pharmaciens, mais pas de tous : sur iPhone ou sur l'ordinateur du
+     * comptoir, ce fichier ne sert à rien. La console reste servie à /console/
+     * et en fichier unique, sans qu'aucun lien du site n'y mène.
      */
-    href: INSCRIPTION_OFFICINE,
+    href: APK_CONSOLE,
+    telecharge: 'pharmasur-console-1.0.0.apk',
     /* Cible du lien « Espace pharmaciens » du pied de page. */
     id: 'pharmacie-pro',
     variant: 'primary' as const,
