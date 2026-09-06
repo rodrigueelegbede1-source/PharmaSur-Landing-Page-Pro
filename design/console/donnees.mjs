@@ -190,7 +190,14 @@ export const ORGANISMES = [
     ],
   },
   {
-    categorie: 'Assurances et gestionnaires',
+    /*
+     * « Assurances », et non plus « Assurances et gestionnaires ». ASCOMA et
+     * Gras Savoye en ont été retirés : ce sont des courtiers gestionnaires, et
+     * c'est le nom de l'ASSUREUR qui figure sur la carte du patient. Les
+     * proposer aurait fait cocher au pharmacien un intitulé que son client ne
+     * lira jamais sur son carnet, et chercher en vain dans l'application.
+     */
+    categorie: 'Assurances',
     aide: 'Cochez ce que vous acceptez réellement en tiers payant, pas ce que vous pourriez accepter.',
     entrees: [
       { nom: 'NSIA Assurances', detail: 'Santé individuelle et collective', coche: true },
@@ -198,8 +205,6 @@ export const ORGANISMES = [
       { nom: 'Allianz Côte d’Ivoire', detail: 'Santé collective', coche: false },
       { nom: 'Sanlam', detail: 'Anciennement SAHAM · Colina', coche: false },
       { nom: 'Atlantique Assurances', detail: 'Santé collective', coche: false },
-      { nom: 'ASCOMA', detail: 'Courtier gestionnaire de tiers payant', coche: false },
-      { nom: 'Gras Savoye', detail: 'Courtier gestionnaire de tiers payant', coche: false },
     ],
   },
 ]

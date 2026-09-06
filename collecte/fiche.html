@@ -237,7 +237,8 @@
   .erreur { font-size: .78rem; font-weight: 600; color: var(--alerte); }
   .erreur:empty { display: none; }
 
-  /* Cases à cocher des bons : trois valeurs fermées, pas un champ libre. */
+  /* Cases à cocher des bons. La liste n'est pas fermée — le champ « Autres
+     organismes » la complète — mais les noms qu'elle propose sont sûrs. */
   .cases { display: flex; flex-wrap: wrap; gap: .5rem; }
   .cases label {
     display: inline-flex;
@@ -573,8 +574,8 @@
             <label><input type="checkbox" name="bons" value="Allianz Côte d’Ivoire"> Allianz Côte d’Ivoire</label>
             <label><input type="checkbox" name="bons" value="Sanlam"> Sanlam</label>
             <label><input type="checkbox" name="bons" value="Atlantique Assurances"> Atlantique Assurances</label>
-            <label><input type="checkbox" name="bons" value="ASCOMA"> ASCOMA</label>
-            <label><input type="checkbox" name="bons" value="Gras Savoye"> Gras Savoye</label>
+            
+            
           </div>
           <p class="aide">
             Cochez ce que l'officine accepte <strong>réellement</strong> en tiers payant,

@@ -103,7 +103,7 @@ export const OFFICINES: Officine[] = [
     ferme: 1440,
     deGarde: true,
     telephone: '+225 07 00 00 00 01',
-    bons: ['CMU', 'MUGEFCI', 'NSIA Assurances', 'ASCOMA'],
+    bons: ['CMU', 'MUGEFCI', 'NSIA Assurances'],
     stock: {
       para1000: { confirmeIlYaHeures: 3 },
       doli1000: { confirmeIlYaHeures: 3 },
