@@ -10,7 +10,7 @@
     <title>Politique de confidentialité — PharmaSur</title>
     <meta
       name="description"
-      content="Ce que PharmaSur reçoit — votre numéro, et rien d'autre — et ce que l'application garde sur votre appareil sans nous le transmettre."
+      content="PharmaSur ne vous demande aucune donnée personnelle. Ce que l'application garde sur votre appareil, et comment l'effacer."
     />
     <link
       rel="preload"
@@ -58,18 +58,21 @@
       >
         <p class="font-extrabold text-alert">Document de travail — ne pas publier en l'état.</p>
         <p class="mt-1.5">
-          Ce canevas décrit fidèlement ce que le site fait aujourd'hui, mais il doit être complété
-          et relu par un juriste ivoirien avant mise en ligne. La déclaration du traitement auprès
-          de l'ARTCI est à vérifier : elle conditionne la licéité de la collecte.
+          Ce canevas décrit fidèlement ce que le site fait aujourd'hui, mais il doit être relu par
+          un juriste ivoirien avant mise en ligne. Depuis le retrait du formulaire de rappel, le
+          site ne recueille plus aucune donnée auprès du visiteur : la question posée à l'ARTCI
+          n'est plus celle d'une collecte, mais celle des journaux techniques de l'hébergeur et du
+          stockage local décrit en section 3.
         </p>
       </div>
 
       <p class="eyebrow text-green-600">Vos données</p>
       <h1 class="mt-4 text-[2.1rem] sm:text-[2.6rem]">Politique de confidentialité</h1>
       <p class="mt-4 text-[1.02rem]">
-        Cette page explique ce que PharmaSur reçoit — votre numéro de téléphone, et rien d'autre —
-        pourquoi, combien de temps il est conservé, et comment en obtenir la suppression. Elle décrit
-        aussi ce que l'application garde sur votre appareil sans nous le transmettre.
+        Cette page tient en une phrase : <strong class="text-ink">PharmaSur ne vous demande
+        aucune donnée personnelle et n'en reçoit aucune.</strong> Le reste décrit ce que
+        l'application garde sur votre appareil sans nous le transmettre, comment l'effacer, et ce
+        que voit l'hébergeur du site — car prétendre qu'il ne voit rien serait faux.
       </p>
 
       <h2 class="mt-14 text-[1.4rem]">1. Qui est responsable de vos données</h2>
@@ -79,12 +82,28 @@
         d'Ivoire — joignable à l'adresse contact@pharmasur.ci ou au +225 07 06 30 30 30.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">2. Ce que nous collectons, et rien d'autre</h2>
+      <!--
+        Cette section décrivait la collecte d'un numéro de téléphone via le
+        formulaire « Être prévenu » du bas de page. Ce formulaire a été retiré
+        le 6 septembre 2026 : les officines réelles apparaîtront dans
+        l'application déjà installée, sans que personne ait à prévenir qui que
+        ce soit — le numéro résolvait un problème que l'installation résout.
+
+        Sa disparition emporte avec elle la base légale du consentement, la
+        durée de conservation de vingt-quatre mois, le transfert vers les
+        États-Unis via Formspree, et le seul appel réseau sortant du produit.
+      -->
+      <h2 class="mt-12 text-[1.4rem]">2. Ce que nous vous demandons : rien</h2>
       <p class="mt-4">
-        Une seule information nous parvient : le
-        <strong class="text-ink">numéro de téléphone</strong> que vous saisissez volontairement dans
-        le formulaire situé en bas de page. Aucune autre donnée n'est demandée : ni nom, ni adresse,
-        ni date de naissance.
+        <strong class="text-ink">Le site ne comporte aucun formulaire</strong> et ne vous demande
+        ni nom, ni numéro de téléphone, ni adresse électronique, ni date de naissance. Il n'existe
+        aucun compte à créer, et aucune information saisie sur ce site ne nous parvient — pour la
+        raison simple qu'il n'y a rien à saisir.
+      </p>
+      <p class="mt-3">
+        PharmaSur n'a pas de serveur applicatif. Le site et les deux applications sont des fichiers
+        que votre navigateur télécharge puis exécute chez vous ; il n'existe, de notre côté, aucune
+        base de données susceptible de contenir quoi que ce soit vous concernant.
       </p>
 
       <!--
@@ -154,71 +173,66 @@
         puisque nous n'avons rien reçu.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">4. Pourquoi, et sur quelle base</h2>
+      <!--
+        Il y avait ici trois sections — base légale, durée de conservation,
+        destinataires — qui portaient toutes sur le numéro de téléphone
+        collecté par le formulaire. Elles disparaissent avec lui.
+
+        Ce qui reste ne doit surtout pas être présenté comme « rien » : dire
+        « nous ne recevons aucune donnée » et s'arrêter là serait faux, parce
+        que toute visite d'un site web laisse une trace chez l'hébergeur. C'est
+        désormais le seul traitement subsistant, et il mérite donc sa propre
+        section plutôt qu'une demi-phrase.
+      -->
+      <h2 class="mt-12 text-[1.4rem]">4. Ce que voit l'hébergeur du site</h2>
       <p class="mt-4">
-        Votre numéro sert uniquement à vous prévenir de l'ouverture du service PharmaSur. Il ne sera
-        ni revendu, ni loué, ni cédé à des tiers à des fins commerciales.
+        Nous ne vous demandons rien, mais votre visite n'est pas invisible pour autant : comme pour
+        n'importe quel site web, le serveur qui vous envoie les pages enregistre des
+        <strong class="text-ink">journaux techniques de connexion</strong> — adresse IP, date et
+        heure, page demandée, type de navigateur. C'est une conséquence du fonctionnement d'Internet,
+        pas une collecte que nous aurions organisée.
       </p>
       <p class="mt-3">
-        La base de ce traitement est votre <strong class="text-ink">consentement</strong>, donné par
-        la saisie et l'envoi volontaires de votre numéro. Vous pouvez le retirer à tout moment, sans
-        avoir à vous justifier.
+        Le site est hébergé par <strong class="text-ink">Vercel Inc.</strong>, dont les serveurs
+        sont situés <strong class="text-ink">hors de Côte d'Ivoire</strong>. Ces journaux servent au
+        fonctionnement et à la sécurité du service. Nous ne les consultons pas pour identifier des
+        visiteurs, nous ne les rapprochons d'aucune autre information — nous n'en détenons aucune —
+        et aucun outil de mesure d'audience n'y est branché.
+      </p>
+      <p class="mt-3 text-[0.95rem] text-body-soft">
+        C'est le seul traitement qui subsiste après le retrait du formulaire, et le point que la
+        relecture juridique doit trancher : savoir si des journaux d'hébergement, à eux seuls,
+        appellent une déclaration auprès de l'ARTCI.
       </p>
 
       <!--
-        La rédaction précédente disait « conservé jusqu'à l'ouverture du
-        service » sans autre borne. C'était un piège : tant que le service
-        n'ouvre pas, la durée est infinie — exactement ce que l'article 16 de
-        la loi n° 2013-450 interdit, en imposant une durée qui n'excède pas la
-        période nécessaire à la finalité. Il fallait donc un plafond absolu,
-        qui court même si rien n'ouvre.
-
-        Vingt-quatre mois, et non les trois ans souvent cités : ce délai-là
-        vaut après la fin d'un ABONNEMENT. Ici il n'y a pas d'abonnement, mais
-        une liste d'attente avant lancement — une finalité plus étroite, donc
-        une durée plus courte.
+        Le bouton « Itinéraire » est un lien sortant vers Google Maps. Nous
+        n'envoyons rien nous-mêmes, mais le clic transmet à Google le nom de
+        l'officine visée — donc une pharmacie que quelqu'un cherche à joindre.
+        Le taire au motif que « c'est l'utilisateur qui clique » reviendrait à
+        se cacher derrière une subtilité technique, alors que la page vient
+        d'affirmer que rien ne sort. Il est donc dit, et le visiteur garde le
+        choix : l'adresse reste affichée en toutes lettres à côté du bouton.
       -->
-      <h2 class="mt-12 text-[1.4rem]">5. Combien de temps</h2>
+      <h2 class="mt-12 text-[1.4rem]">5. Le bouton « Itinéraire »</h2>
       <p class="mt-4">
-        <strong class="text-ink">Votre numéro de téléphone</strong> est conservé jusqu'à
-        l'ouverture du service dans votre commune, et au maximum
-        <strong class="text-ink">vingt-quatre mois</strong> à compter du jour où vous nous
-        l'avez laissé. Passé ce délai il est supprimé, que le service ait ouvert ou non.
+        Dans l'application, « Itinéraire » ouvre <strong class="text-ink">Google Maps</strong> avec
+        l'officine choisie comme destination. Ce clic
+        <strong class="text-ink">transmet à Google le nom de cette pharmacie</strong>, ainsi que ce
+        que Google observe habituellement de ses visiteurs. Nous ne lui envoyons rien d'autre, et
+        rien du tout tant que vous ne cliquez pas.
       </p>
       <p class="mt-3">
-        Il est également supprimé <strong class="text-ink">sans délai</strong> si vous le
-        demandez, et dès que vous avez été prévenu de l'ouverture : la raison pour laquelle nous
-        le détenions n'existe alors plus.
-      </p>
-      <p class="mt-3 text-[0.95rem] text-body-soft">
-        Ce plafond répond à l'article 16 de la loi n° 2013-450, qui impose une durée n'excédant
-        pas la période nécessaire à la finalité poursuivie. Il est plus court que les trois ans
-        couramment appliqués après la fin d'un abonnement : il ne s'agit pas ici d'un abonnement,
-        mais d'une simple attente de lancement.
-      </p>
-      <p class="mt-3">
-        <strong class="text-ink">Ce que l'application garde sur votre appareil</strong> — votre
-        liste de médicaments, votre organisme d'assurance — ne connaît aucune durée fixée par
-        nous : nous ne le recevons pas, et ne pouvons donc ni le conserver ni le supprimer. Il
-        reste jusqu'à ce que vous l'effaciez, comme décrit plus haut.
+        <!-- Vérifié dans src/app/App.tsx : la fiche affiche le nom et le
+             QUARTIER, pas une adresse postale complète. Écrire « l'adresse est
+             affichée » aurait été faux, et aurait promis au visiteur une porte
+             de sortie qui n'existe pas. -->
+        Vous pouvez vous en passer : le nom de l'officine et son quartier sont affichés sur sa
+        fiche, de quoi la retrouver par le moyen de votre choix — en demandant sur place, ou avec
+        l'application de cartographie que vous préférez.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">6. Qui d'autre y a accès</h2>
-      <p class="mt-4">
-        La collecte du formulaire est assurée par <strong class="text-ink">Formspree</strong>,
-        société établie aux <strong class="text-ink">États-Unis</strong>, qui agit pour notre compte
-        et n'utilise pas ces numéros à ses propres fins. Le site est hébergé par
-        <strong class="text-ink">Vercel</strong>, dont les serveurs sont également situés hors de
-        Côte d'Ivoire.
-      </p>
-      <p class="mt-3">
-        <strong class="text-ink">Votre numéro quitte donc le territoire national</strong> dès son
-        envoi. Ce transfert doit être encadré par des garanties contractuelles et déclaré : c'est
-        l'un des points que la relecture juridique doit trancher avant la mise en ligne de cette
-        page.
-      </p>
-
-      <h2 class="mt-12 text-[1.4rem]">7. Cookies et mesure d'audience</h2>
+      <h2 class="mt-12 text-[1.4rem]">6. Cookies et mesure d'audience</h2>
       <p class="mt-4">
         <strong class="text-ink">Ce site ne dépose aucun cookie</strong> et n'utilise aucun outil de
         mesure d'audience ni de publicité. Aucun traçage de votre navigation n'est effectué, et
@@ -228,30 +242,42 @@
         Cette affirmation devra être corrigée le jour où une mesure d'audience sera installée.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">8. Vos droits</h2>
+      <h2 class="mt-12 text-[1.4rem]">7. Vos droits</h2>
       <p class="mt-4">
-        Vous disposez d'un droit d'accès à vos données, de rectification, d'effacement, d'opposition
-        et de retrait de votre consentement. Pour les exercer, écrivez à
-        <a href="mailto:contact@pharmasur.ci" class="font-semibold text-green-700 underline">
-          contact@pharmasur.ci </a
-        >, depuis le numéro ou en le rappelant, afin que nous puissions retrouver votre inscription.
+        La loi vous reconnaît un droit d'accès, de rectification, d'effacement et d'opposition. La
+        façon la plus directe de l'exercer sur PharmaSur ne passe pas par nous :
+        <strong class="text-ink">tout ce qui vous concerne est sur votre appareil</strong>, et la
+        section 3 indique comment l'effacer — immédiatement, sans demander la permission à
+        personne, et sans qu'aucune trace ne subsiste ailleurs.
       </p>
       <p class="mt-3">
         <!--
+          Ce paragraphe demandait auparavant d'écrire « depuis le numéro ou en
+          le rappelant, afin que nous puissions retrouver votre inscription ».
+          Il n'y a plus d'inscription à retrouver. Le droit reste ouvert, mais
+          il faut dire honnêtement que nous n'aurons, le plus souvent, rien à
+          supprimer — plutôt que de laisser croire à un fichier client.
+
           Trente jours est un ENGAGEMENT que prend l'éditeur, pas une durée
           légale que nous serions en mesure de citer. Écrit comme tel : une
           promesse tenable vaut mieux qu'un délai réglementaire mal rapporté.
         -->
-        Nous nous engageons à vous répondre sous
-        <strong class="text-ink">trente jours</strong>. Une demande de suppression, elle, est
-        exécutée sans attendre ce délai.
+        Vous pouvez néanmoins nous écrire à
+        <a href="mailto:contact@pharmasur.ci" class="font-semibold text-green-700 underline">
+          contact@pharmasur.ci </a
+        >
+        pour toute question ou demande relative à vos données. Nous nous engageons à répondre sous
+        <strong class="text-ink">trente jours</strong>, en vous disant précisément ce que nous
+        détenons — ce qui, en l'état du service, sera le plus souvent : rien.
       </p>
 
-      <h2 class="mt-12 text-[1.4rem]">9. Déclaration et réclamation</h2>
+      <h2 class="mt-12 text-[1.4rem]">8. Déclaration et réclamation</h2>
       <p class="mt-4">
-        Le traitement décrit ici relève de la loi ivoirienne relative à la protection des données à
-        caractère personnel. Les formalités auprès de l'Autorité de régulation des télécommunications
-        de Côte d'Ivoire (ARTCI) sont
+        PharmaSur relève de la loi ivoirienne relative à la protection des données à caractère
+        personnel. Depuis le retrait du formulaire, il ne subsiste aucune collecte auprès du
+        visiteur ; restent les journaux techniques de l'hébergeur décrits en section 4. Les
+        formalités auprès de l'Autorité de régulation des télécommunications de Côte d'Ivoire
+        (ARTCI) sont
         <mark class="rounded bg-[#fdeaec] px-1.5 py-0.5 font-bold text-alert">
           [état des démarches : déclaration, autorisation, numéro de récépissé]
         </mark>

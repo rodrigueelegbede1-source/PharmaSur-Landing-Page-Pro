@@ -1,5 +1,5 @@
 import { motion, useScroll, useSpring } from 'motion/react'
-import { CtaPhone } from './components/CtaPhone'
+import { CtaTelecharger } from './components/CtaTelecharger'
 import { Engagements } from './components/Engagements'
 import { Footer } from './components/Footer'
 import { Hero } from './components/Hero'
@@ -32,7 +32,7 @@ export default function App() {
         <Reliability />
         <Pricing />
         <Engagements />
-        <CtaPhone />
+        <CtaTelecharger />
       </main>
       <Footer />
     </>
