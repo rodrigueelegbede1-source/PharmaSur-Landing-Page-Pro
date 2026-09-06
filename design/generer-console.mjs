@@ -177,6 +177,94 @@ ${STYLE}
   });
 
   /*
+   * Inscription : cinq champs qu'on peut réellement remplir.
+   *
+   * Ils étaient figés. Le premier geste d'un pharmacien devant cette
+   * démonstration est de taper le nom de son officine ; c'était aussi le
+   * premier geste sans effet.
+   *
+   * Ce qui est saisi se répercute partout où la console nomme l'officine — la
+   * barre latérale, l'en-tête du tableau de bord, l'aperçu de la fiche patient
+   * sur l'écran des bons. Voir sa propre enseigne à ces trois endroits est ce
+   * qui distingue une démonstration d'une capture d'écran. Rien n'est
+   * enregistré pour autant : fermer l'onglet efface tout, et le bandeau du
+   * haut le dit.
+   */
+  var champs = {};
+  [].forEach.call(document.querySelectorAll('[data-saisie]'), function (e) {
+    champs[e.getAttribute('data-saisie')] = e;
+  });
+
+  if (champs.agrement) {
+    /* Le format d'agrément est celui que la fiche de collecte et le
+       vérificateur emploient : CI-PH-AAAA-0000. Les trois doivent rester
+       d'accord, sinon le terrain relève un numéro que la console refuse. */
+    var MOTIFS = {
+      agrement: /^CI-PH-\\d{4}-\\d{4}$/,
+      telephone: /^\\+225( \\d{2}){5}$/
+    };
+    var MESSAGES = {
+      nom: "Le nom de l'officine est obligatoire.",
+      commune: 'Choisissez votre commune.',
+      telephone: 'Format attendu : +225 07 00 00 00 00.',
+      pharmacien: 'Le nom du pharmacien titulaire est obligatoire.',
+      agrement: "Format attendu : CI-PH-AAAA-0000, tel qu'il figure sur votre autorisation."
+    };
+
+    function verifier(cle, montrerErreur) {
+      var e = champs[cle];
+      var bloc = e.parentNode.parentNode;
+      var v = (e.value || '').trim();
+      var ok = v !== '' && (!MOTIFS[cle] || MOTIFS[cle].test(v));
+
+      bloc.className = 'champ' + (ok ? ' valide' : (montrerErreur ? ' invalide' : ''));
+      var coche = bloc.querySelector('[data-coche]');
+      if (coche) coche.hidden = !ok;
+      var msg = bloc.querySelector('[data-msg]');
+      if (msg) msg.textContent = (!ok && montrerErreur) ? MESSAGES[cle] : '';
+      return ok;
+    }
+
+    function refleter() {
+      [].forEach.call(document.querySelectorAll('[data-echo]'), function (n) {
+        var e = champs[n.getAttribute('data-echo')];
+        var v = e && (e.value || '').trim();
+        if (v) n.textContent = v;
+      });
+    }
+
+    Object.keys(champs).forEach(function (cle) {
+      ['input', 'change'].forEach(function (ev) {
+        champs[cle].addEventListener(ev, function () { verifier(cle, false); refleter(); });
+      });
+      /* L'erreur n'apparaît qu'en quittant le champ : la signaler à la
+         troisième lettre du numéro d'agrément serait exact et insupportable. */
+      champs[cle].addEventListener('blur', function () { verifier(cle, true); });
+      verifier(cle, false);
+    });
+
+    var continuer = document.querySelector('[data-continuer]');
+    if (continuer) {
+      continuer.addEventListener('click', function () {
+        var complet = Object.keys(champs).map(function (c) {
+          return verifier(c, true);
+        }).every(Boolean);
+
+        if (!complet) {
+          var premier = document.querySelector('.champ.invalide .saisie');
+          if (premier) {
+            premier.focus();
+            if (premier.scrollIntoView) premier.scrollIntoView({ block: 'center' });
+          }
+          return;
+        }
+        refleter();
+        montrer('tableau');
+      });
+    }
+  }
+
+  /*
    * Horaires et garde.
    *
    * La phrase de l'aperçu est calculée par la MÊME règle que l'application

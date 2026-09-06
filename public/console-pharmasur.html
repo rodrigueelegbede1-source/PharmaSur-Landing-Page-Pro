@@ -153,13 +153,27 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 /* — Inscription — */
 .champ { display:flex; flex-direction:column; gap:6px; }
 .champ label { font-size:12.5px; font-weight:700; color:#2a3d35; }
-.champ .val {
-  min-height:46px; display:flex; align-items:center; justify-content:space-between; gap:8px;
+/* Ces champs étaient des <div> : ils avaient la bordure d'un formulaire sans
+   en accepter la frappe. Ce sont des <input> et des <select>, habillés pareil. */
+.champ .boite { position:relative; display:flex; align-items:center; }
+.champ .saisie {
+  min-height:46px; width:100%; box-sizing:border-box;
   border:1px solid var(--trait); border-radius:12px; padding:0 14px;
-  font-size:14.5px; font-weight:600; color:var(--encre); background:var(--papier);
+  font:inherit; font-size:14.5px; font-weight:600; color:var(--encre); background:var(--papier);
 }
-.champ .val.valide { border:1.5px solid var(--vert-600); box-shadow:0 0 0 3px rgb(18 133 93 / .1); }
+.champ .saisie:focus {
+  outline:none; border-color:var(--vert-600); box-shadow:0 0 0 3px rgb(18 133 93 / .1);
+}
+.champ .boite .coche {
+  position:absolute; right:13px; display:flex; color:var(--vert-600); pointer-events:none;
+}
+/* La coche ne se pose que sur du texte saisi : sur un menu déroulant elle
+   viendrait chevaucher la flèche du système. */
+.champ.valide input.saisie { border-color:var(--vert-600); padding-right:38px; }
+.champ.invalide .saisie { border-color:var(--alerte); }
 .champ .aide { font-size:11.5px; font-weight:500; color:var(--doux); }
+.champ .msg { font-size:11.5px; font-weight:700; color:var(--alerte); }
+.champ .msg:empty { display:none; }
 
 .etapes { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
 .etapes .e { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--doux); }
@@ -302,8 +316,8 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
     </button>
   </nav>
   <div class="officine">
-    <b>Pharmacie de la Riviera</b>
-    <span>Dr Kouassi Aya · Cocody</span>
+    <b data-echo="nom">Pharmacie de la Riviera</b>
+    <span><span data-echo="pharmacien">Dr Kouassi Aya</span> · <span data-echo="commune">Cocody</span></span>
   </div>
 </aside>
     <main class="principal">
@@ -325,56 +339,58 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 
     <div class="carte" style="display:flex;flex-direction:column;gap:14px">
       
-<div class="champ">
-  <label>Nom de l'officine</label>
-  <div class="val">
-    <span>Pharmacie de la Riviera</span>
-    
-    
+<div class="champ" data-champ="nom">
+  <label for="i-nom">Nom de l'officine</label>
+  <div class="boite">
+    <input class="saisie" id="i-nom" data-saisie="nom" value="Pharmacie de la Riviera" autocomplete="off" placeholder="Pharmacie de la Riviera">
+    <span class="coche" data-coche hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
   </div>
   
+  <span class="msg" data-msg></span>
 </div>
       <div class="grille-inscription" style="display:flex;flex-direction:column;gap:14px">
         
-<div class="champ">
-  <label>Commune</label>
-  <div class="val">
-    <span>Cocody</span>
-    
-    <span style="color:var(--doux)">▾</span>
+<div class="champ" data-champ="commune">
+  <label for="i-commune">Commune</label>
+  <div class="boite">
+    <select class="saisie" id="i-commune" data-saisie="commune">
+      <option>Abobo</option><option>Adjamé</option><option>Attécoubé</option><option>Bingerville</option><option selected>Cocody</option><option>Koumassi</option><option>Marcory</option><option>Plateau</option><option>Port-Bouët</option><option>Treichville</option><option>Yopougon</option>
+    </select>
+    <span class="coche" data-coche hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
   </div>
   
+  <span class="msg" data-msg></span>
 </div>
         
-<div class="champ">
-  <label>Téléphone</label>
-  <div class="val">
-    <span>+225 07 00 00 00 00</span>
-    
-    
+<div class="champ" data-champ="telephone">
+  <label for="i-telephone">Téléphone</label>
+  <div class="boite">
+    <input class="saisie" id="i-telephone" data-saisie="telephone" value="+225 07 00 00 00 00" autocomplete="off" data-motif="telephone" placeholder="+225 07 00 00 00 00">
+    <span class="coche" data-coche hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
   </div>
   
+  <span class="msg" data-msg></span>
 </div>
       </div>
       
-<div class="champ">
-  <label>Pharmacien titulaire</label>
-  <div class="val">
-    <span>Dr Kouassi Aya</span>
-    
-    
+<div class="champ" data-champ="pharmacien">
+  <label for="i-pharmacien">Pharmacien titulaire</label>
+  <div class="boite">
+    <input class="saisie" id="i-pharmacien" data-saisie="pharmacien" value="Dr Kouassi Aya" autocomplete="off" placeholder="Dr Kouassi Aya">
+    <span class="coche" data-coche hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
   </div>
   
+  <span class="msg" data-msg></span>
 </div>
       
-<div class="champ">
-  <label>Numéro d'agrément</label>
-  <div class="val valide">
-    <span>CI-PH-2019-0847</span>
-    <span style="color:var(--vert-600)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
-    
+<div class="champ" data-champ="agrement">
+  <label for="i-agrement">Numéro d'agrément</label>
+  <div class="boite">
+    <input class="saisie" id="i-agrement" data-saisie="agrement" value="CI-PH-2019-0847" autocomplete="off" data-motif="agrement" placeholder="CI-PH-2019-0847">
+    <span class="coche" data-coche hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
   </div>
   <span class="aide">Format attendu : CI-PH-AAAA-0000. Votre fiche reste hors ligne tant que ce numéro n'est pas vérifié.</span>
+  <span class="msg" data-msg></span>
 </div>
     </div>
 
@@ -383,14 +399,14 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
       <p>Sans engagement de durée. Le montant vous est communiqué à la validation de votre agrément, et rien n'est facturé avant.</p>
     </div>
 
-    <button class="btn plein bloc" type="button" data-va="tableau">Continuer <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
+    <button class="btn plein bloc" type="button" data-continuer>Continuer <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
     <p style="margin:0;text-align:center;font-size:12px;color:var(--doux)">Aucun paiement à cette étape.</p>
   </div>
 </section>
       
 <section class="ecran" id="ecran-tableau">
   <header class="entete">
-    <div><h1>Tableau de bord</h1><p>Pharmacie de la Riviera · Cocody</p></div>
+    <div><h1>Tableau de bord</h1><p><span data-echo="nom">Pharmacie de la Riviera</span> · <span data-echo="commune">Cocody</span></p></div>
   </header>
   <div class="contenu">
     
@@ -846,7 +862,7 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
     <div class="carte">
       <div class="titre-bloc">Ce que voit le patient</div>
       <div style="margin-top:12px;border:1px solid var(--vert-200);background:var(--vert-50);border-radius:14px;padding:14px">
-        <div style="font-size:13.5px;font-weight:800;color:var(--encre)">Pharmacie de la Riviera</div>
+        <div style="font-size:13.5px;font-weight:800;color:var(--encre)" data-echo="nom">Pharmacie de la Riviera</div>
         <div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:6px">
           <span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">CMU</span><span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">Mutuelles</span><span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">Assurances privées</span>
         </div>
@@ -1150,6 +1166,94 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
   [].slice.call(document.querySelectorAll('[data-produit]')).forEach(function (v) {
     rendre(v.getAttribute('data-produit'));
   });
+
+  /*
+   * Inscription : cinq champs qu'on peut réellement remplir.
+   *
+   * Ils étaient figés. Le premier geste d'un pharmacien devant cette
+   * démonstration est de taper le nom de son officine ; c'était aussi le
+   * premier geste sans effet.
+   *
+   * Ce qui est saisi se répercute partout où la console nomme l'officine — la
+   * barre latérale, l'en-tête du tableau de bord, l'aperçu de la fiche patient
+   * sur l'écran des bons. Voir sa propre enseigne à ces trois endroits est ce
+   * qui distingue une démonstration d'une capture d'écran. Rien n'est
+   * enregistré pour autant : fermer l'onglet efface tout, et le bandeau du
+   * haut le dit.
+   */
+  var champs = {};
+  [].forEach.call(document.querySelectorAll('[data-saisie]'), function (e) {
+    champs[e.getAttribute('data-saisie')] = e;
+  });
+
+  if (champs.agrement) {
+    /* Le format d'agrément est celui que la fiche de collecte et le
+       vérificateur emploient : CI-PH-AAAA-0000. Les trois doivent rester
+       d'accord, sinon le terrain relève un numéro que la console refuse. */
+    var MOTIFS = {
+      agrement: /^CI-PH-\d{4}-\d{4}$/,
+      telephone: /^\+225( \d{2}){5}$/
+    };
+    var MESSAGES = {
+      nom: "Le nom de l'officine est obligatoire.",
+      commune: 'Choisissez votre commune.',
+      telephone: 'Format attendu : +225 07 00 00 00 00.',
+      pharmacien: 'Le nom du pharmacien titulaire est obligatoire.',
+      agrement: "Format attendu : CI-PH-AAAA-0000, tel qu'il figure sur votre autorisation."
+    };
+
+    function verifier(cle, montrerErreur) {
+      var e = champs[cle];
+      var bloc = e.parentNode.parentNode;
+      var v = (e.value || '').trim();
+      var ok = v !== '' && (!MOTIFS[cle] || MOTIFS[cle].test(v));
+
+      bloc.className = 'champ' + (ok ? ' valide' : (montrerErreur ? ' invalide' : ''));
+      var coche = bloc.querySelector('[data-coche]');
+      if (coche) coche.hidden = !ok;
+      var msg = bloc.querySelector('[data-msg]');
+      if (msg) msg.textContent = (!ok && montrerErreur) ? MESSAGES[cle] : '';
+      return ok;
+    }
+
+    function refleter() {
+      [].forEach.call(document.querySelectorAll('[data-echo]'), function (n) {
+        var e = champs[n.getAttribute('data-echo')];
+        var v = e && (e.value || '').trim();
+        if (v) n.textContent = v;
+      });
+    }
+
+    Object.keys(champs).forEach(function (cle) {
+      ['input', 'change'].forEach(function (ev) {
+        champs[cle].addEventListener(ev, function () { verifier(cle, false); refleter(); });
+      });
+      /* L'erreur n'apparaît qu'en quittant le champ : la signaler à la
+         troisième lettre du numéro d'agrément serait exact et insupportable. */
+      champs[cle].addEventListener('blur', function () { verifier(cle, true); });
+      verifier(cle, false);
+    });
+
+    var continuer = document.querySelector('[data-continuer]');
+    if (continuer) {
+      continuer.addEventListener('click', function () {
+        var complet = Object.keys(champs).map(function (c) {
+          return verifier(c, true);
+        }).every(Boolean);
+
+        if (!complet) {
+          var premier = document.querySelector('.champ.invalide .saisie');
+          if (premier) {
+            premier.focus();
+            if (premier.scrollIntoView) premier.scrollIntoView({ block: 'center' });
+          }
+          return;
+        }
+        refleter();
+        montrer('tableau');
+      });
+    }
+  }
 
   /*
    * Horaires et garde.

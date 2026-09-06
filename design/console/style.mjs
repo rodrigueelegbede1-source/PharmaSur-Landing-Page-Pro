@@ -151,13 +151,27 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 /* — Inscription — */
 .champ { display:flex; flex-direction:column; gap:6px; }
 .champ label { font-size:12.5px; font-weight:700; color:#2a3d35; }
-.champ .val {
-  min-height:46px; display:flex; align-items:center; justify-content:space-between; gap:8px;
+/* Ces champs étaient des <div> : ils avaient la bordure d'un formulaire sans
+   en accepter la frappe. Ce sont des <input> et des <select>, habillés pareil. */
+.champ .boite { position:relative; display:flex; align-items:center; }
+.champ .saisie {
+  min-height:46px; width:100%; box-sizing:border-box;
   border:1px solid var(--trait); border-radius:12px; padding:0 14px;
-  font-size:14.5px; font-weight:600; color:var(--encre); background:var(--papier);
+  font:inherit; font-size:14.5px; font-weight:600; color:var(--encre); background:var(--papier);
 }
-.champ .val.valide { border:1.5px solid var(--vert-600); box-shadow:0 0 0 3px rgb(18 133 93 / .1); }
+.champ .saisie:focus {
+  outline:none; border-color:var(--vert-600); box-shadow:0 0 0 3px rgb(18 133 93 / .1);
+}
+.champ .boite .coche {
+  position:absolute; right:13px; display:flex; color:var(--vert-600); pointer-events:none;
+}
+/* La coche ne se pose que sur du texte saisi : sur un menu déroulant elle
+   viendrait chevaucher la flèche du système. */
+.champ.valide input.saisie { border-color:var(--vert-600); padding-right:38px; }
+.champ.invalide .saisie { border-color:var(--alerte); }
 .champ .aide { font-size:11.5px; font-weight:500; color:var(--doux); }
+.champ .msg { font-size:11.5px; font-weight:700; color:var(--alerte); }
+.champ .msg:empty { display:none; }
 
 .etapes { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
 .etapes .e { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--doux); }

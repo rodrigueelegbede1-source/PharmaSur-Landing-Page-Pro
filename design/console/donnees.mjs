@@ -25,6 +25,17 @@ export const OFFICINE = {
 }
 
 /*
+ * Communes du district d'Abidjan, où commence le référencement. La commune est
+ * une liste fermée et non un champ libre : « Cocody », « COCODY » et « cocody »
+ * deviendraient trois zones différentes le jour où l'application cherchera les
+ * officines proches.
+ */
+export const COMMUNES = [
+  'Abobo', 'Adjamé', 'Attécoubé', 'Bingerville', 'Cocody', 'Koumassi',
+  'Marcory', 'Plateau', 'Port-Bouët', 'Treichville', 'Yopougon',
+]
+
+/*
  * Horaires déclarés par l'officine. Ils ne sont pas décoratifs : l'application
  * patient ne classe en tête que les officines ouvertes, et affiche les autres
  * grisées avec leur heure d'ouverture. Une officine qui ne déclare rien serait

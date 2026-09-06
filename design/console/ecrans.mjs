@@ -7,8 +7,8 @@
  * raison pour laquelle on n'écrit pas deux consoles.
  */
 import {
-  A_CONFIRMER, BONS, DEMANDES, HORAIRES, MENU, OFFICINE, RECHERCHES, STOCKS, VIGNETTES,
-  ZONES,
+  A_CONFIRMER, BONS, COMMUNES, DEMANDES, HORAIRES, MENU, OFFICINE, RECHERCHES, STOCKS,
+  VIGNETTES, ZONES,
 } from './donnees.mjs'
 
 const ICONES = {
@@ -56,8 +56,8 @@ export const laterale = () => `
     ).join('')}
   </nav>
   <div class="officine">
-    <b>${OFFICINE.nom}</b>
-    <span>${OFFICINE.pharmacien} · ${OFFICINE.commune}</span>
+    <b data-echo="nom">${OFFICINE.nom}</b>
+    <span><span data-echo="pharmacien">${OFFICINE.pharmacien}</span> · <span data-echo="commune">${OFFICINE.commune}</span></span>
   </div>
 </aside>`
 
@@ -70,16 +70,34 @@ export const onglets = () => `
   ).join('')}
 </nav>`
 
-/* — 1. Inscription — */
-const champ = (label, valeur, { valide, aide, chevron } = {}) => `
-<div class="champ">
-  <label>${label}</label>
-  <div class="val${valide ? ' valide' : ''}">
-    <span>${valeur}</span>
-    ${valide ? `<span style="color:var(--vert-600)">${svg('coche', 16, 2.4)}</span>` : ''}
-    ${chevron ? '<span style="color:var(--doux)">▾</span>' : ''}
+/* — 1. Inscription —
+ *
+ * Les cinq champs étaient des textes figés dans une bordure : ils avaient
+ * l'apparence d'un formulaire sans en être un. Un pharmacien qui ouvrait la
+ * démonstration essayait d'y taper le nom de son officine, et rien ne se
+ * passait — la première chose qu'il fait, et la première qui ne marchait pas.
+ *
+ * Ils sont maintenant saisissables, et ce qui est saisi se répercute là où la
+ * console nomme l'officine (voir data-echo). Rien n'est enregistré pour autant :
+ * le bandeau du haut le dit, et fermer l'onglet efface tout.
+ */
+const champ = (label, valeur, { cle, aide, options, motif, exemple } = {}) => `
+<div class="champ" data-champ="${cle}">
+  <label for="i-${cle}">${label}</label>
+  <div class="boite">
+    ${
+      options
+        ? `<select class="saisie" id="i-${cle}" data-saisie="${cle}">
+      ${options.map((o) => `<option${o === valeur ? ' selected' : ''}>${o}</option>`).join('')}
+    </select>`
+        : `<input class="saisie" id="i-${cle}" data-saisie="${cle}" value="${valeur}" autocomplete="off"${
+            motif ? ` data-motif="${motif}"` : ''
+          }${exemple ? ` placeholder="${exemple}"` : ''}>`
+    }
+    <span class="coche" data-coche hidden>${svg('coche', 16, 2.6)}</span>
   </div>
   ${aide ? `<span class="aide">${aide}</span>` : ''}
+  <span class="msg" data-msg></span>
 </div>`
 
 export const inscription = () => `
@@ -99,14 +117,26 @@ export const inscription = () => `
     </p>
 
     <div class="carte" style="display:flex;flex-direction:column;gap:14px">
-      ${champ("Nom de l'officine", OFFICINE.nom)}
+      ${champ("Nom de l'officine", OFFICINE.nom, {
+        cle: 'nom',
+        exemple: 'Pharmacie de la Riviera',
+      })}
       <div class="grille-inscription" style="display:flex;flex-direction:column;gap:14px">
-        ${champ('Commune', OFFICINE.commune, { chevron: true })}
-        ${champ('Téléphone', `+225 ${OFFICINE.telephone}`)}
+        ${champ('Commune', OFFICINE.commune, { cle: 'commune', options: COMMUNES })}
+        ${champ('Téléphone', `+225 ${OFFICINE.telephone}`, {
+          cle: 'telephone',
+          motif: 'telephone',
+          exemple: '+225 07 00 00 00 00',
+        })}
       </div>
-      ${champ('Pharmacien titulaire', OFFICINE.pharmacien)}
+      ${champ('Pharmacien titulaire', OFFICINE.pharmacien, {
+        cle: 'pharmacien',
+        exemple: 'Dr Kouassi Aya',
+      })}
       ${champ("Numéro d'agrément", OFFICINE.agrement, {
-        valide: true,
+        cle: 'agrement',
+        motif: 'agrement',
+        exemple: 'CI-PH-2019-0847',
         aide: "Format attendu : CI-PH-AAAA-0000. Votre fiche reste hors ligne tant que ce numéro n'est pas vérifié.",
       })}
     </div>
@@ -116,7 +146,7 @@ export const inscription = () => `
       <p>Sans engagement de durée. Le montant vous est communiqué à la validation de votre agrément, et rien n'est facturé avant.</p>
     </div>
 
-    <button class="btn plein bloc" type="button" data-va="tableau">Continuer ${svg('fleche', 16, 2.4)}</button>
+    <button class="btn plein bloc" type="button" data-continuer>Continuer ${svg('fleche', 16, 2.4)}</button>
     <p style="margin:0;text-align:center;font-size:12px;color:var(--doux)">Aucun paiement à cette étape.</p>
   </div>
 </section>`
@@ -180,7 +210,7 @@ const horaires = () => `
 export const tableau = () => `
 <section class="ecran" id="ecran-tableau">
   <header class="entete">
-    <div><h1>Tableau de bord</h1><p>${OFFICINE.nom} · ${OFFICINE.commune}</p></div>
+    <div><h1>Tableau de bord</h1><p><span data-echo="nom">${OFFICINE.nom}</span> · <span data-echo="commune">${OFFICINE.commune}</span></p></div>
   </header>
   <div class="contenu">
     ${horaires()}
@@ -356,7 +386,7 @@ export const bons = () => `
     <div class="carte">
       <div class="titre-bloc">Ce que voit le patient</div>
       <div style="margin-top:12px;border:1px solid var(--vert-200);background:var(--vert-50);border-radius:14px;padding:14px">
-        <div style="font-size:13.5px;font-weight:800;color:var(--encre)">${OFFICINE.nom}</div>
+        <div style="font-size:13.5px;font-weight:800;color:var(--encre)" data-echo="nom">${OFFICINE.nom}</div>
         <div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:6px">
           ${BONS.map((b) => `<span style="background:#fff;color:var(--vert-700);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px">${b.nom}</span>`).join('')}
         </div>
