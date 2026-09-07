@@ -5,14 +5,19 @@ import {
   OFFICINES,
   ORGANISMES_DECLARES,
   accepte,
+  alleger,
   chercher,
   classer,
+  cleBon,
+  depuis,
   equivalentsDe,
   estEnRupture,
+  etatDuBon,
   etatDuProduit,
   fcfa,
   ouverture,
   verdict,
+  type Confirmations,
   type Officine,
   type Produit,
 } from './donnees'
@@ -90,11 +95,53 @@ function useAssurance() {
   return { nom, choisir: setNom }
 }
 
+const CLE_BONS = 'pharmasur.bons'
+
+/*
+ * Ce que le patient a constaté au comptoir : sa carte est-elle passée, ou non.
+ *
+ * Cela ne quitte pas l'appareil — il n'existe aucun serveur — et l'interface ne
+ * doit donc jamais laisser croire que d'autres en profitent. Voir le long
+ * commentaire de `donnees.ts` : l'effet d'entraînement suppose un serveur dont
+ * la création rouvrirait toute la politique de confidentialité.
+ */
+function useConfirmations() {
+  const [tout, setTout] = useState<Confirmations>(() => {
+    try {
+      const brut = localStorage.getItem(CLE_BONS)
+      return brut ? (JSON.parse(brut) as Confirmations) : {}
+    } catch {
+      return {}
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CLE_BONS, JSON.stringify(tout))
+    } catch {
+      /* Navigation privée : le constat vaut pour la session. */
+    }
+  }, [tout])
+
+  return {
+    tout,
+    repondre: (officineId: string, organisme: string, ok: boolean) =>
+      setTout((v) => ({ ...v, [cleBon(officineId, organisme)]: { ok, quand: Date.now() } })),
+    effacer: (officineId: string, organisme: string) =>
+      setTout((v) => {
+        const copie = { ...v }
+        delete copie[cleBon(officineId, organisme)]
+        return copie
+      }),
+  }
+}
+
 export default function App() {
   const [onglet, setOnglet] = useState<Onglet>('recherche')
   const [vue, setVue] = useState<Vue>({ nom: 'onglets' })
   const liste = useListe()
   const assurance = useAssurance()
+  const confirmations = useConfirmations()
   const classement = useMemo(() => classer(OFFICINES, liste.produits), [liste.produits])
 
   const allerA = (v: Vue) => {
@@ -156,6 +203,7 @@ export default function App() {
             officine={OFFICINES.find((o) => o.id === vue.id)!}
             produits={liste.produits}
             assurance={assurance.nom}
+            confirmations={confirmations}
             onRetour={() => allerA({ nom: 'resultats' })}
           />
         )}
@@ -525,6 +573,8 @@ function EcranListe({
           </span>
         </Carte>
 
+        <Budget produits={liste.produits} total={total} onRemplacer={liste.remplacer} />
+
         <button
           type="button"
           onClick={liste.vider}
@@ -543,6 +593,127 @@ function EcranListe({
         </Bouton>
       </div>
     </>
+  )
+}
+
+/*
+ * « J'ai tant en poche. » — la question que le pays pose vraiment.
+ *
+ * Ce bloc est le SEUL endroit du produit où un équivalent est proposé pour une
+ * raison de prix, et il ne s'ouvre que si la personne saisit elle-même ce
+ * qu'elle a. L'application ne devance jamais cette demande : la règle 2 de
+ * `donnees.ts` explique pourquoi la distinction est tout ce qui sépare un
+ * service d'un argumentaire commercial.
+ *
+ * Le montant n'est pas enregistré. Il vit dans cet état de composant, et
+ * disparaît avec lui.
+ */
+function Budget({
+  produits,
+  total,
+  onRemplacer,
+}: {
+  produits: Produit[]
+  total: number
+  onRemplacer: (ancien: string, nouveau: string) => void
+}) {
+  const [saisie, setSaisie] = useState('')
+  const montant = Number(saisie.replace(/[^\d]/g, ''))
+  const actif = saisie.trim() !== '' && Number.isFinite(montant) && montant > 0
+
+  const plan = useMemo(() => (actif ? alleger(produits, montant) : null), [actif, produits, montant])
+
+  return (
+    <Carte>
+      <label htmlFor="budget" className="block text-[0.88rem] font-bold text-ink">
+        Ce total dépasse ce que vous avez&nbsp;?
+      </label>
+      <p className="mt-1 text-[0.78rem] leading-relaxed text-body-soft">
+        Dites-nous combien vous avez : nous chercherons des équivalents au même principe actif.
+        Le montant n'est pas enregistré.
+      </p>
+      <div className="mt-3 flex items-center gap-2">
+        <input
+          id="budget"
+          type="text"
+          inputMode="numeric"
+          value={saisie}
+          onChange={(e) => setSaisie(e.target.value)}
+          placeholder="15 000"
+          className="h-12 w-full min-w-0 flex-1 rounded-xl border border-line bg-paper px-4 text-[0.95rem] font-bold text-ink tabular-nums placeholder:font-medium placeholder:text-body-soft focus:border-green-600 focus:outline-none"
+        />
+        <span className="text-[0.95rem] font-extrabold text-body-soft">FCFA</span>
+      </div>
+
+      {plan && montant >= total && (
+        <p className="mt-3 text-[0.82rem] leading-relaxed font-bold text-green-700">
+          Vous avez de quoi régler l'ordonnance entière.
+        </p>
+      )}
+
+      {plan && montant < total && (
+        <div className="mt-4 border-t border-line-soft pt-4">
+          {plan.pistes.length === 0 ? (
+            <p className="text-[0.82rem] leading-relaxed font-bold text-alert">
+              Il manque {fcfa(total - montant)}, et aucun de ces produits n'a d'équivalent moins
+              cher au même principe actif. Demandez au pharmacien s'il peut délivrer une partie de
+              l'ordonnance d'abord.
+            </p>
+          ) : (
+            <>
+              <p className="text-[0.82rem] leading-snug font-bold text-ink">
+                Il manque {fcfa(total - montant)}. Voici ce qui existe au même principe actif.
+              </p>
+
+              <div className="mt-3 flex flex-col gap-2">
+                {plan.pistes.map((piste) => (
+                  <div
+                    key={piste.produit.id}
+                    className="rounded-xl border border-line bg-line-soft/50 px-3.5 py-3"
+                  >
+                    <p className="text-[0.82rem] leading-snug font-bold text-ink">
+                      {piste.produit.nom} → {piste.remplacant.nom} {piste.remplacant.dosage}
+                    </p>
+                    <p className="mt-0.5 text-[0.75rem] font-semibold text-body-soft tabular-nums">
+                      {fcfa(piste.produit.prix)} → {fcfa(piste.remplacant.prix)} · vous gardez{' '}
+                      <span className="text-green-700">{fcfa(piste.economie)}</span>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => onRemplacer(piste.produit.id, piste.remplacant.id)}
+                      className="mt-1.5 min-h-11 text-[0.8rem] font-extrabold text-green-700"
+                    >
+                      Mettre {piste.remplacant.nom} dans ma liste
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/*
+                Dire franchement que ça ne suffit pas. Laisser quelqu'un
+                remplacer trois lignes pour découvrir au comptoir qu'il manque
+                encore 4 000 F serait la pire des issues.
+              */}
+              <p
+                className={cx(
+                  'mt-3 text-[0.8rem] leading-relaxed font-bold',
+                  plan.insuffisant ? 'text-alert' : 'text-green-700',
+                )}
+              >
+                {plan.insuffisant
+                  ? `Même en prenant tous ces équivalents, le total resterait à ${fcfa(plan.apres)} : il manquerait encore ${fcfa(plan.apres - montant)}. Parlez-en au pharmacien.`
+                  : `En prenant tous ces équivalents, le total tombe à ${fcfa(plan.apres)}.`}
+              </p>
+            </>
+          )}
+
+          <p className="mt-3 text-[0.75rem] leading-relaxed font-semibold text-alert">
+            Même principe actif et même dosage. Seul votre pharmacien peut valider ces
+            équivalences pour vous : lui seul connaît vos allergies et vos autres traitements.
+          </p>
+        </div>
+      )}
+    </Carte>
   )
 }
 
@@ -736,11 +907,13 @@ function EcranOfficine({
   officine,
   produits,
   assurance,
+  confirmations,
   onRetour,
 }: {
   officine: Officine
   produits: Produit[]
   assurance: string | null
+  confirmations: ReturnType<typeof useConfirmations>
   onRetour: () => void
 }) {
   const manquants = produits.filter((p) => etatDuProduit(officine, p.id) === 'absent')
@@ -869,29 +1042,134 @@ function EcranOfficine({
           {/* Celui du patient d'abord : c'est la seule ligne qu'il cherche. */}
           {[...officine.bons]
             .sort((a, b) => Number(b === assurance) - Number(a === assurance))
-            .map((b) => (
-            <span
-              key={b}
-              className={cx(
-                'inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[0.8rem] font-bold',
-                b === assurance
-                  ? 'border-green-600 bg-green-600 text-white'
-                  : 'border-green-200 bg-green-50 text-green-800',
-              )}
-            >
-              <Svg className="size-3.5" trait={2.4}>
-                {Icone.bouclier}
-              </Svg>
-              {b}
-            </span>
-          ))}
+            .map((b) => {
+              const etat = etatDuBon(officine, b, confirmations.tout)
+              return (
+                <span
+                  key={b}
+                  className={cx(
+                    'inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[0.8rem] font-bold',
+                    /* Un refus constaté prime sur ce que l'officine déclare :
+                       c'est le seul des deux à avoir été vu. */
+                    etat === 'refuse'
+                      ? 'border-alert/40 bg-alert/8 text-alert line-through'
+                      : b === assurance
+                        ? 'border-green-600 bg-green-600 text-white'
+                        : 'border-green-200 bg-green-50 text-green-800',
+                  )}
+                >
+                  <Svg className="size-3.5" trait={2.4}>
+                    {etat === 'refuse' ? Icone.croix : Icone.bouclier}
+                  </Svg>
+                  {b}
+                </span>
+              )
+            })}
         </div>
+
+        {/*
+          La phrase qui se trouvait ici affirmait « déclarés par l'officine,
+          vérifiés il y a 2 jours ». Le délai était écrit en dur : aucune
+          vérification n'existait, et ce chiffre rassurait le patient sur la
+          foi de rien. Retiré, et remplacé par la seule vérification qui puisse
+          réellement avoir lieu — la sienne, au comptoir.
+        */}
         <p className="mt-2.5 text-[0.75rem] leading-relaxed text-body-soft">
-          Déclarés par l'officine, vérifiés il y a 2 jours. Confirmez au comptoir avant de vous
-          engager.
+          Déclarés par l'officine. Nous ne les vérifions pas nous-mêmes : demandez au comptoir
+          avant de vous engager.
         </p>
+
+        {assurance && officine.bons.includes(assurance) && (
+          <ConfirmerBon
+            officine={officine}
+            organisme={assurance}
+            confirmations={confirmations}
+          />
+        )}
       </div>
     </>
+  )
+}
+
+/*
+ * « Votre carte est-elle passée ici ? » — posée à la personne qui revient du
+ * comptoir, c'est-à-dire au seul moment où quelqu'un connaît la réponse.
+ *
+ * Ne parle jamais au nom d'autres utilisateurs : rien n'est envoyé nulle part,
+ * et écrire « confirmé par 4 personnes » serait inventer une foule qui
+ * n'existe pas. Voir le commentaire de `donnees.ts`.
+ */
+function ConfirmerBon({
+  officine,
+  organisme,
+  confirmations,
+}: {
+  officine: Officine
+  organisme: string
+  confirmations: ReturnType<typeof useConfirmations>
+}) {
+  const etat = etatDuBon(officine, organisme, confirmations.tout)
+  const vu = confirmations.tout[cleBon(officine.id, organisme)]
+
+  if (etat === 'declare' || etat === 'ancien') {
+    return (
+      <div className="mt-4 rounded-2xl border border-line bg-line-soft/60 px-4 py-3.5">
+        <p className="text-[0.84rem] leading-snug font-bold text-ink">
+          {organisme} a-t-elle été acceptée ici&nbsp;?
+        </p>
+        <p className="mt-1 text-[0.75rem] leading-relaxed text-body-soft">
+          {etat === 'ancien'
+            ? "Vous nous l'aviez dit il y a longtemps. Les conventions changent : est-ce toujours le cas ?"
+            : 'Si vous revenez du comptoir, vous êtes le seul à le savoir.'}
+        </p>
+        <div className="mt-3 flex gap-2.5">
+          <button
+            type="button"
+            onClick={() => confirmations.repondre(officine.id, organisme, true)}
+            className="min-h-11 flex-1 rounded-xl bg-green-600 px-4 text-[0.86rem] font-extrabold text-white"
+          >
+            Oui, acceptée
+          </button>
+          <button
+            type="button"
+            onClick={() => confirmations.repondre(officine.id, organisme, false)}
+            className="min-h-11 flex-1 rounded-xl border border-line bg-paper px-4 text-[0.86rem] font-extrabold text-body"
+          >
+            Non, refusée
+          </button>
+        </div>
+        <p className="mt-2.5 text-[0.7rem] leading-relaxed text-body-soft">
+          Votre réponse reste sur cet appareil.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className={cx(
+        'mt-4 rounded-2xl border px-4 py-3.5',
+        etat === 'confirme' ? 'border-green-200 bg-green-50' : 'border-alert/30 bg-alert/8',
+      )}
+    >
+      <p
+        className={cx(
+          'text-[0.84rem] leading-snug font-bold',
+          etat === 'confirme' ? 'text-green-800' : 'text-alert',
+        )}
+      >
+        {etat === 'confirme'
+          ? `Vous avez constaté que ${organisme} passait ici, ${depuis(vu.quand)}.`
+          : `Vous avez signalé un refus de ${organisme} ici, ${depuis(vu.quand)}.`}
+      </p>
+      <button
+        type="button"
+        onClick={() => confirmations.effacer(officine.id, organisme)}
+        className="mt-1.5 min-h-11 text-[0.78rem] font-bold text-body-soft underline underline-offset-2"
+      >
+        Ce n'est plus le cas
+      </button>
+    </div>
   )
 }
 

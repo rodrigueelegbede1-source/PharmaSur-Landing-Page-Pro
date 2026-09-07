@@ -12,6 +12,9 @@
  *      et l'interface doit continuer de l'afficher.
  *   2. L'équivalent proposé porte sur le PRINCIPE ACTIF seul. Jamais sur une
  *      autre molécule, jamais sans la mention de validation par le pharmacien.
+ *      L'application ne le propose jamais d'elle-même pour une raison de prix :
+ *      soit le produit est en rupture, soit le patient a déclaré un budget et
+ *      demande donc explicitement comment descendre. Voir `alleger`.
  *   3. Les prix des médicaments sont homologués en Côte d'Ivoire : un produit
  *      a UN prix, le même partout. D'où un prix par produit et non par
  *      officine — et rien à comparer d'une officine à l'autre là-dessus.
@@ -266,6 +269,139 @@ export function equivalentsDe(produit: Produit): Produit[] {
   return CATALOGUE.filter(
     (p) => p.id !== produit.id && p.principeActif === produit.principeActif && p.dosage === produit.dosage,
   )
+}
+
+/*
+ * ————————————————————————————————————————————————————————————————
+ * DESCENDRE SOUS UN BUDGET
+ * ————————————————————————————————————————————————————————————————
+ *
+ * ATTENTION — CECI TOUCHE À LA RÈGLE 2 DU HAUT DE FICHIER, ET LA PRÉCISE.
+ *
+ * Le produit s'interdit de proposer un équivalent pour une raison de PRIX :
+ * pousser quelqu'un à changer de médicament pour économiser, sans qu'il ait
+ * rien demandé, est un acte commercial déguisé en service. C'est pourquoi
+ * `estEnRupture` garde l'affichage spontané des équivalents.
+ *
+ * Ce qui suit est différent, et la distinction est la seule chose qui rend la
+ * fonction acceptable : ELLE NE SE DÉCLENCHE QUE SI LE PATIENT DÉCLARE
+ * LUI-MÊME CE QU'IL A. Ce n'est plus l'application qui propose, c'est une
+ * personne qui demande « je n'ai que 15 000 F, que faire ». Lui répondre
+ * « débrouillez-vous » quand la réponse existe serait une faute d'un autre
+ * ordre — en Côte d'Ivoire, repartir sans son traitement est une issue
+ * courante, et elle se paie en santé.
+ *
+ * Trois garde-fous restent en place :
+ *   - jamais affiché tant qu'aucun budget n'est saisi ;
+ *   - même principe actif et même dosage, jamais une autre molécule ;
+ *   - la mention du pharmacien accompagne chaque proposition, comme partout.
+ *
+ * Le budget saisi n'est JAMAIS enregistré, nulle part : combien quelqu'un a en
+ * poche ne regarde ni cet appareil au prochain démarrage, ni personne d'autre.
+ */
+export function equivalentsMoinsChers(produit: Produit): Produit[] {
+  return equivalentsDe(produit)
+    .filter((p) => p.prix < produit.prix)
+    .sort((a, b) => a.prix - b.prix)
+}
+
+export type Allegement = {
+  produit: Produit
+  remplacant: Produit
+  economie: number
+}
+
+export function alleger(produits: Produit[], budget: number) {
+  const total = produits.reduce((s, p) => s + p.prix, 0)
+
+  const pistes: Allegement[] = []
+  for (const p of produits) {
+    const moinsCher = equivalentsMoinsChers(p)[0]
+    if (moinsCher) pistes.push({ produit: p, remplacant: moinsCher, economie: p.prix - moinsCher.prix })
+  }
+  pistes.sort((a, b) => b.economie - a.economie)
+
+  const economie = pistes.reduce((s, x) => s + x.economie, 0)
+  const apres = total - economie
+
+  return {
+    total,
+    pistes,
+    economie,
+    apres,
+    /* Vrai si, même en prenant TOUS les équivalents les moins chers, le total
+       reste au-dessus de ce que la personne a. L'interface doit alors le dire
+       franchement plutôt que de laisser espérer. */
+    insuffisant: apres > budget,
+  }
+}
+
+/*
+ * ————————————————————————————————————————————————————————————————
+ * CONFIRMATION D'UN BON PAR LE PATIENT
+ * ————————————————————————————————————————————————————————————————
+ *
+ * Le problème que ceci résout : un annuaire d'organismes acceptés se périme en
+ * silence. Les deux applications ivoiriennes qui affichaient les assurances
+ * acceptées ont cessé d'être maintenues, et rien n'avertissait leurs
+ * utilisateurs que la donnée avait vieilli.
+ *
+ * Demander aux OFFICINES de tenir cela à jour ne marche pas : elles n'y ont
+ * aucun intérêt. Le patient, lui, sort du comptoir en sachant à l'instant même
+ * si sa carte est passée. Ce n'est pas de la saisie, c'est une confirmation :
+ * une question, une réponse.
+ *
+ * CE QUE CECI NE FAIT PAS, ET QU'IL NE FAUT PAS LAISSER CROIRE. La réponse
+ * reste sur l'appareil de la personne. Elle ne profite à personne d'autre,
+ * parce qu'il n'existe aucun serveur pour la recueillir. L'effet d'entraînement
+ * — « confirmé par 4 personnes cette semaine » — suppose un serveur qui
+ * n'existe pas, et sa création rouvrirait entièrement la politique de
+ * confidentialité : savoir de quel organisme quelqu'un dépend, et dans quelle
+ * officine il passe, est une donnée sensible. L'interface doit donc parler à la
+ * première personne — « vous avez confirmé » — et jamais au nom d'une foule.
+ */
+
+/** Au-delà, ce que le patient a constaté n'est plus tenu pour actuel. Une
+    convention entre une officine et un organisme se renouvelle à l'année :
+    quatre mois est court pour elle, et long pour une mémoire. */
+export const SEUIL_BON_JOURS = 120
+
+export type Confirmation = { ok: boolean; quand: number }
+export type Confirmations = Record<string, Confirmation>
+
+export const cleBon = (officineId: string, organisme: string) => `${officineId}|${organisme}`
+
+export type EtatBon =
+  /** L'officine le déclare, le patient n'a rien constaté. */
+  | 'declare'
+  /** Le patient a vu sa carte passer, récemment. */
+  | 'confirme'
+  /** Le patient a vu sa carte refusée. Prime sur la déclaration. */
+  | 'refuse'
+  /** Le patient avait constaté, mais c'est trop vieux pour être affirmé. */
+  | 'ancien'
+
+export function etatDuBon(
+  officine: Officine,
+  organisme: string,
+  confirmations: Confirmations,
+  maintenant = Date.now(),
+): EtatBon {
+  const vu = confirmations[cleBon(officine.id, organisme)]
+  if (!vu) return 'declare'
+  const jours = (maintenant - vu.quand) / 86_400_000
+  if (jours > SEUIL_BON_JOURS) return 'ancien'
+  return vu.ok ? 'confirme' : 'refuse'
+}
+
+/** « aujourd'hui », « il y a 3 jours », « il y a 2 mois ». */
+export function depuis(quand: number, maintenant = Date.now()): string {
+  const jours = Math.floor((maintenant - quand) / 86_400_000)
+  if (jours <= 0) return "aujourd'hui"
+  if (jours === 1) return 'hier'
+  if (jours < 31) return `il y a ${jours} jours`
+  const mois = Math.round(jours / 30)
+  return mois === 1 ? 'il y a un mois' : `il y a ${mois} mois`
 }
 
 export function fcfa(n: number): string {

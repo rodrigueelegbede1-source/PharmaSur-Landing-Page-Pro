@@ -49,7 +49,7 @@ const plans: Offre[] = [
     features: [
       { texte: 'Recherche de médicaments illimitée' },
       { texte: "Prix des médicaments et coût total de l'ordonnance" },
-      { texte: 'Équivalent générique signalé en cas de rupture' },
+      { texte: 'Équivalent générique en cas de rupture, ou si votre budget ne suffit pas' },
       { texte: "Bons d'assurance acceptés, et filtre sur le vôtre" },
       { texte: "Officines ouvertes en tête, horaires et gardes" },
       { texte: "Appeler l'officine et ouvrir l'itinéraire" },

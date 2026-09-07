@@ -34,7 +34,11 @@ const engagements: { icon: ReactNode; title: string; body: string }[] = [
       </>
     ),
     title: 'Un équivalent proposé, jamais substitué',
-    body: "En cas de rupture, l'application peut signaler un médicament ayant le même principe actif. Elle ne décide de rien : seul le pharmacien peut valider cette équivalence pour votre situation. PharmaSur ne remplace ni une ordonnance ni un avis médical.",
+    /* Cette phrase disait « en cas de rupture » seulement. L'application
+       propose désormais aussi un équivalent moins cher quand le patient déclare
+       lui-même un budget insuffisant — jamais de sa propre initiative. La
+       promesse devait suivre, sous peine de devenir fausse. */
+    body: "En cas de rupture, ou si vous nous dites que le total dépasse ce que vous avez, l'application peut signaler un médicament ayant le même principe actif. Elle ne le fait jamais d'elle-même pour vous pousser à changer, et ne décide de rien : seul le pharmacien peut valider cette équivalence pour votre situation. PharmaSur ne remplace ni une ordonnance ni un avis médical.",
   },
   {
     icon: (
