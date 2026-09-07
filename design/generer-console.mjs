@@ -378,6 +378,53 @@ ${STYLE}
   }
 
   /*
+   * RAPPEL HEBDOMADAIRE DES BONS D'ASSURANCE.
+   *
+   * Confirmer prend un clic, et c'est voulu : demander une ressaisie chaque
+   * semaine garantirait qu'on ne la fasse jamais. Ce qui est demandé n'est pas
+   * de retaper la liste, mais d'affirmer qu'elle est toujours exacte — le
+   * pharmacien n'a rien a faire s'il ne s'est rien passé.
+   *
+   * CE QUE « OBLIGATOIRE » VEUT DIRE, ET CE QU'IL NE VEUT PAS DIRE. Passé le
+   * délai, la fiche cesse d'AFFIRMER aux patients que ces organismes sont
+   * acceptés : elle passe en « à reconfirmer ». Elle ne disparaît pas des
+   * résultats — retirer une officine parce que son pharmacien n'a pas cliqué
+   * punirait le patient d'une négligence qui n'est pas la sienne, et le
+   * priverait d'une officine réellement ouverte. La sanction porte sur
+   * l'affirmation, jamais sur la visibilité.
+   */
+  var rappel = document.querySelector('[data-rappel-bons]');
+  if (rappel) {
+    var boutonRappel = rappel.querySelector('[data-confirmer-bons]');
+    var delaiRappel = rappel.querySelector('[data-rappel-delai]');
+    var msgRappel = rappel.querySelector('[data-rappel-msg]');
+    var fraicheur = document.querySelector('[data-apercu-fraicheur]');
+    var vignetteBons = document.querySelector('[data-vignette-bons]');
+    var pastilleMenu = [].slice
+      .call(document.querySelectorAll('[data-va="bons"] .pastille'));
+
+    boutonRappel.addEventListener('click', function () {
+      rappel.className = 'rappel-bons faite';
+      rappel.querySelector('.rappel-pastille').textContent = 'À jour';
+      delaiRappel.textContent = "Confirmée aujourd'hui";
+      msgRappel.textContent = 'Prochain rappel dans 7 jours.';
+      boutonRappel.disabled = true;
+      boutonRappel.style.display = 'none';
+
+      /* La fiche patient suit immédiatement : c'est le seul effet visible de
+         ce clic, et le seul qui compte. */
+      if (fraicheur) {
+        fraicheur.textContent = "Déclarés par l'officine · confirmés aujourd'hui";
+      }
+      if (vignetteBons) {
+        vignetteBons.textContent = "confirmés aujourd'hui";
+        vignetteBons.className = 'note vert';
+      }
+      pastilleMenu.forEach(function (p) { p.style.display = 'none'; });
+    });
+  }
+
+  /*
    * Demandes locales, filtrées par assurance.
    *
    * Le pharmacien peut enfin poser la question qu'aucun autre écran ne permet :

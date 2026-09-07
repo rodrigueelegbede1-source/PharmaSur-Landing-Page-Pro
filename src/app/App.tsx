@@ -617,20 +617,47 @@ function Budget({
   total: number
   onRemplacer: (ancien: string, nouveau: string) => void
 }) {
+  /*
+   * EN OPTION, ET FERMÉ PAR DÉFAUT.
+   *
+   * Le bloc s'affichait d'emblée sur chaque liste. Même sans rien proposer
+   * avant saisie, poser la question « ce total dépasse ce que vous avez ? » à
+   * quelqu'un qui n'a rien demandé revient à la suggérer. Il faut désormais
+   * l'ouvrir : c'est la personne qui déclare son besoin, pas l'application qui
+   * le présume.
+   */
+  const [ouvert, setOuvert] = useState(false)
   const [saisie, setSaisie] = useState('')
   const montant = Number(saisie.replace(/[^\d]/g, ''))
   const actif = saisie.trim() !== '' && Number.isFinite(montant) && montant > 0
 
   const plan = useMemo(() => (actif ? alleger(produits, montant) : null), [actif, produits, montant])
 
+  if (!ouvert) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOuvert(true)}
+        className="flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl border border-line bg-paper px-4 py-3.5 text-left"
+      >
+        <span className="text-[0.86rem] font-bold text-ink">
+          Chercher moins cher au même principe actif
+        </span>
+        <Svg className="size-4 shrink-0 text-green-700" trait={2.4}>
+          {Icone.fleche}
+        </Svg>
+      </button>
+    )
+  }
+
   return (
     <Carte>
       <label htmlFor="budget" className="block text-[0.88rem] font-bold text-ink">
-        Ce total dépasse ce que vous avez&nbsp;?
+        Combien avez-vous&nbsp;?
       </label>
       <p className="mt-1 text-[0.78rem] leading-relaxed text-body-soft">
-        Dites-nous combien vous avez : nous chercherons des équivalents au même principe actif.
-        Le montant n'est pas enregistré.
+        Nous chercherons des équivalents au même principe actif, moins chers. Le montant n'est
+        pas enregistré.
       </p>
       <div className="mt-3 flex items-center gap-2">
         <input
@@ -713,6 +740,40 @@ function Budget({
           </p>
         </div>
       )}
+
+      {/*
+        CE QUE LE PHARMACIEN VOIT — ET POURQUOI CETTE PHRASE EST AU PRÉSENT
+        NÉGATIF.
+
+        L'intention est que l'officine sache qu'on cherche des équivalents
+        moins chers chez elle : cela lui permet de tenir des génériques en
+        rayon. Mais cette information ne doit JAMAIS être nominative. « Ce
+        patient-ci n'a pas les moyens de son ordonnance » révèle une gêne
+        financière et un état de santé à la fois ; transmis à quelqu'un qu'on
+        va voir en face, c'est humiliant, et cela suffirait à faire renoncer
+        les gens à s'en servir.
+
+        La console agrège donc ces recherches comme elle agrège déjà les
+        demandes locales, sous le seuil de cinq en dessous duquel rien n'est
+        montré. Reste que RIEN N'EST TRANSMIS AUJOURD'HUI, faute de serveur :
+        la phrase ci-dessous dit l'état réel, pas l'intention.
+      */}
+      <p className="mt-4 border-t border-line-soft pt-3 text-[0.72rem] leading-relaxed text-body-soft">
+        Rien n'est envoyé : ce calcul se fait sur votre appareil. Le jour où les officines
+        recevront cette information, ce sera un décompte de leur quartier — jamais votre nom, ni
+        votre ordonnance.
+      </p>
+
+      <button
+        type="button"
+        onClick={() => {
+          setOuvert(false)
+          setSaisie('')
+        }}
+        className="mt-1 min-h-11 text-[0.78rem] font-bold text-body-soft underline underline-offset-2"
+      >
+        Fermer
+      </button>
     </Carte>
   )
 }
@@ -1273,12 +1334,34 @@ function EcranCarte({
   assurance: string | null
   onOfficine: (id: string) => void
 }) {
+  /*
+   * LA CARTE NE MONTRE QUE CE QUI EST OUVERT MAINTENANT.
+   *
+   * Les officines fermées y figuraient, grisées et reléguées en bas. Le
+   * raisonnement était qu'« ouvre à 8 h » vaut mieux que rien. À l'usage il ne
+   * tient pas : une carte est une liste de destinations, et y laisser une porte
+   * close revient à proposer un trajet qui ne mène nulle part. À Abidjan, un
+   * déplacement pour rien coûte un taxi, et parfois une nuit d'attente.
+   *
+   * Une officine DE GARDE compte comme ouverte : c'est tout l'objet de la
+   * garde. La carte ne se vide donc pas la nuit, elle se réduit à celles qui
+   * assurent la permanence — exactement ce qu'un patient cherche à 3 h.
+   *
+   * Le cas où rien n'est ouvert reste traité, mais comme une INFORMATION et
+   * non comme une liste de destinations : on dit l'heure de la prochaine
+   * ouverture, sans proposer d'y aller.
+   */
+  const ouvertes = classement.filter((c) => c.ouverture.ouverte)
+  const fermees = classement.filter((c) => !c.ouverture.ouverte)
+
   return (
     <>
       <div className="px-5 pt-5">
         <h1 className="text-[1.65rem] font-extrabold tracking-[-0.03em] text-ink">Autour de vous</h1>
         <p className="mt-1.5 text-[0.88rem] text-body">
-Les officines fermées descendent en bas de la liste, grisées.
+          {ouvertes.length === 0
+            ? 'Aucune officine ouverte en ce moment.'
+            : `${ouvertes.length} officine${ouvertes.length > 1 ? 's' : ''} ouverte${ouvertes.length > 1 ? 's' : ''} en ce moment. Les fermées ne sont pas affichées.`}
         </p>
       </div>
 
@@ -1297,8 +1380,35 @@ Les officines fermées descendent en bas de la liste, grisées.
         </p>
       </div>
 
+      {/*
+        Rien d'ouvert : on ne laisse pas un écran vide, mais on ne recrée pas
+        non plus une liste de destinations. Un texte, pas des boutons.
+      */}
+      {ouvertes.length === 0 && fermees.length > 0 && (
+        <div className="mx-5 mt-4 rounded-2xl border border-alert/30 bg-alert/8 px-4 py-3.5">
+          <p className="text-[0.84rem] leading-relaxed font-bold text-alert">
+            Toutes les officines des environs sont fermées, et aucune n'est de garde.
+          </p>
+          <p className="mt-1.5 text-[0.8rem] leading-relaxed font-semibold text-body">
+            La plus proche, {fermees[0].officine.nom}, {fermees[0].ouverture.libelle.toLowerCase()}.
+          </p>
+          {/*
+            185 = SAMU Côte d'Ivoire, numéro vert gratuit, 24 h/24, opéré
+            depuis le CHU de Cocody. Vérifié le 7 septembre 2026 auprès de
+            l'ambassade de France en Côte d'Ivoire, de l'ambassade du Qatar à
+            Abidjan et de la page officielle du SAMU. Un numéro d'urgence faux
+            dans une application de santé se paie en vies : ne jamais modifier
+            cette ligne sans revérifier.
+          */}
+          <p className="mt-1.5 text-[0.78rem] leading-relaxed text-body-soft">
+            Urgence vitale : appelez le <strong className="font-bold text-body">185</strong>{' '}
+            (SAMU, gratuit, 24 h/24).
+          </p>
+        </div>
+      )}
+
       <div className="mt-4 flex flex-col gap-2.5 px-5">
-        {classement.map(({ officine, disponibles, incertains, ouverture: ouv }) => {
+        {ouvertes.map(({ officine, disponibles, incertains, ouverture: ouv }) => {
           /*
             « 1 en stock » ne disait ni sur combien, ni ce qu'il fallait en
             conclure — et disparaissait quand l'officine n'avait rien, laissant

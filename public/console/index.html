@@ -102,6 +102,47 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 .vignette .val { margin-top:4px; font-size:26px; font-weight:800; letter-spacing:-0.03em; color:var(--encre); font-variant-numeric:tabular-nums; }
 .vignette .note { margin-top:2px; font-size:11.5px; font-weight:600; color:var(--doux); }
 .vignette .note.vert { color:var(--vert-600); }
+.vignette .note.ambre { color:var(--ambre); }
+
+/* — Rappel hebdomadaire des bons —
+   Placé en tête de l'écran, en ambre et non en rouge : c'est une échéance
+   dépassée, pas une panne. Le rouge est réservé à ce qui prive réellement un
+   patient de son traitement. */
+.rappel-bons {
+  background:var(--ambre-fond); border:1px solid var(--ambre-trait);
+  border-radius:16px; padding:15px 17px;
+}
+.rappel-bons.faite { background:var(--vert-50); border-color:var(--vert-200); }
+.rappel-tete { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.rappel-pastille {
+  display:inline-flex; align-items:center; padding:3px 9px; border-radius:999px;
+  background:var(--ambre); color:#fff; font-size:10.5px; font-weight:800;
+  letter-spacing:0.05em; text-transform:uppercase;
+}
+.rappel-bons.faite .rappel-pastille { background:var(--vert-600); }
+.rappel-delai { font-size:12px; font-weight:700; color:var(--ambre); }
+.rappel-bons.faite .rappel-delai { color:var(--vert-800); }
+.rappel-texte { margin:9px 0 0; font-size:12.5px; line-height:1.55; color:#4a3a17; }
+.rappel-bons.faite .rappel-texte { color:var(--corps); }
+.rappel-actions { margin-top:12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.rappel-msg { font-size:12px; font-weight:700; color:var(--vert-700); }
+
+/* — Équivalents moins chers recherchés — */
+.liste-equivalents { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.equivalent {
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  border:1px solid var(--trait); border-radius:13px; padding:11px 13px; background:var(--fond);
+}
+.eq-noms { display:flex; align-items:center; gap:7px; flex-wrap:wrap; min-width:0; }
+.eq-princeps { font-size:12.5px; font-weight:600; color:var(--doux); text-decoration:line-through; }
+.eq-fleche { color:var(--doux); display:inline-flex; }
+.eq-generique { font-size:13px; font-weight:800; color:var(--encre); }
+.eq-chiffres { display:flex; align-items:baseline; gap:9px; }
+.eq-nb { font-size:17px; font-weight:800; color:var(--encre); font-variant-numeric:tabular-nums; }
+.eq-ecart {
+  font-size:11.5px; font-weight:800; color:var(--vert-700);
+  background:var(--vert-50); border-radius:999px; padding:2px 8px;
+}
 
 /* — Étiquettes d'état — */
 .etat { display:inline-flex; align-items:center; white-space:nowrap; font-size:11px; font-weight:800; padding:4px 9px; border-radius:8px; }
@@ -384,7 +425,7 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
     </button><button class="item" data-va="stocks" type="button">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h18M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg><span>Stocks</span>
     </button><button class="item" data-va="bons" type="button">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"/></svg><span>Bons d'assurance</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"/></svg><span>Bons d'assurance</span><span class="pastille">!</span>
     </button><button class="item" data-va="demandes" type="button">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>Demandes locales</span><span class="pastille">14</span>
     </button>
@@ -539,7 +580,7 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
       </div><div class="vignette">
         <div class="lab">Bons d'assurance</div>
         <div class="val">3</div>
-        <div class="note">vérifiés il y a 2 jours</div>
+        <div class="note ambre" data-vignette-bons>à confirmer — 9 jours</div>
       </div>
     </div>
 
@@ -897,6 +938,35 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
     <div><h1>Bons d'assurance</h1><p>Ce que vous acceptez en caisse</p></div>
   </header>
   <div class="contenu">
+    <!--
+      RAPPEL HEBDOMADAIRE OBLIGATOIRE.
+
+      Il remplace une « confirmation trimestrielle » qui était trop lente pour
+      ce que la donnée subit : une convention peut être suspendue du jour au
+      lendemain, et un patient qui se présente avec une carte refusée l'apprend
+      au comptoir, après le trajet.
+
+      « Obligatoire » a un sens précis ici, et un seul : passé le délai, la
+      fiche cesse d'AFFIRMER aux patients que ces organismes sont acceptés.
+      Elle ne disparaît pas — supprimer une officine des résultats parce que
+      son pharmacien n'a pas cliqué punirait le patient pour une négligence qui
+      n'est pas la sienne. Elle passe en « à reconfirmer », comme un stock
+      dépasse 48 heures.
+    -->
+    <div class="rappel-bons" data-rappel-bons>
+      <div class="rappel-tete">
+        <span class="rappel-pastille">À confirmer</span>
+        <span class="rappel-delai" data-rappel-delai>Dernière confirmation il y a 9 jours</span>
+      </div>
+      <p class="rappel-texte">
+        Confirmez chaque semaine que cette liste est toujours exacte. Sans confirmation, votre fiche cesse d'affirmer aux patients que ces organismes sont acceptés&nbsp;: elle affiche «&nbsp;à reconfirmer&nbsp;», et votre officine reste visible.
+      </p>
+      <div class="rappel-actions">
+        <button class="btn plein" type="button" data-confirmer-bons>La liste est exacte</button>
+        <span class="rappel-msg" data-rappel-msg></span>
+      </div>
+    </div>
+
     <p style="margin:0;font-size:13px;line-height:1.55;color:var(--corps)">
       Ce que vous cochez ici s'affiche aux patients sur votre fiche. Décochez dès que vous cessez d'accepter un organisme&nbsp;: une liste périmée renvoie le patient au problème que le service résout.
     </p>
@@ -984,18 +1054,27 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
       <div style="margin-top:12px;border:1px solid var(--vert-200);background:var(--vert-50);border-radius:14px;padding:14px">
         <div style="font-size:13.5px;font-weight:800;color:var(--encre)" data-echo="nom">Pharmacie de la Riviera</div>
         <div class="apercu-bons" data-apercu-bons></div>
-        <div style="margin-top:9px;font-size:11px;font-weight:500;color:var(--doux)">Déclarés par l'officine · vérifié il y a 2 jours</div>
+        <!--
+          Ce pied d'aperçu affirmait « vérifié il y a 2 jours », en dur. Aucune
+          vérification n'existait, et ce délai rassurait le patient sur la foi
+          de rien. Il reflète maintenant l'état réel de la confirmation
+          hebdomadaire, et bascule avec elle.
+        -->
+        <div style="margin-top:9px;font-size:11px;font-weight:500;color:var(--doux)" data-apercu-fraicheur>Déclarés par l'officine · à reconfirmer</div>
       </div>
     </div>
 
     <div class="carte">
-      <div class="titre-bloc">Confirmation trimestrielle</div>
+      <div class="titre-bloc">Pourquoi chaque semaine</div>
       <p style="margin:10px 0 0;font-size:12.5px;line-height:1.55;color:var(--corps)">
-        Nous vous demanderons de confirmer cette liste tous les trois mois. Sans confirmation, la date de vérification affichée aux patients vieillit — elle n'est jamais masquée.
+        Une convention avec un organisme peut être suspendue du jour au lendemain. Le patient, lui, ne l'apprend qu'au comptoir — après le trajet, et souvent après avoir choisi votre officine pour cette raison précise.
+      </p>
+      <p style="margin:10px 0 0;font-size:12.5px;line-height:1.55;color:var(--corps)">
+        Un rappel trimestriel laissait passer trois mois d'erreur possible. Une semaine est le rythme auquel cette information se dégrade réellement.
       </p>
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--trait-doux);display:flex;justify-content:space-between">
-        <span style="font-size:12.5px;font-weight:600;color:var(--doux)">Prochaine confirmation</span>
-        <span style="font-size:12.5px;font-weight:800;color:var(--encre)">12 novembre</span>
+        <span style="font-size:12.5px;font-weight:600;color:var(--doux)">Prochain rappel</span>
+        <span style="font-size:12.5px;font-weight:800;color:var(--encre)" data-prochain-rappel>chaque lundi</span>
       </div>
     </div>
   </div>
@@ -1021,6 +1100,56 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
       passent sous le seuil sont donc masquées, et leur nombre annoncé : les
       cacher en silence laisserait croire que la demande n'existe pas.
     -->
+    <!--
+      RECHERCHES D'ÉQUIVALENTS MOINS CHERS.
+
+      Ce que déclenche, côté patient, l'option « chercher moins cher au même
+      principe actif » : elle s'ouvre quand le coût d'une ordonnance dépasse ce
+      que la personne a en poche.
+
+      Présenté comme un signal de STOCK et non comme un signal social. Le
+      pharmacien apprend qu'il y a une demande de générique dans son quartier,
+      pas que Untel est en difficulté — voir le commentaire de donnees.mjs.
+    -->
+    <div class="carte">
+      <div class="titre-bloc">Équivalents moins chers recherchés</div>
+      <p class="aide-groupe">Des patients autour de vous ont cherché un générique au même principe actif, faute de pouvoir régler l'ordonnance entière. Tenir ces références en rayon évite qu'ils repartent sans traitement.</p>
+      <div class="liste-equivalents">
+        <div class="equivalent">
+          <div class="eq-noms">
+            <span class="eq-princeps">Clamoxyl 500 mg</span>
+            <span class="eq-fleche"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+            <span class="eq-generique">Amoxicilline 500 mg</span>
+          </div>
+          <div class="eq-chiffres">
+            <span class="eq-nb">34</span>
+            <span class="eq-ecart">−1 500 F</span>
+          </div>
+        </div><div class="equivalent">
+          <div class="eq-noms">
+            <span class="eq-princeps">Doliprane 1 g</span>
+            <span class="eq-fleche"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+            <span class="eq-generique">Paracétamol 1 g</span>
+          </div>
+          <div class="eq-chiffres">
+            <span class="eq-nb">22</span>
+            <span class="eq-ecart">−600 F</span>
+          </div>
+        </div><div class="equivalent">
+          <div class="eq-noms">
+            <span class="eq-princeps">Ventoline 100 µg</span>
+            <span class="eq-fleche"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+            <span class="eq-generique">Salbutamol 100 µg</span>
+          </div>
+          <div class="eq-chiffres">
+            <span class="eq-nb">17</span>
+            <span class="eq-ecart">−1 100 F</span>
+          </div>
+        </div>
+      </div>
+      <p class="masquees" style="margin-top:10px">1 autre référence est sous le seuil de 5 recherches, ou sans équivalent connu : elle n'est pas affichée.</p>
+    </div>
+
     <div class="carte">
       <div class="titre-bloc">Assurance des patients</div>
       <p class="aide-groupe">Ce que cherchent les porteurs d'un organisme donné. Les conventions que vous n'acceptez pas sont signalées.</p>
@@ -1205,7 +1334,7 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
   </button><button class="onglet" data-va="stocks" type="button">
     <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h18M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg><span>Stocks</span>
   </button><button class="onglet" data-va="bons" type="button">
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"/></svg><span>Bons</span>
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.4 3.4 8.2 8 9 4.6-.8 8-4.6 8-9V6l-8-3Z"/></svg><span>Bons</span><span class="pastille">!</span>
   </button><button class="onglet" data-va="demandes" type="button">
     <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>Demandes</span><span class="pastille">14</span>
   </button>
@@ -1496,6 +1625,53 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
       if (e.key === 'Enter') { e.preventDefault(); ajouterBon(); }
     });
     rendreBons();
+  }
+
+  /*
+   * RAPPEL HEBDOMADAIRE DES BONS D'ASSURANCE.
+   *
+   * Confirmer prend un clic, et c'est voulu : demander une ressaisie chaque
+   * semaine garantirait qu'on ne la fasse jamais. Ce qui est demandé n'est pas
+   * de retaper la liste, mais d'affirmer qu'elle est toujours exacte — le
+   * pharmacien n'a rien a faire s'il ne s'est rien passé.
+   *
+   * CE QUE « OBLIGATOIRE » VEUT DIRE, ET CE QU'IL NE VEUT PAS DIRE. Passé le
+   * délai, la fiche cesse d'AFFIRMER aux patients que ces organismes sont
+   * acceptés : elle passe en « à reconfirmer ». Elle ne disparaît pas des
+   * résultats — retirer une officine parce que son pharmacien n'a pas cliqué
+   * punirait le patient d'une négligence qui n'est pas la sienne, et le
+   * priverait d'une officine réellement ouverte. La sanction porte sur
+   * l'affirmation, jamais sur la visibilité.
+   */
+  var rappel = document.querySelector('[data-rappel-bons]');
+  if (rappel) {
+    var boutonRappel = rappel.querySelector('[data-confirmer-bons]');
+    var delaiRappel = rappel.querySelector('[data-rappel-delai]');
+    var msgRappel = rappel.querySelector('[data-rappel-msg]');
+    var fraicheur = document.querySelector('[data-apercu-fraicheur]');
+    var vignetteBons = document.querySelector('[data-vignette-bons]');
+    var pastilleMenu = [].slice
+      .call(document.querySelectorAll('[data-va="bons"] .pastille'));
+
+    boutonRappel.addEventListener('click', function () {
+      rappel.className = 'rappel-bons faite';
+      rappel.querySelector('.rappel-pastille').textContent = 'À jour';
+      delaiRappel.textContent = "Confirmée aujourd'hui";
+      msgRappel.textContent = 'Prochain rappel dans 7 jours.';
+      boutonRappel.disabled = true;
+      boutonRappel.style.display = 'none';
+
+      /* La fiche patient suit immédiatement : c'est le seul effet visible de
+         ce clic, et le seul qui compte. */
+      if (fraicheur) {
+        fraicheur.textContent = "Déclarés par l'officine · confirmés aujourd'hui";
+      }
+      if (vignetteBons) {
+        vignetteBons.textContent = "confirmés aujourd'hui";
+        vignetteBons.className = 'note vert';
+      }
+      pastilleMenu.forEach(function (p) { p.style.display = 'none'; });
+    });
   }
 
   /*

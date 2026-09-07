@@ -37,9 +37,11 @@ export const COMMUNES = [
 
 /*
  * Horaires déclarés par l'officine. Ils ne sont pas décoratifs : l'application
- * patient ne classe en tête que les officines ouvertes, et affiche les autres
- * grisées avec leur heure d'ouverture. Une officine qui ne déclare rien serait
- * donc invisible aux heures où elle travaille.
+ * patient ne classe en tête que les officines ouvertes dans ses résultats, et
+ * SA CARTE NE MONTRE QUE CELLES-LÀ — les fermées en sont absentes. Une officine
+ * qui ne déclare pas ses horaires est donc invisible sur la carte à toute
+ * heure, y compris pendant qu'elle travaille. C'est la raison pour laquelle
+ * ce formulaire n'est pas facultatif.
  *
  * La garde est distincte des horaires parce qu'elle ne les prolonge pas : elle
  * rouvre l'officine en dehors, pour une nuit ou un dimanche.
@@ -54,7 +56,7 @@ export const HORAIRES = {
 export const MENU = [
   { id: 'tableau', label: 'Tableau de bord', icone: 'grille' },
   { id: 'stocks', label: 'Stocks', icone: 'boite' },
-  { id: 'bons', label: "Bons d'assurance", icone: 'bouclier' },
+  { id: 'bons', label: "Bons d'assurance", icone: 'bouclier', badge: '!' },
   { id: 'demandes', label: 'Demandes locales', icone: 'loupe', badge: '14' },
 ]
 
@@ -62,7 +64,10 @@ export const VIGNETTES = [
   { label: 'Vues de votre fiche', valeur: '1 284', note: '+12 % cette semaine', ton: 'vert' },
   { label: 'Produits confirmés', valeur: '312', note: 'sur 340 référencés' },
   { label: 'Demandes non couvertes', valeur: '47', note: 'stable' },
-  { label: "Bons d'assurance", valeur: '3', note: 'vérifiés il y a 2 jours' },
+  /* La note disait « vérifiés il y a 2 jours », en dur, alors qu'aucune
+     vérification n'existait. Elle porte maintenant l'état du rappel
+     hebdomadaire, qui est la seule vérification réelle. */
+  { label: "Bons d'assurance", valeur: '3', note: 'à confirmer — 9 jours', ton: 'ambre' },
 ]
 
 export const RECHERCHES = [
@@ -273,6 +278,37 @@ export const ASSURANCES_ALENTOUR = Object.entries(
 )
   .map(([nom, nb]) => ({ nom, nb }))
   .sort((a, b) => b.nb - a.nb)
+
+/*
+ * RECHERCHES D'ÉQUIVALENTS MOINS CHERS.
+ *
+ * Ce que voit l'officine quand des patients, autour d'elle, activent dans
+ * l'application « chercher moins cher au même principe actif » — c'est-à-dire
+ * quand le coût d'une ordonnance dépasse ce qu'ils ont en poche.
+ *
+ * CE QUE CETTE REMONTÉE N'EST PAS, ET NE DOIT JAMAIS DEVENIR : une
+ * notification nominative. « Ce patient-ci n'a pas les moyens de son
+ * ordonnance » révèle d'un coup une gêne financière et un état de santé, à
+ * quelqu'un qu'on va voir en face. Ce serait humiliant, et il suffirait que
+ * cela se sache une fois pour que plus personne n'ose activer la fonction.
+ *
+ * D'où le même traitement que les demandes locales : un décompte de quartier,
+ * sur sept jours, soumis au SEUIL_AFFICHAGE. En dessous de cinq, rien ne
+ * s'affiche — trois recherches d'insuline dans la Riviera désignent une
+ * poignée de personnes.
+ *
+ * L'officine n'a rien à en faire d'autre que ce que la colonne suggère : tenir
+ * le générique correspondant en rayon. C'est un signal de stock, pas un signal
+ * social.
+ */
+export const EQUIVALENTS_CHERCHES = [
+  { princeps: 'Clamoxyl 500 mg', generique: 'Amoxicilline 500 mg', ecart: 1500, nb: 34 },
+  { princeps: 'Doliprane 1 g', generique: 'Paracétamol 1 g', ecart: 600, nb: 22 },
+  { princeps: 'Ventoline 100 µg', generique: 'Salbutamol 100 µg', ecart: 1100, nb: 17 },
+  /* Sous le seuil, volontairement : sans cette ligne, personne ne pourrait
+     vérifier que le masquage fonctionne. */
+  { princeps: 'Insuline Lantus', generique: null, ecart: 0, nb: 3 },
+]
 
 export const ZONES = [
   { nom: 'Cocody Riviera 2', nb: 94 },

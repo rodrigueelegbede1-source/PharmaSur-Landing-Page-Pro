@@ -7,8 +7,8 @@
  * raison pour laquelle on n'écrit pas deux consoles.
  */
 import {
-  A_CONFIRMER, ASSURANCES_ALENTOUR, COMMUNES, DEMANDES, HORAIRES, MENU, OFFICINE,
-  ORGANISMES, RECHERCHES, SEUIL_AFFICHAGE, STOCKS, VIGNETTES, ZONES,
+  A_CONFIRMER, ASSURANCES_ALENTOUR, COMMUNES, DEMANDES, EQUIVALENTS_CHERCHES, HORAIRES,
+  MENU, OFFICINE, ORGANISMES, RECHERCHES, SEUIL_AFFICHAGE, STOCKS, VIGNETTES, ZONES,
 } from './donnees.mjs'
 
 const ICONES = {
@@ -220,7 +220,7 @@ export const tableau = () => `
         (v) => `<div class="vignette">
         <div class="lab">${v.label}</div>
         <div class="val">${v.valeur}</div>
-        <div class="note${v.ton === 'vert' ? ' vert' : ''}">${v.note}</div>
+        <div class="note${v.ton ? ` ${v.ton}` : ''}"${v.label === "Bons d'assurance" ? ' data-vignette-bons' : ''}>${v.note}</div>
       </div>`,
       ).join('')}
     </div>
@@ -374,6 +374,35 @@ export const bons = () => `
     <div><h1>Bons d'assurance</h1><p>Ce que vous acceptez en caisse</p></div>
   </header>
   <div class="contenu">
+    <!--
+      RAPPEL HEBDOMADAIRE OBLIGATOIRE.
+
+      Il remplace une « confirmation trimestrielle » qui était trop lente pour
+      ce que la donnée subit : une convention peut être suspendue du jour au
+      lendemain, et un patient qui se présente avec une carte refusée l'apprend
+      au comptoir, après le trajet.
+
+      « Obligatoire » a un sens précis ici, et un seul : passé le délai, la
+      fiche cesse d'AFFIRMER aux patients que ces organismes sont acceptés.
+      Elle ne disparaît pas — supprimer une officine des résultats parce que
+      son pharmacien n'a pas cliqué punirait le patient pour une négligence qui
+      n'est pas la sienne. Elle passe en « à reconfirmer », comme un stock
+      dépasse 48 heures.
+    -->
+    <div class="rappel-bons" data-rappel-bons>
+      <div class="rappel-tete">
+        <span class="rappel-pastille">À confirmer</span>
+        <span class="rappel-delai" data-rappel-delai>Dernière confirmation il y a 9 jours</span>
+      </div>
+      <p class="rappel-texte">
+        Confirmez chaque semaine que cette liste est toujours exacte. Sans confirmation, votre fiche cesse d'affirmer aux patients que ces organismes sont acceptés&nbsp;: elle affiche «&nbsp;à reconfirmer&nbsp;», et votre officine reste visible.
+      </p>
+      <div class="rappel-actions">
+        <button class="btn plein" type="button" data-confirmer-bons>La liste est exacte</button>
+        <span class="rappel-msg" data-rappel-msg></span>
+      </div>
+    </div>
+
     <p style="margin:0;font-size:13px;line-height:1.55;color:var(--corps)">
       Ce que vous cochez ici s'affiche aux patients sur votre fiche. Décochez dès que vous cessez d'accepter un organisme&nbsp;: une liste périmée renvoie le patient au problème que le service résout.
     </p>
@@ -413,18 +442,27 @@ export const bons = () => `
       <div style="margin-top:12px;border:1px solid var(--vert-200);background:var(--vert-50);border-radius:14px;padding:14px">
         <div style="font-size:13.5px;font-weight:800;color:var(--encre)" data-echo="nom">${OFFICINE.nom}</div>
         <div class="apercu-bons" data-apercu-bons></div>
-        <div style="margin-top:9px;font-size:11px;font-weight:500;color:var(--doux)">Déclarés par l'officine · vérifié il y a 2 jours</div>
+        <!--
+          Ce pied d'aperçu affirmait « vérifié il y a 2 jours », en dur. Aucune
+          vérification n'existait, et ce délai rassurait le patient sur la foi
+          de rien. Il reflète maintenant l'état réel de la confirmation
+          hebdomadaire, et bascule avec elle.
+        -->
+        <div style="margin-top:9px;font-size:11px;font-weight:500;color:var(--doux)" data-apercu-fraicheur>Déclarés par l'officine · à reconfirmer</div>
       </div>
     </div>
 
     <div class="carte">
-      <div class="titre-bloc">Confirmation trimestrielle</div>
+      <div class="titre-bloc">Pourquoi chaque semaine</div>
       <p style="margin:10px 0 0;font-size:12.5px;line-height:1.55;color:var(--corps)">
-        Nous vous demanderons de confirmer cette liste tous les trois mois. Sans confirmation, la date de vérification affichée aux patients vieillit — elle n'est jamais masquée.
+        Une convention avec un organisme peut être suspendue du jour au lendemain. Le patient, lui, ne l'apprend qu'au comptoir — après le trajet, et souvent après avoir choisi votre officine pour cette raison précise.
+      </p>
+      <p style="margin:10px 0 0;font-size:12.5px;line-height:1.55;color:var(--corps)">
+        Un rappel trimestriel laissait passer trois mois d'erreur possible. Une semaine est le rythme auquel cette information se dégrade réellement.
       </p>
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--trait-doux);display:flex;justify-content:space-between">
-        <span style="font-size:12.5px;font-weight:600;color:var(--doux)">Prochaine confirmation</span>
-        <span style="font-size:12.5px;font-weight:800;color:var(--encre)">12 novembre</span>
+        <span style="font-size:12.5px;font-weight:600;color:var(--doux)">Prochain rappel</span>
+        <span style="font-size:12.5px;font-weight:800;color:var(--encre)" data-prochain-rappel>chaque lundi</span>
       </div>
     </div>
   </div>
@@ -452,6 +490,49 @@ export const demandes = () => `
       passent sous le seuil sont donc masquées, et leur nombre annoncé : les
       cacher en silence laisserait croire que la demande n'existe pas.
     -->
+    <!--
+      RECHERCHES D'ÉQUIVALENTS MOINS CHERS.
+
+      Ce que déclenche, côté patient, l'option « chercher moins cher au même
+      principe actif » : elle s'ouvre quand le coût d'une ordonnance dépasse ce
+      que la personne a en poche.
+
+      Présenté comme un signal de STOCK et non comme un signal social. Le
+      pharmacien apprend qu'il y a une demande de générique dans son quartier,
+      pas que Untel est en difficulté — voir le commentaire de donnees.mjs.
+    -->
+    <div class="carte">
+      <div class="titre-bloc">Équivalents moins chers recherchés</div>
+      <p class="aide-groupe">Des patients autour de vous ont cherché un générique au même principe actif, faute de pouvoir régler l'ordonnance entière. Tenir ces références en rayon évite qu'ils repartent sans traitement.</p>
+      <div class="liste-equivalents">
+        ${EQUIVALENTS_CHERCHES.filter((e) => e.nb >= SEUIL_AFFICHAGE && e.generique)
+          .map(
+            (e) => `<div class="equivalent">
+          <div class="eq-noms">
+            <span class="eq-princeps">${e.princeps}</span>
+            <span class="eq-fleche">${svg('fleche', 13)}</span>
+            <span class="eq-generique">${e.generique}</span>
+          </div>
+          <div class="eq-chiffres">
+            <span class="eq-nb">${e.nb}</span>
+            <span class="eq-ecart">−${e.ecart.toLocaleString('fr-FR')} F</span>
+          </div>
+        </div>`,
+          )
+          .join('')}
+      </div>
+      ${(() => {
+        const sous = EQUIVALENTS_CHERCHES.filter((e) => e.nb < SEUIL_AFFICHAGE || !e.generique).length
+        return sous > 0
+          ? `<p class="masquees" style="margin-top:10px">${
+              sous > 1
+                ? `${sous} autres références sont sous le seuil de ${SEUIL_AFFICHAGE} recherches, ou sans équivalent connu : elles ne sont pas affichées.`
+                : `1 autre référence est sous le seuil de ${SEUIL_AFFICHAGE} recherches, ou sans équivalent connu : elle n'est pas affichée.`
+            }</p>`
+          : ''
+      })()}
+    </div>
+
     <div class="carte">
       <div class="titre-bloc">Assurance des patients</div>
       <p class="aide-groupe">Ce que cherchent les porteurs d'un organisme donné. Les conventions que vous n'acceptez pas sont signalées.</p>

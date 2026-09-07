@@ -87,6 +87,47 @@ button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
 .vignette .val { margin-top:4px; font-size:26px; font-weight:800; letter-spacing:-0.03em; color:var(--encre); font-variant-numeric:tabular-nums; }
 .vignette .note { margin-top:2px; font-size:11.5px; font-weight:600; color:var(--doux); }
 .vignette .note.vert { color:var(--vert-600); }
+.vignette .note.ambre { color:var(--ambre); }
+
+/* — Rappel hebdomadaire des bons —
+   Placé en tête de l'écran, en ambre et non en rouge : c'est une échéance
+   dépassée, pas une panne. Le rouge est réservé à ce qui prive réellement un
+   patient de son traitement. */
+.rappel-bons {
+  background:var(--ambre-fond); border:1px solid var(--ambre-trait);
+  border-radius:16px; padding:15px 17px;
+}
+.rappel-bons.faite { background:var(--vert-50); border-color:var(--vert-200); }
+.rappel-tete { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.rappel-pastille {
+  display:inline-flex; align-items:center; padding:3px 9px; border-radius:999px;
+  background:var(--ambre); color:#fff; font-size:10.5px; font-weight:800;
+  letter-spacing:0.05em; text-transform:uppercase;
+}
+.rappel-bons.faite .rappel-pastille { background:var(--vert-600); }
+.rappel-delai { font-size:12px; font-weight:700; color:var(--ambre); }
+.rappel-bons.faite .rappel-delai { color:var(--vert-800); }
+.rappel-texte { margin:9px 0 0; font-size:12.5px; line-height:1.55; color:#4a3a17; }
+.rappel-bons.faite .rappel-texte { color:var(--corps); }
+.rappel-actions { margin-top:12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.rappel-msg { font-size:12px; font-weight:700; color:var(--vert-700); }
+
+/* — Équivalents moins chers recherchés — */
+.liste-equivalents { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.equivalent {
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  border:1px solid var(--trait); border-radius:13px; padding:11px 13px; background:var(--fond);
+}
+.eq-noms { display:flex; align-items:center; gap:7px; flex-wrap:wrap; min-width:0; }
+.eq-princeps { font-size:12.5px; font-weight:600; color:var(--doux); text-decoration:line-through; }
+.eq-fleche { color:var(--doux); display:inline-flex; }
+.eq-generique { font-size:13px; font-weight:800; color:var(--encre); }
+.eq-chiffres { display:flex; align-items:baseline; gap:9px; }
+.eq-nb { font-size:17px; font-weight:800; color:var(--encre); font-variant-numeric:tabular-nums; }
+.eq-ecart {
+  font-size:11.5px; font-weight:800; color:var(--vert-700);
+  background:var(--vert-50); border-radius:999px; padding:2px 8px;
+}
 
 /* — Étiquettes d'état — */
 .etat { display:inline-flex; align-items:center; white-space:nowrap; font-size:11px; font-weight:800; padding:4px 9px; border-radius:8px; }
