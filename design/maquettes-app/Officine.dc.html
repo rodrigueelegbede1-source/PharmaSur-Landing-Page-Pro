@@ -73,16 +73,36 @@
     <div style="display: flex; flex-direction: column; gap: 10px;">
       <span style="font-size: 11px; font-weight: 700; color: #7b8b84; text-transform: uppercase; letter-spacing: 0.09em;">Bons acceptés en caisse</span>
       <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <span style="background: #12855d; border: 1px solid #12855d; color: #ffffff; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px;">MUGEFCI</span>
         <span style="background: #f1fbf6; border: 1px solid #b9e8d3; color: #10714f; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px;">CMU</span>
-        <span style="background: #f1fbf6; border: 1px solid #b9e8d3; color: #10714f; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px;">Mutuelles</span>
-        <span style="background: #f1fbf6; border: 1px solid #b9e8d3; color: #10714f; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px;">Assurances</span>
+        <span style="background: #f1fbf6; border: 1px solid #b9e8d3; color: #10714f; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px;">NSIA Assurances</span>
       </div>
       <p style="margin: 0; font-size: 11.5px; line-height: 1.45; color: #7b8b84;">Déclarés par l'officine. Nous ne les vérifions pas nous-mêmes&nbsp;: demandez au comptoir.</p>
     </div>
 
+    <div style="padding: 14px 15px; background: #f4f8f6; border: 1px solid #e2ece7; border-radius: 16px;">
+      <p style="margin: 0; font-size: 13.5px; font-weight: 800; color: #0e1b16;">MUGEFCI a-t-elle été acceptée ici&nbsp;?</p>
+      <p style="margin: 5px 0 0; font-size: 11.5px; line-height: 1.5; color: #7b8b84;">Si vous revenez du comptoir, vous êtes le seul à le savoir.</p>
+      <div style="margin-top: 11px; display: flex; gap: 9px;">
+        <div style="flex: 1; height: 42px; border-radius: 12px; background: #12855d; display: grid; place-items: center;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #ffffff;">Oui, acceptée</span>
+        </div>
+        <div style="flex: 1; height: 42px; border-radius: 12px; border: 1px solid #e2ece7; background: #ffffff; display: grid; place-items: center;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #4a5b54;">Non, refusée</span>
+        </div>
+      </div>
+      <p style="margin: 9px 0 0; font-size: 10.5px; line-height: 1.45; color: #7b8b84;">Votre réponse reste sur cet appareil.</p>
+    </div>
+
+    <!--
+      Cette bande affirmait « Stocks synchronisés il y a 30 s ». Aucune
+      synchronisation n'existe, et ce délai promettait une fraîcheur que rien
+      ne produit. Remplacé par la règle réelle du produit : au-delà de 48 h,
+      une disponibilité cesse d'être affirmée.
+    -->
     <div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 13px 15px; background: #f7faf9; border-radius: 14px;">
       <span style="width: 8px; height: 8px; border-radius: 999px; background: #2fbc86; flex: none;"></span>
-      <p style="margin: 0; font-size: 11.5px; line-height: 1.45; color: #4a5b54;">Stocks synchronisés il y a 30 s</p>
+      <p style="margin: 0; font-size: 11.5px; line-height: 1.45; color: #4a5b54;">Confirmé par l'officine il y a 3 h. Au-delà de 48 h, la disponibilité passe en «&nbsp;incertaine&nbsp;».</p>
     </div>
   </div>
 
