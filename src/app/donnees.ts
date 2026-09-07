@@ -30,19 +30,38 @@ export type Produit = {
   principeActif: string
   /** Prix homologué en FCFA. Il ne varie pas d'une officine à l'autre. */
   prix: number
+  /*
+   * Inscrit sur une liste de médicaments remboursables.
+   *
+   * TOUT N'EST PAS REMBOURSÉ, et l'ignorer serait la pire erreur de ce
+   * calcul : annoncer 20 % de reste à charge sur un produit couvert à 0 %
+   * enverrait quelqu'un au comptoir avec le quart de la somme nécessaire.
+   *
+   * La MUGEF-CI publie sa Liste des Médicaments Remboursables — 5 607
+   * références en janvier 2026, avec pour chacune son prix, son principe
+   * actif et son régime. La CMU a la sienne. Le jour où le catalogue sera
+   * réel, ce champ viendra de là et non d'une saisie.
+   */
+  remboursable: boolean
 }
 
+/*
+ * `remboursable: false` sur le sérum physiologique n'est pas un détail de
+ * remplissage : sans au moins une ligne non remboursée, personne ne pourrait
+ * vérifier que le calcul du reste à charge la traite correctement — et c'est
+ * le cas qui coûte cher au patient quand on le rate.
+ */
 export const CATALOGUE: Produit[] = [
-  { id: 'amox500', nom: 'Amoxicilline', dosage: '500 mg', forme: 'Boîte de 12 gélules', principeActif: 'amoxicilline', prix: 2400 },
-  { id: 'clamox500', nom: 'Clamoxyl', dosage: '500 mg', forme: 'Boîte de 12 gélules', principeActif: 'amoxicilline', prix: 3900 },
-  { id: 'para1000', nom: 'Paracétamol', dosage: '1 g', forme: 'Boîte de 8 comprimés', principeActif: 'paracétamol', prix: 900 },
-  { id: 'doli1000', nom: 'Doliprane', dosage: '1 g', forme: 'Boîte de 8 comprimés', principeActif: 'paracétamol', prix: 1500 },
-  { id: 'vent100', nom: 'Ventoline', dosage: '100 µg', forme: 'Flacon pressurisé', principeActif: 'salbutamol', prix: 3200 },
-  { id: 'salb100', nom: 'Salbutamol', dosage: '100 µg', forme: 'Flacon pressurisé', principeActif: 'salbutamol', prix: 2100 },
-  { id: 'ibu400', nom: 'Ibuprofène', dosage: '400 mg', forme: 'Boîte de 20 comprimés', principeActif: 'ibuprofène', prix: 1300 },
-  { id: 'sero500', nom: 'Sérum physiologique', dosage: '5 ml', forme: 'Boîte de 20 dosettes', principeActif: 'chlorure de sodium', prix: 1800 },
-  { id: 'lanto', nom: 'Insuline Lantus', dosage: '100 U/ml', forme: 'Stylo pré-rempli', principeActif: 'insuline glargine', prix: 12500 },
-  { id: 'metf850', nom: 'Metformine', dosage: '850 mg', forme: 'Boîte de 30 comprimés', principeActif: 'metformine', prix: 2600 },
+  { id: 'amox500', nom: 'Amoxicilline', dosage: '500 mg', forme: 'Boîte de 12 gélules', principeActif: 'amoxicilline', prix: 2400, remboursable: true },
+  { id: 'clamox500', nom: 'Clamoxyl', dosage: '500 mg', forme: 'Boîte de 12 gélules', principeActif: 'amoxicilline', prix: 3900, remboursable: true },
+  { id: 'para1000', nom: 'Paracétamol', dosage: '1 g', forme: 'Boîte de 8 comprimés', principeActif: 'paracétamol', prix: 900, remboursable: true },
+  { id: 'doli1000', nom: 'Doliprane', dosage: '1 g', forme: 'Boîte de 8 comprimés', principeActif: 'paracétamol', prix: 1500, remboursable: true },
+  { id: 'vent100', nom: 'Ventoline', dosage: '100 µg', forme: 'Flacon pressurisé', principeActif: 'salbutamol', prix: 3200, remboursable: true },
+  { id: 'salb100', nom: 'Salbutamol', dosage: '100 µg', forme: 'Flacon pressurisé', principeActif: 'salbutamol', prix: 2100, remboursable: true },
+  { id: 'ibu400', nom: 'Ibuprofène', dosage: '400 mg', forme: 'Boîte de 20 comprimés', principeActif: 'ibuprofène', prix: 1300, remboursable: true },
+  { id: 'sero500', nom: 'Sérum physiologique', dosage: '5 ml', forme: 'Boîte de 20 dosettes', principeActif: 'chlorure de sodium', prix: 1800, remboursable: false },
+  { id: 'lanto', nom: 'Insuline Lantus', dosage: '100 U/ml', forme: 'Stylo pré-rempli', principeActif: 'insuline glargine', prix: 12500, remboursable: true },
+  { id: 'metf850', nom: 'Metformine', dosage: '850 mg', forme: 'Boîte de 30 comprimés', principeActif: 'metformine', prix: 2600, remboursable: true },
 ]
 
 export type Officine = {
@@ -183,6 +202,94 @@ export const ORGANISMES_DECLARES = [...new Set(OFFICINES.flatMap((o) => o.bons))
 /** Vrai si l'officine accepte l'organisme du patient. Faux s'il n'en a aucun. */
 export const accepte = (officine: Officine, organisme: string | null) =>
   organisme !== null && officine.bons.includes(organisme)
+
+/*
+ * ————————————————————————————————————————————————————————————————
+ * RESTE À CHARGE
+ * ————————————————————————————————————————————————————————————————
+ *
+ * POURQUOI CECI EXISTE. L'application affichait le PRIX PLEIN comme « total
+ * sur place ». Pour un fonctionnaire MUGEF-CI dans une officine
+ * conventionnée, ce nombre est cinq fois trop élevé. Un total faux sur une
+ * ordonnance n'est pas une imprécision d'affichage : c'est la seule
+ * information pour laquelle on ouvre cette application.
+ *
+ * ET SURTOUT — LE LEVIER QUE PERSONNE NE MONTRE. Le prix du médicament est
+ * homologué : décret n° 94-667 du 21 décembre 1994, marges du grossiste et de
+ * l'officine fixées par arrêté. Une même boîte coûte donc le même prix
+ * partout. Ce qui change tout, c'est que le remboursement ne s'applique QUE
+ * dans les officines conventionnées avec l'organisme. Une boîte à 10 000 F se
+ * paie 2 000 F chez un partenaire MUGEF-CI, et 10 000 F ailleurs. Le choix de
+ * l'officine multiplie la dépense par cinq, et c'est invisible depuis le
+ * trottoir.
+ *
+ * TAUX RELEVÉS LE 7 SEPTEMBRE 2026, à ne pas modifier sans revérifier :
+ *   - CMU (CNAM) : 70 % pris en charge, ticket modérateur de 30 %.
+ *   - MUGEF-CI, régime complémentaire obligatoire : 80 % depuis le
+ *     21 avril 2025, engagement de l'État pour 2025, 2026 et 2027.
+ *   - Assureurs privés (NSIA, SUNU, Sanlam…) : 80 % OU 100 % selon le
+ *     contrat souscrit par l'employeur. Aucun taux public n'existe, et en
+ *     inventer un serait pire que de ne rien afficher.
+ *
+ * TROIS CONDITIONS, TOUTES NÉCESSAIRES : le patient a déclaré son organisme,
+ * l'officine l'accepte, et le produit figure sur une liste remboursable. Il
+ * en manque une, et le reste à charge est le prix plein.
+ */
+export const TAUX_COUVERTURE: Record<string, number | null> = {
+  CMU: 0.7,
+  MUGEFCI: 0.8,
+  /* null ne veut pas dire zéro : il veut dire « nous ne le savons pas ». Le
+     taux figure sur la carte du patient, et lui seul peut le lire. */
+  'NSIA Assurances': null,
+  'SUNU Assurances': null,
+}
+
+export type ResteACharge = {
+  /** Prix plein de ce que l'officine a en stock. */
+  total: number
+  /** Ce que le patient sortira de sa poche, estimation haute. */
+  aPayer: number
+  /** Part prise en charge, 0 si aucune. */
+  prisEnCharge: number
+  /** Taux appliqué, null si l'organisme n'en publie pas. */
+  taux: number | null
+  /** Somme des lignes hors liste remboursable, payées en entier. */
+  nonRemboursable: number
+  /** Pourquoi il n'y a pas de prise en charge, quand il n'y en a pas. */
+  motif: 'aucun-organisme' | 'officine-non-conventionnee' | 'taux-inconnu' | null
+}
+
+export function resteACharge(
+  officine: Officine,
+  produits: Produit[],
+  organisme: string | null,
+): ResteACharge {
+  const presents = produits.filter((p) => etatDuProduit(officine, p.id) !== 'absent')
+  const total = presents.reduce((s, p) => s + p.prix, 0)
+  const nonRemboursable = presents.filter((p) => !p.remboursable).reduce((s, p) => s + p.prix, 0)
+  const base = total - nonRemboursable
+
+  const plein = (motif: ResteACharge['motif']): ResteACharge => ({
+    total,
+    aPayer: total,
+    prisEnCharge: 0,
+    taux: null,
+    nonRemboursable,
+    motif,
+  })
+
+  if (!organisme) return plein('aucun-organisme')
+  if (!accepte(officine, organisme)) return plein('officine-non-conventionnee')
+
+  const taux = TAUX_COUVERTURE[organisme] ?? null
+  if (taux === null) return plein('taux-inconnu')
+
+  /* Arrondi À LA HAUSSE de ce que paie le patient : entre deux estimations,
+     celle qui le laisse repartir avec de la monnaie vaut mieux que celle qui
+     le laisse au comptoir à cinquante francs près. */
+  const prisEnCharge = Math.floor(base * taux)
+  return { total, aPayer: total - prisEnCharge, prisEnCharge, taux, nonRemboursable, motif: null }
+}
 
 /*
  * Ouverture : la seule chose qu'un patient doit savoir avant de se déplacer.

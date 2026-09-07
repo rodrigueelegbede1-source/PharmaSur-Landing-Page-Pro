@@ -14,6 +14,7 @@ import {
   estEnRupture,
   etatDuBon,
   etatDuProduit,
+  resteACharge,
   fcfa,
   ouverture,
   verdict,
@@ -979,6 +980,7 @@ function EcranOfficine({
 }) {
   const manquants = produits.filter((p) => etatDuProduit(officine, p.id) === 'absent')
   const ouv = ouverture(officine)
+  const rac = resteACharge(officine, produits, assurance)
 
   return (
     <>
@@ -1067,18 +1069,71 @@ function EcranOfficine({
             pour qu'un total bas ne se lise pas comme une bonne affaire.
           */}
           {produits.length > 0 && (
-            <div className="flex items-center justify-between gap-3 border-t border-line bg-green-50 px-4 py-3.5">
-              <span className="text-[0.86rem] font-bold text-ink">Total sur place</span>
-              <span className="text-[1.1rem] font-extrabold tracking-[-0.02em] text-ink">
-                {fcfa(
-                  produits
-                    .filter((p) => etatDuProduit(officine, p.id) !== 'absent')
-                    .reduce((s, p) => s + p.prix, 0),
-                )}
-              </span>
+            <div className="border-t border-line bg-green-50 px-4 py-3.5">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-[0.86rem] font-bold text-ink">
+                  {rac.prisEnCharge > 0 ? 'Ce que vous payez ici' : 'Total sur place'}
+                </span>
+                <span className="text-[1.1rem] font-extrabold tracking-[-0.02em] text-ink">
+                  {fcfa(rac.aPayer)}
+                </span>
+              </div>
+
+              {/* Le prix plein reste affiché à côté du reste à charge : cacher
+                  ce que l'organisme prend en charge reviendrait à masquer la
+                  valeur de la couverture, et empêcherait le patient de
+                  vérifier son ticket au comptoir. */}
+              {rac.prisEnCharge > 0 && (
+                <div className="mt-1.5 flex items-center justify-between gap-3 text-[0.78rem] font-semibold text-body-soft">
+                  <span>
+                    Prix plein {fcfa(rac.total)} · {assurance} prend{' '}
+                    {Math.round((rac.taux ?? 0) * 100)} %
+                  </span>
+                  <span className="text-green-700">−{fcfa(rac.prisEnCharge)}</span>
+                </div>
+              )}
             </div>
           )}
         </div>
+
+        {/*
+          LE LEVIER À CINQ, RENDU VISIBLE.
+
+          Le prix du médicament est homologué : il est le même partout. Ce qui
+          change, c'est que le remboursement ne s'applique QUE dans une
+          officine conventionnée avec l'organisme. Le patient ne peut pas le
+          deviner depuis le trottoir, et il l'apprend au comptoir — après le
+          trajet, et après avoir sorti l'argent.
+
+          Chaque motif dit CE QU'IL FAUT FAIRE, pas seulement ce qui manque.
+        */}
+        {rac.motif === 'officine-non-conventionnee' && assurance && (
+          <p className="mt-2.5 rounded-2xl border border-alert/30 bg-alert/8 px-4 py-3 text-[0.8rem] leading-relaxed font-semibold text-alert">
+            Cette officine n'accepte pas {assurance} : vous paierez la totalité.
+            Le prix des médicaments est le même partout — c'est la convention qui change ce
+            que vous sortez de votre poche. Cherchez une officine qui l'accepte.
+          </p>
+        )}
+
+        {rac.motif === 'taux-inconnu' && assurance && (
+          <p className="mt-2.5 rounded-2xl border border-line bg-line-soft px-4 py-3 text-[0.8rem] leading-relaxed font-semibold text-body">
+            {assurance} est acceptée ici, mais son taux dépend de votre contrat — il n'est
+            pas public. Le vôtre figure sur votre carte. Le montant ci-dessus est donc le
+            prix plein, avant prise en charge.
+          </p>
+        )}
+
+        {rac.motif === 'aucun-organisme' && (
+          <p className="mt-2.5 text-[0.78rem] leading-relaxed text-body-soft">
+            Déclarez votre assurance dans le profil pour voir ce qui resterait à votre charge.
+          </p>
+        )}
+
+        {rac.nonRemboursable > 0 && rac.prisEnCharge > 0 && (
+          <p className="mt-2 text-[0.78rem] leading-relaxed font-semibold text-body">
+            Dont {fcfa(rac.nonRemboursable)} non remboursables, à payer en entier.
+          </p>
+        )}
 
         {manquants.length > 0 && (
           <p className="mt-2.5 text-[0.78rem] leading-relaxed font-semibold text-alert">
@@ -1092,6 +1147,8 @@ function EcranOfficine({
 
         <p className="mt-2 text-[0.75rem] leading-relaxed text-body-soft">
           Les prix des médicaments sont homologués : ils sont les mêmes dans toutes les officines.
+          {rac.prisEnCharge > 0 &&
+            " Le reste à charge est une estimation haute : c'est le montant au comptoir qui fait foi."}
         </p>
       </div>
 
