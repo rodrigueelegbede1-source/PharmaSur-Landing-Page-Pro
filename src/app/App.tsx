@@ -173,6 +173,7 @@ export default function App() {
         {vue.nom === 'onglets' && onglet === 'liste' && (
           <EcranListe
             liste={liste}
+            assurance={assurance.nom}
             onChercherOfficines={() => allerA({ nom: 'resultats' })}
             onEquivalent={(id) => allerA({ nom: 'equivalent', produitId: id })}
             onAjouter={() => setOnglet('recherche')}
@@ -468,11 +469,13 @@ function EcranRecherche({
 
 function EcranListe({
   liste,
+  assurance,
   onChercherOfficines,
   onEquivalent,
   onAjouter,
 }: {
   liste: ReturnType<typeof useListe>
+  assurance: string | null
   onChercherOfficines: () => void
   onEquivalent: (id: string) => void
   onAjouter: () => void
@@ -567,14 +570,33 @@ function EcranListe({
           )
         })}
 
-        <Carte className="flex items-center justify-between bg-green-50">
-          <span className="text-[0.88rem] font-bold text-ink">Coût total</span>
-          <span className="text-[1.3rem] font-extrabold tracking-[-0.02em] text-ink">
-            {fcfa(total)}
-          </span>
+        <Carte className="bg-green-50">
+          <div className="flex items-center justify-between">
+            <span className="text-[0.88rem] font-bold text-ink">Coût total</span>
+            <span className="text-[1.3rem] font-extrabold tracking-[-0.02em] text-ink">
+              {fcfa(total)}
+            </span>
+          </div>
+          {/*
+            Aucune officine n'est encore choisie : impossible de savoir ici ce
+            que l'organisme prendra en charge, puisque cela dépend de la
+            convention de l'officine. On ne calcule donc pas — on annonce que
+            ce nombre n'est pas le montant final, et où il se précise.
+          */}
+          {assurance && (
+            <p className="mt-1.5 text-[0.78rem] leading-relaxed font-semibold text-body">
+              Prix plein, avant {assurance}. Ce que vous paierez dépend de l'officine : seules
+              celles qui l'acceptent appliquent la prise en charge.
+            </p>
+          )}
         </Carte>
 
-        <Budget produits={liste.produits} total={total} onRemplacer={liste.remplacer} />
+        <Budget
+          produits={liste.produits}
+          total={total}
+          assurance={assurance}
+          onRemplacer={liste.remplacer}
+        />
 
         <button
           type="button"
@@ -612,10 +634,12 @@ function EcranListe({
 function Budget({
   produits,
   total,
+  assurance,
   onRemplacer,
 }: {
   produits: Produit[]
   total: number
+  assurance: string | null
   onRemplacer: (ancien: string, nouveau: string) => void
 }) {
   /*
@@ -676,6 +700,23 @@ function Budget({
       {plan && montant >= total && (
         <p className="mt-3 text-[0.82rem] leading-relaxed font-bold text-green-700">
           Vous avez de quoi régler l'ordonnance entière.
+        </p>
+      )}
+
+      {/*
+        GARDE-FOU : NE PAS FAIRE CHANGER DE MÉDICAMENT POUR RIEN.
+
+        Ce calcul part du prix plein, seul connu tant qu'aucune officine n'est
+        choisie. Pour un assuré, le manque affiché peut donc être imaginaire :
+        une ordonnance à 8 600 F ne coûte que 1 720 F chez un partenaire
+        MUGEF-CI. Laisser quelqu'un substituer son traitement à cause d'un
+        déficit qui n'existe pas serait exactement ce que la règle des
+        équivalents cherche à empêcher.
+      */}
+      {plan && montant < total && assurance && (
+        <p className="mt-3 rounded-xl border border-line bg-line-soft/70 px-3.5 py-3 text-[0.78rem] leading-relaxed font-semibold text-body">
+          Ce calcul part du prix plein. Si une officine proche accepte {assurance}, vous
+          paierez beaucoup moins : regardez les officines avant de changer un médicament.
         </p>
       )}
 
@@ -816,6 +857,7 @@ function EcranResultats({
         </h1>
         <p className="mt-1.5 text-[0.88rem] leading-relaxed text-body">
           Les officines ouvertes d'abord, puis par nombre de produits disponibles.
+          {assurance && ' Le montant indiqué est ce que vous paieriez sur place.'}
         </p>
       </div>
 
@@ -863,13 +905,14 @@ function EcranResultats({
           </p>
         )}
 
-        {visibles.map(({ officine, etats, disponibles, incertains, total, ouverture: ouv }) => {
+        {visibles.map(({ officine, etats, disponibles, incertains, ouverture: ouv }) => {
           /*
             « 2/3 » obligeait à ouvrir la fiche pour savoir CE QUI manque.
             Le patient veut savoir ce qu'il devra chercher ailleurs : on le
             nomme quand il n'en manque qu'un, on le compte au-delà.
           */
           const manquants = etats.filter((e) => e.etat === 'absent').map((e) => e.produit)
+          const rac = resteACharge(officine, etats.map((e) => e.produit), assurance)
           const resume =
             manquants.length === 0
               ? 'Liste complète'
@@ -950,7 +993,31 @@ function EcranResultats({
                   {officine.bons.length > 2 && <Puce>+{officine.bons.length - 2}</Puce>}
                 </div>
               </div>
-              <span className="shrink-0 text-[0.88rem] font-extrabold text-ink">{fcfa(total)}</span>
+              {/*
+                LE MONTANT QUI DÉCIDE, ET NON LE PRIX AFFICHÉ EN VITRINE.
+
+                Cette colonne montrait le prix plein. Or il est homologué :
+                identique dans toutes les officines de la liste, donc sans
+                pouvoir de discrimination — un nombre qui ne départage rien.
+                Ce qui départage, c'est la convention : la même ordonnance se
+                paie 2 280 F chez un partenaire MUGEF-CI et 4 200 F à côté.
+
+                Le reste à charge remonte donc ici, sinon il fallait ouvrir
+                chaque fiche une par une pour comparer — c'est-à-dire renoncer
+                à comparer. Le prix plein reste dessous, barré : cacher ce que
+                l'organisme prend en charge masquerait la valeur de la
+                couverture.
+              */}
+              <div className="shrink-0 text-right">
+                <span className="block text-[0.88rem] font-extrabold text-ink">
+                  {fcfa(rac.aPayer)}
+                </span>
+                {rac.prisEnCharge > 0 && (
+                  <span className="mt-0.5 block text-[0.7rem] font-semibold text-body-soft line-through">
+                    {fcfa(rac.total)}
+                  </span>
+                )}
+              </div>
             </div>
           </button>
           )
